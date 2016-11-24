@@ -1,0 +1,51 @@
+﻿@using MediaCollection
+@using Stolbovoy.Utils
+@model IEnumerable<string[]>
+@{
+	ViewBag.Title = Labels.Locations_Title;
+	string jsDevices = RazorHelpers.EnumToJavascript<DeviceType>(Labels.ResourceManager);
+	string jsLocations = RazorHelpers.EnumToJavascript<LocationBaseKind>(Labels.ResourceManager);
+	var locationsData = new TableRenderData { JSName = "locBases", Headers = new[] { "", Labels.LocationBaseKind, Labels.LocationBaseName }, TableControlName = "tbl_locBases", CanDelete = false };
+}
+
+
+<h2>@Labels.Locations_Title</h2>
+
+
+@Html.Partial("TableWithSelectAndRadio", locationsData)
+
+
+
+<script>
+	var locBases = {};
+	initDataTable(locBases, "tbl_locBases", "LocationBase/Set", "");
+
+
+	(function (d){
+		d.renderSelect = function( data, type, row )
+		{
+			return '<input type="button" name="delLocBase" id="delLocBase" value="@Labels.BtnDelete" data-id="' + data + ' onclick="locBases.del(this);"/>';
+		}
+		d.initialData = @Html.Raw(Model.ToJson());
+		d.lookup = @Html.Raw(jsLocations);
+		d.editableOptions.aoColumns = [null,
+				{
+					type: "select",
+					data: d.lookup,
+					sUpdateURL: function (value, settings) { return value; },
+					onblur: 'submit',
+					callback: d.fnOnBlur
+				},
+				{onblur: d.fnOnBlur}
+		];
+		d.features.columnDefs = [
+			{"targets": [0], "width": "25px", "render" : d.renderSelect, orderable: false},
+			{"targets": [1], "width": "100px", "render": function( data, type, row ) {return d.lookup[data]}}
+		];
+		d.emptyData = ["-1", "Local", ""];
+
+	})(locBases);
+
+	
+
+</script>

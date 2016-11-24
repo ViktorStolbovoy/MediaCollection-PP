@@ -1,0 +1,10 @@
+*.dll
+*.pdb
+*.user
+*.cache
+NPoco/*
+.nuget/*
+**/bin/**
+**/obj/**
+packages/**
+SQLIte/**

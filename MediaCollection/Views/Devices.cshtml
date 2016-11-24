@@ -1,0 +1,100 @@
+﻿@using MediaCollection
+@using Stolbovoy.Utils
+@model IEnumerable<string[]>
+@{
+	ViewBag.Title = "Devices";
+	string jsDevices = RazorHelpers.EnumToJavascript<DeviceType>(Labels.ResourceManager);
+	string jsLocations = RazorHelpers.EnumToJavascript<LocationBaseKind>(Labels.ResourceManager);
+	var devicesData = new TableRenderData { JSName = "devices", Headers = new[] { "", Labels.DeviceKind, Labels.DeviceName, Labels.DeviceData }, TableControlName = "tbl_devices"};
+	string selectName = "select" + devicesData.JSName;
+
+
+	var locationsData = new TableRenderData { JSName = "locations", Headers = new[] { Labels.LocationBaseKind, Labels.LocationBaseName, Labels.LocationMapping }, TableControlName = "tbl_locations", CanAdd = false, CanDelete = false};
+}
+
+
+	<h2>@Labels.Devices_Title</h2>
+
+
+	@Html.Partial("TableWithSelectAndRadio", devicesData)
+
+	<div id="div_locations" style="display:none">
+		@Html.Partial("TableWithSelectAndRadio", locationsData)
+	</div>
+
+
+<script>
+	var devices = {};
+	initDataTable(devices, "tbl_devices", "Device/Set", "input[name=selectdevices]:checked");
+
+	var locations = {};
+	initDataTable(locations, "tbl_locations", "Device/UpdateLocations", "");
+
+
+	(function (d){
+		d.renderSelect = function( data, type, row )
+		{
+			return '<input type="radio" name="selectdevices" id="selectdevices" value="' + data + '" onchange="deviceSelected()"/>';
+		}
+		d.initialData = @Html.Raw(Model.ToJson());
+		d.lookup = @Html.Raw(jsDevices);
+		d.editableOptions.aoColumns = [null,
+				{
+					type: "select",
+					data: d.lookup,
+					sUpdateURL: function (value, settings) { return value; },
+					onblur: 'submit',
+					callback: d.fnOnBlur
+				},
+				{onblur: d.fnOnBlur},
+				{onblur: d.fnOnBlur}
+		];
+		d.features.columnDefs = [
+			{"targets": [0], "width": "15px", "render" : d.renderSelect, orderable: false},
+			{"targets": [1], "width": "75px", "render": function( data, type, row ) {return d.lookup[data]}}
+		];
+		d.emptyData = ["-1", "Dune", "", ""];
+		var oldDel = d.del;
+		d.del = function() 
+		{
+			locations.parentId = -1;
+			$("#div_locations").hide();
+			oldDel();
+		}
+	})(devices);
+
+	locations.initialData =[];
+	locations.lookup = @Html.Raw(jsLocations);
+	locations.editableOptions.aoColumns = [null, null, {onblur: locations.fnOnBlur}];
+	locations.features.columnDefs = [
+		{"targets": [0], "width": "75px", "data" : "2", "render": function( data, type, row ) {return locations.lookup[data]}},
+		{"targets": [1], "data" : "3"},
+		{"targets": [2], "data" : "1"}
+	];
+
+
+	function refreshLocations(data, status)
+	{
+		locations.refresh(data, status);
+		$("#div_locations").show();
+	}
+
+	deviceSelected = function ()
+	{
+		var rb = $("input[name=selectdevices]:checked");
+		if(rb.length > 0) {
+			var id = rb.val();
+			if (id >= 0)
+			{
+				locations.parentId = parseInt(id);
+				$.ajax("Device/ListLocations?id=" + id, {"type":"GET", "dataType":"json", "success": refreshLocations})
+			}
+			else
+			{
+				locations.parentId = -1;
+				$("#div_locations").hide();
+			}
+		}
+	}
+
+</script>

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@Styles.Render("~/bundles/dataTableCss")
+	@Styles.Render("~/Content/themes/base/css")
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/modernizr")
+	@Scripts.Render("~/bundles/Content/DataTableJS")
+	@Scripts.Render("~/bundles/jqueryval")
+</head>
+<body>
+	@RenderBody()
+
+	
+	@RenderSection("scripts", required: false)
+</body>
+
+</html>

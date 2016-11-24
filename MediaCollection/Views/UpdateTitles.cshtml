@@ -1,0 +1,128 @@
+﻿@using MediaCollection
+@using Stolbovoy.Utils
+@model IEnumerable<Device>
+@{
+	ViewBag.Title = "Update Titles";
+	bool isFirst = true;
+	var devicesDD = Model.Select((d) => { var res = new SelectListItem { Value = d.Id.ToString(), Text = d.Name, Selected = isFirst }; isFirst = false; return res; });
+}
+
+
+<h2>@Labels.UpdateTitles_Title</h2>
+@Html.Label("devices", Labels.Devices_Title) @Html.DropDownList("devices", devicesDD)
+@Html.Label("locations", Labels.LocationBases_Title) @Html.DropDownList("locations", new SelectListItem[0])
+<input type="button" value="@Labels.BtnRunScanChanges" onclick="runScan();"/>
+
+<h1>@Labels.Titles_New</h1>
+<table id="newTitles">
+	<thead>
+		<tr>
+			<th>@Labels.NewItemAddCheckboxes</th>
+			<th>@Labels.TitleLocation</th>
+			<th>@Labels.TitleName</th>
+			<th>@Labels.TitleSeries</th>
+			<th>@Labels.TitleExternalResource</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	</tbody>
+</table>
+<input type="button" value="@Labels.BtnGetProviderData" onclick="getAdditionalInfo();" id="btnAdditionalInfo" disabled />
+
+
+<h1>@Labels.Titles_Deleted</h1>
+<table id="missingTitles">
+	<thead>
+		<tr>
+			<th>@Labels.MissingItemDeleteCheckbox</th>
+			<th>@Labels.TitleLocation</th>
+			<th>@Labels.TitleName</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+</table>
+<input type="button" value="@Labels.BtnSave" onclick="saveChanges();" id="btnSaveChanges" disabled />
+<script>
+
+
+	function runScan()
+	{
+		var post = {};
+		post.id = $("#locations").val();
+		post.deviceId = $("#devices").val();
+		$("#newTitles > tbody").empty();
+		$("#missingTitles > tbody").empty();
+		$.ajax("@Url.Content("~/LocationBase/Rescan")", { "data": JSON.stringify(post), "type": "POST", "dataType": "json", "contentType": "application/json", "success": setRescanData })
+	}
+
+	function getLocations()
+	{
+		var post = {};
+		post.deviceId = $("#devices").val();
+		$.ajax("@Url.Content("~/Title/GetLocationBases")", { "data": JSON.stringify(post), "type": "POST", "dataType": "json", "contentType": "application/json", "success": replaceLocations })
+	}
+
+	function replaceLocations(data, status)
+	{
+		var $el = $("#locations");
+		$el.empty(); // remove old options
+		$.each(data, function (value, key) {
+			$el.append($("<option></option>")
+			   .attr("value", key.Id).text(key.Name));
+		});
+	}
+
+	function setRescanData(data, status)
+	{
+		var tBody = $("#newTitles > tbody");
+		var ne = data.NewFiles;
+		var len = ne.length;
+		if (len > 0) {
+			for (var i = 0; i < len; i++) {
+				var e = ne[i];
+				var tr = $("<tr>");
+				tBody.append(tr);
+				tr.append($("<input type=\"checkbox\" class=\"newApply\" checked />"));
+				tr.append($("<td>").text(e.RelativePath));
+				tr.append($("<td>").append($("<input type=\"edit\" class=\"nameEdit\"/>").val(e.Title)));
+				tr.append($("<td>"));
+				tr.append($("<td>"));
+			}
+			$("#btnAdditionalInfo").removeAttr('disabled');
+		}
+		else 
+		{
+			var tr = $("<tr>").append($("<td colspan=\"5\">").text("@Labels.NotFound"));
+			tBody.append(tr);
+		}
+		
+
+		tBody = $("#missingTitles > tbody");
+		ne = data.MissingFiles;
+		len = ne.length;
+		if (len > 0) {
+			for (var i = 0; i < len; i++) {
+				var e = ne[i];
+				var tr = $("<tr>");
+				tBody.append(tr);
+				tr.append($("<input type=\"checkbox\" class=\"newApply\">"));
+				tr.append($("<td>").text(e.RelativePath));
+				tr.append($("<td>").append($("<input type=\"edit\" class=\"nameEdit\">").val(e.Title)));
+				tr.append($("<td>"));
+				tr.append($("<td>"));
+			}
+			$("#btnAdditionalInfo").removeAttr('disabled');
+		}
+		else {
+			var tr = $("<tr>").append($("<td colspan=\"3\">").text("@Labels.NotFound"));
+			tBody.append(tr);
+		}
+
+	}
+
+	$(document).ready(function () {
+		$("#devices").change(getLocations);
+		getLocations();
+	});
+</script>

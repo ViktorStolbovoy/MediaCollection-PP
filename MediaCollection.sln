@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCollection", "MediaCollection\MediaCollection.csproj", "{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McLib", "McLib\McLib.csproj", "{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "NPoco\src\NPoco\NPoco.csproj", "{BCCBF883-0C0D-40FF-95B6-A2777DFF63DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCollectionDesktop", "MediaCollectionDesktop\MediaCollectionDesktop.csproj", "{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34069D57-EF1F-4559-9CDA-DC6588269E91}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLibTests", "MCLibTests\MCLibTests.csproj", "{5BB68541-E024-4B7C-94B1-EADFEEFFED44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCCBF883-0C0D-40FF-95B6-A2777DFF63DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCBF883-0C0D-40FF-95B6-A2777DFF63DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCBF883-0C0D-40FF-95B6-A2777DFF63DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCBF883-0C0D-40FF-95B6-A2777DFF63DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB68541-E024-4B7C-94B1-EADFEEFFED44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB68541-E024-4B7C-94B1-EADFEEFFED44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB68541-E024-4B7C-94B1-EADFEEFFED44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB68541-E024-4B7C-94B1-EADFEEFFED44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

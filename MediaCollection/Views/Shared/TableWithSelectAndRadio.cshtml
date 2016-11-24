@@ -1,0 +1,45 @@
+﻿@using MediaCollection
+@using Stolbovoy.Utils
+@model TableRenderData
+
+@{
+	string addFnName = Model.JSName+ ".add()";
+	string delFnName = Model.JSName + ".del()";
+	string undoFnName = Model.JSName + ".refresh(null, null)";
+	string saveFnName = Model.JSName + ".save()";
+	string tableName =  Model.TableControlName;
+}
+
+<table id="@tableName" class="table-hover">
+	<thead>
+		<tr>
+		@foreach(string hdr in Model.Headers)
+		{
+			if (string.IsNullOrEmpty(hdr))
+			{
+				<th>&nbsp;</th>
+			}
+			else
+			{
+				<th>@hdr</th>
+			}
+		}
+		</tr>
+	</thead>
+</table>
+@if (Model.CanAdd) 
+{ 
+	<input type="button" class="addBtn" value="@Labels.BtnAdd" onclick="@addFnName" />
+}
+@if (Model.CanDelete)
+{
+	<input type="button" class="deleteBtn" value="@Labels.BtnDelete" onclick="@delFnName" />
+}
+@if (Model.CanAdd || Model.CanDelete)
+{ 
+	@:&nbsp;
+}
+
+<input type="button" class="saveBtn" value="@Labels.BtnUndo" onclick="@undoFnName" />
+<input type="button" class="saveBtn" value="@Labels.BtnSave" onclick="@saveFnName" />
+
