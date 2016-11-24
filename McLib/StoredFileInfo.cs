@@ -286,7 +286,7 @@ namespace MediaCollection
 			}
 
 			string now = GeneralPersistense.GetTimestamp();
-			var title = new Title { Id = 0, Kind = kind, Ord = 0, TitleName = Title, DateAddedUtc = now, DateModifiedUtc = now, Season = Season, Disk = Disk, EpisodeOrTrack = Episode };
+			var title = new Title { Id = 0, Kind = kind, Ord = 0, TitleName = Title, DateAddedUtc = now, DateModifiedUtc = now, Season = Season, Disk = Disk, EpisodeOrTrack = Episode, ImdbId = "", Description = ""};
 			using (var db = DB.GetDatabase())
 			{
 				db.Insert(title);
