@@ -58,6 +58,14 @@ namespace MediaCollection
 			}
 		}
 
+		public static List<Title>GetTitlesForAutoupdate()
+		{
+			using (var db = DB.GetDatabase())
+			{
+				return db.Fetch<Title>("WHERE DESCRIPTION = '' AND RELEASE_YEAR = 0 and (KIND =@0 or KIND = @1) ORDER BY TITLE_NAME, ORD", TitleKind.Title, TitleKind.Series);
+			}
+		}
+
 		public static long AddTitle(string name, TitleKind kind, int ord, int? parentId)
 		{
 

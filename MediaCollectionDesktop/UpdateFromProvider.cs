@@ -19,8 +19,8 @@ namespace MediaCollection
 			m_titlesToUpdate = titlesToUpdate;
 			InitializeComponent();
 			Setup();
-			BtnNext.Enabled = false;
-			BtnPrevious.Enabled = titlesToUpdate.Count > 1;
+			BtnNext.Enabled = titlesToUpdate.Count > 1;
+			BtnPrevious.Enabled = false;
 			m_currentTitleIndex = 0;
 			if (titlesToUpdate.Count > 0)
 			{	
@@ -134,7 +134,7 @@ namespace MediaCollection
 			}
 			m_currentTitle.DateModifiedUtc = GeneralPersistense.GetTimestamp();
 			if (CbxOverrideDescription.Checked && !string.IsNullOrWhiteSpace(searchResult.Overview)) m_currentTitle.Description = searchResult.Overview;
-			if (CbxOverrideTitle.Checked) m_currentTitle.TitleName = searchResult.Title;
+			if (CbxOverrideTitle.Checked && !string.IsNullOrWhiteSpace(searchResult.Title)) m_currentTitle.TitleName = searchResult.Title;
 			if (CbxOverrideYear.Checked && searchResult.ReleaseDate.HasValue) m_currentTitle.Year = searchResult.ReleaseDate.Value.Year;
 			if (!string.IsNullOrWhiteSpace(searchResult.ImdbId)) m_currentTitle.ImdbId = searchResult.ImdbId;
 			
@@ -142,7 +142,8 @@ namespace MediaCollection
 				/*StoredItem.SeasonPersistence,
 				StoredItem.DiskPersistence,
 				StoredItem.EpisodePersistence*/
-			
+
+			if (m_currentTitle.TitleName == null) m_currentTitle.TitleName = "";
 			GeneralPersistense.Upsert(m_currentTitle);
 			
 			if (searchResult.Poster != null && searchResult.Poster.Length > 0)
@@ -175,7 +176,11 @@ namespace MediaCollection
 			{
 				m_currentTitleIndex++;
 				PopulateUI(m_titlesToUpdate[m_currentTitleIndex]);
-				BtnPrevious.Enabled = m_currentTitleIndex < m_currentTitleIndex + 1;
+				BtnPrevious.Enabled = m_currentTitleIndex > 0;
+			}
+			else 
+			{
+				BtnNext.Enabled = false;
 			}
 		}
 
@@ -183,12 +188,16 @@ namespace MediaCollection
 		{
 			if (m_currentTitleIndex > 0)
 			{
-				m_currentTitleIndex --;
+				m_currentTitleIndex--;
 				if (m_titlesToUpdate.Count > m_currentTitleIndex)
 				{
 					PopulateUI(m_titlesToUpdate[m_currentTitleIndex]);
 				}
-				BtnPrevious.Enabled = m_currentTitleIndex != 0;
+				BtnNext.Enabled = m_currentTitleIndex + 1 < m_titlesToUpdate.Count;
+			}
+			else
+			{
+				BtnPrevious.Enabled = false;
 			}
 		}
 	}

@@ -314,8 +314,7 @@ namespace MediaCollection
 			m_currentTitle.EpisodeOrTrack = TbxEpisode.Text.To<int>(0);
 
 			GeneralPersistense.Upsert(m_currentTitle);
-
-			BtnSave.Enabled = false;
+			SetControlsFromDirtyState(false);
 		}
 
 		private void TVTitles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -339,6 +338,12 @@ namespace MediaCollection
 		private bool SetControlsFromDirtyState()
 		{
 			bool isDirty = IsDirty();
+			SetControlsFromDirtyState(isDirty);
+			return isDirty;
+		}
+
+		private void SetControlsFromDirtyState(bool isDirty)
+		{
 			BtnSave.Enabled = isDirty;
 			BtnSearhProvider.Enabled = !isDirty;
 			BtnNew.Enabled = !isDirty;
@@ -346,7 +351,6 @@ namespace MediaCollection
 			BtnAddImage.Enabled = !isDirty;
 			BtnAddLocation.Enabled = !isDirty;
 			BtnRemoveLocation.Enabled = !isDirty;
-			return isDirty;
 		}
 
 		private void CbxKind_SelectedIndexChanged(object sender, EventArgs e)
@@ -577,6 +581,22 @@ namespace MediaCollection
 		{
 			var r = e.RowObject as TitleRatingWithName;
 			if (r != null && m_currentTitle != null) r.Set(m_currentTitle.Id);
+		}
+
+		private void updateAllFromTMDBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var titles = TitlePersistence.GetTitlesForAutoupdate();
+			var provider = new UpdateFromProvider(titles);
+			provider.ShowDialog();
+			DisplayTitleInfo(m_currentTitle);
+		}
+
+		private void BtnOpenBrowser_Click(object sender, EventArgs e)
+		{
+			if (m_currentTitle != null && !string.IsNullOrWhiteSpace(m_currentTitle.ImdbId))
+			{
+				System.Diagnostics.Process.Start("http://www.imdb.com/title/" + m_currentTitle.ImdbId);
+			}
 		}
 	}
 }

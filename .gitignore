@@ -8,3 +8,5 @@ NPoco/*
 **/obj/**
 packages/**
 SQLIte/**
+*.suo
+*.suo

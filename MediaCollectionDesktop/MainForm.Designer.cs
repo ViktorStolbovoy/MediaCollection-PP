@@ -260,6 +260,7 @@
 			this.updateAllFromTMDBToolStripMenuItem.Name = "updateAllFromTMDBToolStripMenuItem";
 			this.updateAllFromTMDBToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
 			this.updateAllFromTMDBToolStripMenuItem.Text = "Update All From TMDB";
+			this.updateAllFromTMDBToolStripMenuItem.Click += new System.EventHandler(this.updateAllFromTMDBToolStripMenuItem_Click);
 			// 
 			// TSMITitlesConfig
 			// 
@@ -344,6 +345,7 @@
 			this.BtnOpenBrowser.TabIndex = 26;
 			this.BtnOpenBrowser.Text = "Go";
 			this.BtnOpenBrowser.UseVisualStyleBackColor = true;
+			this.BtnOpenBrowser.Click += new System.EventHandler(this.BtnOpenBrowser_Click);
 			// 
 			// TbxEpisode
 			// 
