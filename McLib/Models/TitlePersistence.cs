@@ -20,7 +20,6 @@ namespace MediaCollection
 				}
 				else
 				{
-					pattern = "%" + pattern + "%";
 					return db.Fetch<Title>("where KIND = @0 and TITLE_NAME like @1", kind, pattern);
 				}
 			}
@@ -30,7 +29,8 @@ namespace MediaCollection
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3) ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series);
+				//public enum TitleKind { Title = 0, Season = 1, Series = 2, Album = 3, /*Video*/ Disk = 4,  Track = 5, AlbumArtist = 6, Episode = 7 }
+				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk);
 			}
 		}
 
@@ -66,16 +66,16 @@ namespace MediaCollection
 			}
 		}
 
-		public static long AddTitle(string name, TitleKind kind, int ord, int? parentId)
+		public static Title AddTitle(string name, TitleKind kind, int season, int disk, int episodeOrTrack, long? parentId)
 		{
 
 			string now = GeneralPersistense.GetTimestamp();
-			var t = new Title { TitleName = name, Kind = kind, Ord = ord, ParentTitleId = parentId, DateAddedUtc = now, DateModifiedUtc = now };
+			var t = new Title { TitleName = name, Kind = kind, Season = season, Disk = disk, EpisodeOrTrack = episodeOrTrack, ParentTitleId = parentId, DateAddedUtc = now, DateModifiedUtc = now, ImdbId = "", Description = ""};
 			using (var db = DB.GetDatabase())
 			{
 				db.Insert(t);
 			}
-			return t.Id;
+			return t;
 		}
 
 		public static bool SaveTitleName(int titleId, string newName)
@@ -86,7 +86,7 @@ namespace MediaCollection
 			}
 		}
 
-		public static bool ReparentTitle(int titleId, int? parentId)
+		public static bool ReparentTitle(long titleId, long? parentId)
 		{
 			using (var db = DB.GetDatabase())
 			{
@@ -107,6 +107,16 @@ namespace MediaCollection
 			using (var db = DB.GetDatabase())
 			{
 				return db.Fetch<TitleRatingWithName>("select p.*, tr.RATING_VALUE, tr.TITLE_ID from RATING_PROVIDER p LEFT JOIN TITLE_RATING tr ON p.RATING_ID = tr.RATING_ID and tr.TITLE_ID = @0 ORDER BY p.RATING_NAME", titleId);
+			}
+		}
+
+		public static void DeleteTitle(long titleId)
+		{
+			using (var db = DB.GetDatabase())
+			{
+				int cnt = db.Query<Location>().Where(x => x.TitleId == titleId).Count();
+				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete title: it has {0} locations", cnt));
+				db.Execute("DELETE FROM title WHERE TITLE_ID = @0", titleId);
 			}
 		}
 	}

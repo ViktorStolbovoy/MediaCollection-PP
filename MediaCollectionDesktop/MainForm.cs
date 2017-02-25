@@ -44,7 +44,7 @@ namespace MediaCollection
 			TVTitles.ChildrenGetter = (o) => {
 				var t = o as Title;
 				if (t == null) return null;
-				return TitlePersistence.ListTitlesByParent(t.Id);
+				return new SortableTitles(TitlePersistence.ListTitlesByParent(t.Id));
 			};
 
 			OlvColumnName.ImageGetter = (o) => {
@@ -80,7 +80,7 @@ namespace MediaCollection
 			sink.Dropped += (sender, e) => {
 				var models = GetModelsFromDropEvent(e);
 				if (models.Item1 == null || models.Item2 == null) return;
-				models.Item1.ParentTitleId = models.Item2.Id;
+				SetSeriesHierarchy(models.Item1, models.Item2); 
 				GeneralPersistense.Upsert(models.Item1);
 				e.Effect = DragDropEffects.Move;
 				TVTitles.RemoveObject(models.Item1);
@@ -91,10 +91,24 @@ namespace MediaCollection
 				var t = m as Title;
 				if (t == null) return false;
 
-				string filter = TbxSearch.Text.Trim().ToLower();
-				if (filter.Length == 0) return true;
-
-				return t.TitleName.ToLower().Contains(filter);
+                string filter = TbxSearch.Text.Trim().ToLower();
+                if (m_titleFilter.Count > 0)
+                {
+                    if (m_titleFilter.Contains(t.Id))
+                    {
+                        if (filter.Length == 0) return true;
+                        return t.TitleName.ToLower().Contains(filter);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (filter.Length == 0) return true;
+                    return t.TitleName.ToLower().Contains(filter);
+                }
 			});
 
 			olvColumnRatingValue.AspectPutter = (object o, object val) => {
@@ -113,6 +127,7 @@ namespace MediaCollection
 			m_imageIndex = 0;
 		}
 
+        private List<long> m_titleFilter = new List<long>();
 		private List<MediaSample> m_images;
 		private int m_imageIndex;
 
@@ -124,9 +139,10 @@ namespace MediaCollection
 			{
 				case TitleKind.Album: return source.Kind == TitleKind.Track;
 				case TitleKind.AlbumArtist: return source.Kind == TitleKind.Track || source.Kind == TitleKind.Album;
+				case TitleKind.Disk: return source.Kind == TitleKind.Episode || source.Kind == TitleKind.Title;
 				case TitleKind.Episode: return false;
-				case TitleKind.Season: return source.Kind == TitleKind.Episode || source.Kind == TitleKind.Title;
-				case TitleKind.Series: return source.Kind == TitleKind.Season || source.Kind == TitleKind.Episode || source.Kind == TitleKind.Title;
+				case TitleKind.Season: return source.Kind == TitleKind.Episode || source.Kind == TitleKind.Title || source.Kind == TitleKind.Disk;
+				case TitleKind.Series: return source.Kind == TitleKind.Season || source.Kind == TitleKind.Episode || source.Kind == TitleKind.Title || source.Kind == TitleKind.Disk;
 				default: return false;
 			}
 		}
@@ -144,6 +160,37 @@ namespace MediaCollection
 			return new Tuple<Title, Title>(source, destination);
 		}
 
+		private void SetSeriesHierarchy(Title item, Title parent)
+		{
+			long parentId = parent.Id;
+			switch (parent.Kind)
+			{
+				case TitleKind.Season:
+					if (item.Kind == TitleKind.Title) item.Kind = TitleKind.Disk; 
+					if (parent.Season > 0) item.Season	= parent.Season;
+					break;
+				case TitleKind.Series:
+					if (item.Kind != TitleKind.Season && item.Season > 0)
+					{
+						long saeasonId = -1;
+						foreach (var title in TitlePersistence.ListTitlesByParent(parentId))
+						{
+							if (title.Kind == TitleKind.Season && title.Season == item.Season) 
+							{
+								saeasonId = title.Id;
+								break;
+							}
+						}
+						if (saeasonId < 0)
+						{
+							saeasonId = TitlePersistence.AddTitle(parent.TitleName + " Season " + item.Season.ToString(), TitleKind.Season, item.Season, 0, 0, parentId).Id;
+						}
+						parentId = saeasonId;
+					}
+					break;
+			}
+			item.ParentTitleId = parentId;
+		}
 
 		private ResourceKind GetResourceKind()
 		{
@@ -164,11 +211,11 @@ namespace MediaCollection
 			switch (kind)
 			{
 				case ResourceKind.Audio:
-					TVTitles.Roots = TitlePersistence.ListRootAudio();
+					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootAudio());
 					CbxKind.SetupComboBox<TitleKind>("Audio_");
 					break;
 				case ResourceKind.Video:
-					TVTitles.Roots = TitlePersistence.ListRootVideo();
+					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootVideo());
 					CbxKind.SetupComboBox<TitleKind>("Video_");
 					break;
 			}
@@ -205,15 +252,44 @@ namespace MediaCollection
 			Reload();
 		}
 
-		private void SetEpisodeControlsState(bool isEnabled)
+		private void SetEpisodeControlsState(TitleKind kind)
 		{
-			LblSeason.Enabled = isEnabled;
-			LblDisk.Enabled = isEnabled;
-			LblEpisode.Enabled = isEnabled;
+			LblSeason.Enabled = false;
+			LblDisk.Enabled = false;
+			LblEpisode.Enabled = false;
 
-			TbxSeason.Enabled = isEnabled;
-			TbxDisk.Enabled = isEnabled;
-			TbxEpisode.Enabled = isEnabled;
+			TbxSeason.Enabled = false;
+			TbxDisk.Enabled = false;
+			TbxEpisode.Enabled = false;
+
+			switch (kind)
+			{
+				case TitleKind.Disk:
+					LblSeason.Enabled = true;
+					LblDisk.Enabled = true;
+
+					TbxSeason.Enabled = true;
+					TbxDisk.Enabled = true;
+					break;
+				case TitleKind.Episode:
+					LblSeason.Enabled = true;
+					LblDisk.Enabled = true;
+					LblEpisode.Enabled = true;
+
+					TbxSeason.Enabled = true;
+					TbxDisk.Enabled = true;
+					TbxEpisode.Enabled = true;
+					break;
+
+				case TitleKind.Season:
+					LblSeason.Enabled = true;
+					TbxSeason.Enabled = true;
+					break;
+				case TitleKind.Track:
+					LblEpisode.Enabled = true;
+					TbxEpisode.Enabled = true;
+					break;
+			}
 		}
 
 		Title m_currentTitle;
@@ -238,7 +314,7 @@ namespace MediaCollection
 
 				LVLocations.AddObjects(LocationPersistence.ListTitleLocations(title.Id));
 				LVRatings.AddObjects(TitlePersistence.GetRatings(title.Id));
-				SetEpisodeControlsState(m_currentTitle.Kind == TitleKind.Episode);
+				SetEpisodeControlsState(m_currentTitle.Kind);
 				m_images = MediaSamplePersistence.GetSamples(title.Id, MediaSampleKind.Image);
 				DisplayImage();
 			}
@@ -253,7 +329,7 @@ namespace MediaCollection
 
 				TbxTitleName.Text = "";
 				CbxKind.SelectedIndex = -1;
-				SetEpisodeControlsState(false);
+				SetEpisodeControlsState(TitleKind.Title);
 				m_images = null;
 				SetImageNavigationControls();
 				PbxImage.Clear();
@@ -274,12 +350,19 @@ namespace MediaCollection
 			var sample = m_images[m_imageIndex];
 			if (sample != null)
 			{
-				using (var img = sample.GetImage())
-				{
-					var imgResized = img.ResizeKeepAspectRatio(PbxImage.Width, PbxImage.Height, Color.White);
-					PbxImage.Image = imgResized;
-				}
-			}
+                try
+                {
+				    using (var img = sample.GetImage())
+				    {
+                        var imgResized = img.ResizeKeepAspectRatio(PbxImage.Width, PbxImage.Height, Color.White);
+                        PbxImage.Image = imgResized;
+                    }
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(string.Format("Image {0}/{1}.{2}: {3}", sample.TitleId, sample.Id, sample.Extension, err.Message), "Error displaying image");
+                }
+            }
 		}
 
 		private bool IsDirty()
@@ -315,6 +398,16 @@ namespace MediaCollection
 
 			GeneralPersistense.Upsert(m_currentTitle);
 			SetControlsFromDirtyState(false);
+
+	
+			//HACK: TVTitles.Sort doesn't work
+			if (!m_currentTitle.ParentTitleId.HasValue)
+			{
+				var roots = new List<Title>(TVTitles.Roots.Cast<Title>());
+				roots.Sort();
+				TVTitles.Roots = roots;
+				TVTitles.EnsureModelVisible(m_currentTitle);
+			}
 		}
 
 		private void TVTitles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -327,7 +420,7 @@ namespace MediaCollection
 			Set();
 		}
 
-		private void OnKeyPressNumericOnly(object sender, KeyPressEventArgs e)
+		public void OnKeyPressNumericOnly(object sender, KeyPressEventArgs e)
 		{
 			if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
 			{
@@ -355,7 +448,7 @@ namespace MediaCollection
 
 		private void CbxKind_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			SetEpisodeControlsState(CbxKind.GetSelectedKey<TitleKind>() == TitleKind.Episode);
+			SetEpisodeControlsState(CbxKind.GetSelectedKey<TitleKind>());
 			SetControlsFromDirtyState();
 		}
 
@@ -402,6 +495,7 @@ namespace MediaCollection
 			TVTitles.SelectedObject = newTitle;
 			DisplayTitleInfo(newTitle);
 			TVTitles.EnsureModelVisible(newTitle);
+			TbxTitleName.Focus();
 		}
 
 		private void LVLocations_ButtonClick(object sender, BrightIdeasSoftware.CellClickEventArgs e)
@@ -422,15 +516,20 @@ namespace MediaCollection
 		}
 
 		private void TbxSearch_TextChanged(object sender, EventArgs e)
-		{
-			TVTitles.BeginUpdate();
-			var mf = TVTitles.ModelFilter;
-			TVTitles.ModelFilter = null;
-			TVTitles.ModelFilter = mf;
-			TVTitles.EndUpdate();
-		}
+        {
+            Refilter();
+        }
 
-		private void BtnPrevImage_Click(object sender, EventArgs e)
+        private void Refilter()
+        {
+            TVTitles.BeginUpdate();
+            var mf = TVTitles.ModelFilter;
+            TVTitles.ModelFilter = null;
+            TVTitles.ModelFilter = mf;
+            TVTitles.EndUpdate();
+        }
+
+        private void BtnPrevImage_Click(object sender, EventArgs e)
 		{
 			if (m_images != null && m_imageIndex > 0)
 			{
@@ -554,7 +653,14 @@ namespace MediaCollection
 
 		private void BtnRemoveLocation_Click(object sender, EventArgs e)
 		{
-
+			if (m_images == null || CheckForChanges()) return;
+			var location = LVLocations.SelectedObject as LocationForDisplay;
+			if (m_imageIndex >= m_images.Count) return;
+			if (MessageBox.Show("Are you sure you want to delete " + location.LocationBase + ">" + location.LocationData + " location ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+			{
+				location.Delete();
+				LVLocations.RemoveObject(location);
+			}
 		}
 
 		private void RatingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -589,7 +695,11 @@ namespace MediaCollection
 			var provider = new UpdateFromProvider(titles);
 			provider.ShowDialog();
 			DisplayTitleInfo(m_currentTitle);
-		}
+            m_titleFilter.Clear();
+            m_titleFilter.AddRange(provider.TitlesForInspection);
+            TbxSearch.Text = "";
+            Refilter();
+        }
 
 		private void BtnOpenBrowser_Click(object sender, EventArgs e)
 		{
@@ -598,5 +708,63 @@ namespace MediaCollection
 				System.Diagnostics.Process.Start("http://www.imdb.com/title/" + m_currentTitle.ImdbId);
 			}
 		}
-	}
+
+		private void BtnDeleteTitle_Click(object sender, EventArgs e)
+		{
+			if (m_currentTitle == null) return;
+			if (MessageBox.Show("Do you want to delete " + m_currentTitle.TitleName + "?", "Confirm Title Removal", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			{
+				try
+				{
+					if (m_images != null) 
+					{
+						foreach(var img in m_images)
+						{
+							MediaSamplePersistence.RemoveSample(img);
+						}
+					}
+					TitlePersistence.DeleteTitle(m_currentTitle.Id);
+					TVTitles.RemoveObject(m_currentTitle);
+					DisplayTitleInfo(null);
+					
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message, "Error Deleting Title");
+				}
+			}
+		}
+
+		private void BtnSeasonsTool_Click(object sender, EventArgs e)
+		{
+			if (m_currentTitle != null && (m_currentTitle.Kind == TitleKind.Season || m_currentTitle.Kind == TitleKind.Episode || m_currentTitle.Kind == TitleKind.Disk || m_currentTitle.Kind == TitleKind.Series)) 
+			{
+                var dlg = new SeasonsTool(m_currentTitle);
+                dlg.ShowDialog();
+			}
+		}
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            Reload();
+            Refilter();
+        }
+
+        private void BtnRemoveFilter_Click(object sender, EventArgs e)
+        {
+            m_titleFilter.Clear();
+            TbxSearch.Text = "";
+            Refilter();
+        }
+
+        private void TSMITitles_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PanelMain_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+    }
 }

@@ -64,10 +64,12 @@ namespace MediaCollection
 		{
 			m_currentTitle = title;
 			TbxName.Text = title.TitleName;
+			TbxReleaseYear.Text = title.Year.ToString();
+			TbxDescription.Text = title.Description;
 			bool isTv = title.Kind == TitleKind.Series || title.Kind == TitleKind.Season || title.Kind == TitleKind.Episode;
 			RbnTv.Checked = isTv;
+            RbnMovie.Checked = !isTv;
 			Search(title.TitleName);
-			
 		}
 
 		private void BtnSearch_Click(object sender, EventArgs e)
@@ -84,28 +86,34 @@ namespace MediaCollection
 			var waitForm = new Wait((cts)=>{return t = TmdbData.Get(name.Trim(), RbnTv.Checked, cts.Token);}, "Retrivering title information: {0} seconds elapsed");
 			if (waitForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
+                try
+                {
+                    var res = t.Result;
 
-				var res = t.Result;
+                    ImageListPosters.Images.Clear();
+                    foreach (var item in res.Results)
+                    {
+                        if (item.Poster != null)
+                        {
+                            using (var ms = new MemoryStream(item.Poster))
+                            {
+                                using (var img = Image.FromStream(ms))
+                                {
+                                    using (var scaledImage = img.ResizeKeepAspectRatio(ImageListPosters.ImageSize.Width, ImageListPosters.ImageSize.Height, LVResults.BackColor))
+                                    {
+                                        ImageListPosters.Images.Add(item.PosterPath, scaledImage);
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-				ImageListPosters.Images.Clear();
-				foreach (var item in res.Results)
-				{
-					if (item.Poster != null)
-					{
-						using (var ms = new MemoryStream(item.Poster))
-						{
-							using (var img = Image.FromStream(ms))
-							{
-								using (var scaledImage = img.ResizeKeepAspectRatio(ImageListPosters.ImageSize.Width, ImageListPosters.ImageSize.Height, LVResults.BackColor))
-								{
-									ImageListPosters.Images.Add(item.PosterPath, scaledImage);
-								}
-							}
-						}
-					}
-				}
-
-				LVResults.AddObjects(res.Results);
+                    LVResults.AddObjects(res.Results);
+                }
+                catch(Exception err)
+                {
+                    MessageBox.Show(err.Message, "Error retriving images");
+                }
 			}
 			
 			
@@ -200,5 +208,50 @@ namespace MediaCollection
 				BtnPrevious.Enabled = false;
 			}
 		}
-	}
+
+		private void groupBox1_Enter(object sender, EventArgs e)
+		{
+
+		}
+
+		private void KeyPressNumericOnly(object sender, KeyPressEventArgs e)
+		{
+			if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+			{
+				e.Handled = true;
+			};
+		}
+
+		private void buttonManSave_Click(object sender, EventArgs e)
+		{
+			if (m_currentTitle == null) return; //I don't see the use case, but still
+			string description = TbxDescription.Text;
+			int year = TbxReleaseYear.Text.To<int>(0);
+
+			bool modified = false;
+			if (string.IsNullOrWhiteSpace(description)) 
+			{
+				m_currentTitle.Description = description;
+				modified = true;
+			}
+			if (year > 0)
+			{
+				m_currentTitle.Year = year;
+				modified = true;
+			}
+			if (modified) 
+			{
+				m_currentTitle.DateModifiedUtc = GeneralPersistense.GetTimestamp();
+				GeneralPersistense.Upsert(m_currentTitle);
+			}
+			BtnNext_Click(sender, e);
+		}
+
+        public readonly List<long> TitlesForInspection = new List<long>();
+        private void BtnSaveForInspection_Click(object sender, EventArgs e)
+        {
+            if (m_currentTitle != null && !TitlesForInspection.Contains(m_currentTitle.Id)) TitlesForInspection.Add(m_currentTitle.Id);
+            BtnNext_Click(sender, e);
+        }
+    }
 }

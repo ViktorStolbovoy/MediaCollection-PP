@@ -104,7 +104,7 @@ namespace MediaCollection
 
 		public bool ShouldDelete { get; set; }
 
-		public void Delete()
+		public override void Delete()
 		{
 			using (var db = DB.GetDatabase())
 			{

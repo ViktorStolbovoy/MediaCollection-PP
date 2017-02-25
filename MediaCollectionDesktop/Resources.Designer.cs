@@ -229,6 +229,15 @@ namespace MediaCollection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disk.
+        /// </summary>
+        internal static string Video_TitleKind_Disk {
+            get {
+                return ResourceManager.GetString("Video_TitleKind_Disk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Episode.
         /// </summary>
         internal static string Video_TitleKind_Episode {

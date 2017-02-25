@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8f81b5f9-b86f-4c01-9479-fcc6ab0bf865" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollection.v12.suo" afterPath="$PROJECT_DIR$/MediaCollection.v12.suo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollection/App_Data/MediaCollection.s3db" afterPath="$PROJECT_DIR$/MediaCollection/App_Data/MediaCollection.s3db" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MCLibTests/TestFileSearch.cs" afterPath="$PROJECT_DIR$/MCLibTests/TestFileSearch.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/McLib/Models/TitlePersistence.cs" afterPath="$PROJECT_DIR$/McLib/Models/TitlePersistence.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/McLib/ORMModels/Location.cs" afterPath="$PROJECT_DIR$/McLib/ORMModels/Location.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/McLib/ORMModels/Title.cs" afterPath="$PROJECT_DIR$/McLib/ORMModels/Title.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/McLib/StoredFileInfo.cs" afterPath="$PROJECT_DIR$/McLib/StoredFileInfo.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.Designer.cs" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.Designer.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.cs" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.resx" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/MainForm.resx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/MediaCollectionDesktop.csproj" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/MediaCollectionDesktop.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/Resources.Designer.cs" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/Resources.Designer.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/Resources.resx" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/Resources.resx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/UpdateFromProvider.Designer.cs" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/UpdateFromProvider.Designer.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MediaCollectionDesktop/UpdateFromProvider.cs" afterPath="$PROJECT_DIR$/MediaCollectionDesktop/UpdateFromProvider.cs" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="SeasonsTool.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/SeasonsTool.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SeasonsTool.Designer.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/SeasonsTool.Designer.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3274">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1483391618614" expanded="true" signature="25:10521" ph="{...}" />
+                <marker date="1483391618614" expanded="true" signature="54:10519" ph="{...}" />
+                <marker date="1483391618614" expanded="true" signature="60:124" ph="/// Required designer variable. ... " />
+                <marker date="1483391618614" expanded="true" signature="190:363" ph="/// Clean up any resources being used. ... " />
+                <marker date="1483391618614" expanded="true" signature="413:527" ph="{...}" />
+                <marker date="1483391618614" expanded="true" signature="459:495" ph="{...}" />
+                <marker date="1483391618614" expanded="true" signature="531:9531" ph="Windows Form Designer generated code" />
+                <marker date="1483391618614" expanded="true" signature="579:724" ph="/// Required method for Designer support - do not modify ... " />
+                <marker date="1483391618614" expanded="true" signature="761:9517" ph="{...}" />
+                <marker date="1483391618614" expanded="true" signature="1998:2021" ph="/* label1 ... */" />
+                <marker date="1483391618614" expanded="true" signature="2263:2289" ph="/* TbxSeries ... */" />
+                <marker date="1483391618614" expanded="true" signature="2571:2604" ph="/* TbxSeasonPattern ... */" />
+                <marker date="1483391618614" expanded="true" signature="2835:2858" ph="/* label2 ... */" />
+                <marker date="1483391618614" expanded="true" signature="3103:3126" ph="/* label3 ... */" />
+                <marker date="1483391618614" expanded="true" signature="3337:3369" ph="/* BtnCreateSeries ... */" />
+                <marker date="1483391618614" expanded="true" signature="3692:3719" ph="/* ClbSeasons ... */" />
+                <marker date="1483391618614" expanded="true" signature="4046:4074" ph="/* ClbEpisodes ... */" />
+                <marker date="1483391618614" expanded="true" signature="4374:4402" ph="/* BtnAutoMove ... */" />
+                <marker date="1483391618614" expanded="true" signature="4701:4727" ph="/* GbxSeries ... */" />
+                <marker date="1483391618614" expanded="true" signature="5141:5168" ph="/* GbxSeasons ... */" />
+                <marker date="1483391618614" expanded="true" signature="5908:5932" ph="/* button1 ... */" />
+                <marker date="1483391618614" expanded="true" signature="6203:6236" ph="/* BtnCreateSeasons ... */" />
+                <marker date="1483391618614" expanded="true" signature="6655:6690" ph="/* TbxSeasonsToCreate ... */" />
+                <marker date="1483391618614" expanded="true" signature="6932:6955" ph="/* label6 ... */" />
+                <marker date="1483391618614" expanded="true" signature="7200:7236" ph="/* BtnSearchForSeasons ... */" />
+                <marker date="1483391618614" expanded="true" signature="7681:7704" ph="/* label5 ... */" />
+                <marker date="1483391618614" expanded="true" signature="7947:7973" ph="/* groupBox1 ... */" />
+                <marker date="1483391618614" expanded="true" signature="8413:8444" ph="/* BtnSearchDiscs ... */" />
+                <marker date="1483391618614" expanded="true" signature="8845:8873" ph="/* SeasonsTool ... */" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainForm.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/MainForm.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1483395419319" expanded="true" signature="6:307" ph="..." />
+                <marker date="1483395419319" expanded="true" signature="334:19875" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="437:19873" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="460:3112" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="621:781" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="827:969" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="1009:1170" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="1209:1345" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="1386:1470" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="1509:1647" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="1918:2123" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="2068:2118" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="2160:2490" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="2542:2752" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="2821:2940" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="2879:2935" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="3243:3995" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="3337:3991" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4096:4503" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4251:4443" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4564:5420" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4622:5382" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4877:5365" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="4986:5140" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="5069:5132" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="5165:5330" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="5462:5603" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="5629:6240" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="5767:6109" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6302:6343" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6414:6457" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6523:6561" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6623:6667" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6726:6747" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="6803:7605" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="7004:7601" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="7675:8853" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="7810:8487" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="8495:8848" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="8898:9051" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="9081:9484" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="9289:9480" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="9334:9475" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="9510:10158" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="10180:11070" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="10898:11066" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11172:11235" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11293:11311" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11384:11487" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11451:11483" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11531:11626" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="11682:11942" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12015:12120" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12178:12218" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12279:12324" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12392:12413" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12470:13178" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12523:12680" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12752:12855" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12778:12850" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="12880:13037" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="13275:13499" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="13566:13734" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="13800:13956" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14019:14122" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14068:14118" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14185:14305" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14251:14301" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14370:14883" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14630:14879" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14819:14854" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14917:15037" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="14939:15016" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="15099:15603" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="15327:15599" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="15684:16240" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="15781:16236" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="15939:16087" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="16322:17112" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="16397:17108" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="16430:17103" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="16523:16886" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="16620:16877" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="17174:17183" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="17251:17712" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="17635:17708" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="17787:17832" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="17911:18306" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="18069:18302" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="18385:18510" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="18595:18775" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="18840:19034" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="18928:19030" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19099:19703" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19297:19699" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19310:19597" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19344:19458" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19386:19451" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19623:19694" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19768:19870" ph="{...}" />
+                <marker date="1483395419319" expanded="true" signature="19804:19866" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainForm.Designer.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/MainForm.Designer.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="576">
+              <caret line="36" column="67" lean-forward="true" selection-start-line="36" selection-start-column="67" selection-end-line="36" selection-end-column="67" />
+              <folding>
+                <marker date="1483391254998" expanded="true" signature="25:39563" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="51:39561" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="57:121" ph="/// Required designer variable. ... " />
+                <marker date="1483391254998" expanded="true" signature="187:360" ph="/// Clean up any resources being used. ... " />
+                <marker date="1483391254998" expanded="true" signature="410:524" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="456:492" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="528:36220" ph="Windows Form Designer generated code" />
+                <marker date="1483391254998" expanded="true" signature="576:721" ph="/// Required method for Designer support - do not modify ... " />
+                <marker date="1483391254998" expanded="true" signature="758:36206" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="5394:5420" ph="/* PanelLeft ... */" />
+                <marker date="1483391254998" expanded="true" signature="5867:5893" ph="/* TbxSearch ... */" />
+                <marker date="1483391254998" expanded="true" signature="6328:6353" ph="/* RbnAudio ... */" />
+                <marker date="1483391254998" expanded="true" signature="6810:6835" ph="/* RbnVideo ... */" />
+                <marker date="1483391254998" expanded="true" signature="7447:7472" ph="/* TVTitles ... */" />
+                <marker date="1483391254998" expanded="true" signature="7909:7942" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="9269:9299" ph="/* OlvColumnName ... */" />
+                <marker date="1483391254998" expanded="true" signature="9557:9587" ph="/* TreeImageList ... */" />
+                <marker date="1483391254998" expanded="true" signature="10511:10537" ph="/* menuStrip ... */" />
+                <marker date="1483391254998" expanded="true" signature="10612:10677" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="10911:10938" ph="/* TSMITitles ... */" />
+                <marker date="1483391254998" expanded="true" signature="11022:11216" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="11357:11385" ph="/* TSMIBulkAdd ... */" />
+                <marker date="1483391254998" expanded="true" signature="11609:11641" ph="/* TSMIAddManually ... */" />
+                <marker date="1483391254998" expanded="true" signature="11893:11925" ph="/* TSMIRemoveTitle ... */" />
+                <marker date="1483391254998" expanded="true" signature="12085:12125" ph="/* FilterToolStripMenuItem ... */" />
+                <marker date="1483391254998" expanded="true" signature="12317:12368" ph="/* updateAllFromTMDBToolStripMenuItem ... */" />
+                <marker date="1483391254998" expanded="true" signature="12742:12775" ph="/* TSMITitlesConfig ... */" />
+                <marker date="1483391254998" expanded="true" signature="12865:13007" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="13179:13207" ph="/* TSMIDevices ... */" />
+                <marker date="1483391254998" expanded="true" signature="13430:13467" ph="/* TSMIBulkAddLocations ... */" />
+                <marker date="1483391254998" expanded="true" signature="13746:13787" ph="/* RatingsToolStripMenuItem ... */" />
+                <marker date="1483391254998" expanded="true" signature="14088:14115" ph="/* TSMISystem ... */" />
+                <marker date="1483391254998" expanded="true" signature="14331:14357" ph="/* PanelMain ... */" />
+                <marker date="1483391254998" expanded="true" signature="16083:16114" ph="/* BtnSeasonsTool ... */" />
+                <marker date="1483391254998" expanded="true" signature="16522:16553" ph="/* BtnDeleteTitle ... */" />
+                <marker date="1483391254998" expanded="true" signature="16955:16986" ph="/* BtnOpenBrowser ... */" />
+                <marker date="1483391254998" expanded="true" signature="17384:17411" ph="/* TbxEpisode ... */" />
+                <marker date="1483391254998" expanded="true" signature="17799:17826" ph="/* LblEpisode ... */" />
+                <marker date="1483391254998" expanded="true" signature="18099:18123" ph="/* TbxDisk ... */" />
+                <marker date="1483391254998" expanded="true" signature="18490:18514" ph="/* LblDisk ... */" />
+                <marker date="1483391254998" expanded="true" signature="18767:18793" ph="/* TbxSeason ... */" />
+                <marker date="1483391254998" expanded="true" signature="19173:19199" ph="/* LblSeason ... */" />
+                <marker date="1483391254998" expanded="true" signature="19536:19569" ph="/* BtnSearhProvider ... */" />
+                <marker date="1483391254998" expanded="true" signature="20034:20060" ph="/* TbxImdbId ... */" />
+                <marker date="1483391254998" expanded="true" signature="20442:20465" ph="/* label5 ... */" />
+                <marker date="1483391254998" expanded="true" signature="20714:20738" ph="/* CbxKind ... */" />
+                <marker date="1483391254998" expanded="true" signature="21066:21089" ph="/* label3 ... */" />
+                <marker date="1483391254998" expanded="true" signature="21333:21356" ph="/* BtnNew ... */" />
+                <marker date="1483391254998" expanded="true" signature="21838:21869" ph="/* BtnDeleteImage ... */" />
+                <marker date="1483391254998" expanded="true" signature="22308:22336" ph="/* BtnAddImage ... */" />
+                <marker date="1483391254998" expanded="true" signature="22753:22782" ph="/* BtnNextImage ... */" />
+                <marker date="1483391254998" expanded="true" signature="23218:23247" ph="/* BtnPrevImage ... */" />
+                <marker date="1483391254998" expanded="true" signature="23680:23705" ph="/* PbxImage ... */" />
+                <marker date="1483391254998" expanded="true" signature="24194:24220" ph="/* groupBox2 ... */" />
+                <marker date="1483391254998" expanded="true" signature="24538:24564" ph="/* LVRatings ... */" />
+                <marker date="1483391254998" expanded="true" signature="25180:25258" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="26094:26130" ph="/* olvColumnRatingName ... */" />
+                <marker date="1483391254998" expanded="true" signature="26546:26583" ph="/* olvColumnRatingValue ... */" />
+                <marker date="1483391254998" expanded="true" signature="27076:27102" ph="/* groupBox1 ... */" />
+                <marker date="1483391254998" expanded="true" signature="27623:27657" ph="/* BtnRemoveLocation ... */" />
+                <marker date="1483391254998" expanded="true" signature="28124:28155" ph="/* BtnAddLocation ... */" />
+                <marker date="1483391254998" expanded="true" signature="28515:28542" ph="/* CbxDevices ... */" />
+                <marker date="1483391254998" expanded="true" signature="28790:28813" ph="/* label4 ... */" />
+                <marker date="1483391254998" expanded="true" signature="29067:29095" ph="/* LVLocations ... */" />
+                <marker date="1483391254998" expanded="true" signature="29771:29873" ph="{...}" />
+                <marker date="1483391254998" expanded="true" signature="30941:30968" ph="/* OlvBtnPlay ... */" />
+                <marker date="1483391254998" expanded="true" signature="31685:31721" ph="/* OlvBaseLocationName ... */" />
+                <marker date="1483391254998" expanded="true" signature="31823:31855" ph="/* OlvLocationData ... */" />
+                <marker date="1483391254998" expanded="true" signature="32049:32080" ph="/* TbxDescription ... */" />
+                <marker date="1483391254998" expanded="true" signature="32500:32523" ph="/* label2 ... */" />
+                <marker date="1483391254998" expanded="true" signature="32772:32799" ph="/* BtnDiscard ... */" />
+                <marker date="1483391254998" expanded="true" signature="33318:33342" ph="/* BtnSave ... */" />
+                <marker date="1483391254998" expanded="true" signature="33711:33742" ph="/* TbxReleaseYear ... */" />
+                <marker date="1483391254998" expanded="true" signature="34155:34178" ph="/* label1 ... */" />
+                <marker date="1483391254998" expanded="true" signature="34421:34450" ph="/* TbxTitleName ... */" />
+                <marker date="1483391254998" expanded="true" signature="34741:34765" ph="/* lblName ... */" />
+                <marker date="1483391254998" expanded="true" signature="35014:35039" ph="/* MainForm ... */" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="2576" />
+    <option name="height" value="1456" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="SolutionExplorer">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollection (5 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollection (5 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollectionDesktop" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollection (5 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollectionDesktop" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SeasonsTool.cs" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollection (5 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MediaCollectionDesktop" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MainForm.cs" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
+    </panes>
+  </component>
+  <component name="RunManager" selected=".NET Project.Default">
+    <configuration default="true" type="DotNetProject" factoryName=".NET Project">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <envs />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue=".NET Project.Default" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f81b5f9-b86f-4c01-9479-fcc6ab0bf865" name="Default" comment="" />
+      <created>1486511860279</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1486511860279</updated>
+      <workItem from="1486511866676" duration="57000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="57000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="2576" height="1456" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13515624" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="UnitTesting" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/SeasonsTool.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/SeasonsTool.Designer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3274">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1483391618614" expanded="true" signature="25:10521" ph="{...}" />
+            <marker date="1483391618614" expanded="true" signature="54:10519" ph="{...}" />
+            <marker date="1483391618614" expanded="true" signature="60:124" ph="/// Required designer variable. ... " />
+            <marker date="1483391618614" expanded="true" signature="190:363" ph="/// Clean up any resources being used. ... " />
+            <marker date="1483391618614" expanded="true" signature="413:527" ph="{...}" />
+            <marker date="1483391618614" expanded="true" signature="459:495" ph="{...}" />
+            <marker date="1483391618614" expanded="true" signature="531:9531" ph="Windows Form Designer generated code" />
+            <marker date="1483391618614" expanded="true" signature="579:724" ph="/// Required method for Designer support - do not modify ... " />
+            <marker date="1483391618614" expanded="true" signature="761:9517" ph="{...}" />
+            <marker date="1483391618614" expanded="true" signature="1998:2021" ph="/* label1 ... */" />
+            <marker date="1483391618614" expanded="true" signature="2263:2289" ph="/* TbxSeries ... */" />
+            <marker date="1483391618614" expanded="true" signature="2571:2604" ph="/* TbxSeasonPattern ... */" />
+            <marker date="1483391618614" expanded="true" signature="2835:2858" ph="/* label2 ... */" />
+            <marker date="1483391618614" expanded="true" signature="3103:3126" ph="/* label3 ... */" />
+            <marker date="1483391618614" expanded="true" signature="3337:3369" ph="/* BtnCreateSeries ... */" />
+            <marker date="1483391618614" expanded="true" signature="3692:3719" ph="/* ClbSeasons ... */" />
+            <marker date="1483391618614" expanded="true" signature="4046:4074" ph="/* ClbEpisodes ... */" />
+            <marker date="1483391618614" expanded="true" signature="4374:4402" ph="/* BtnAutoMove ... */" />
+            <marker date="1483391618614" expanded="true" signature="4701:4727" ph="/* GbxSeries ... */" />
+            <marker date="1483391618614" expanded="true" signature="5141:5168" ph="/* GbxSeasons ... */" />
+            <marker date="1483391618614" expanded="true" signature="5908:5932" ph="/* button1 ... */" />
+            <marker date="1483391618614" expanded="true" signature="6203:6236" ph="/* BtnCreateSeasons ... */" />
+            <marker date="1483391618614" expanded="true" signature="6655:6690" ph="/* TbxSeasonsToCreate ... */" />
+            <marker date="1483391618614" expanded="true" signature="6932:6955" ph="/* label6 ... */" />
+            <marker date="1483391618614" expanded="true" signature="7200:7236" ph="/* BtnSearchForSeasons ... */" />
+            <marker date="1483391618614" expanded="true" signature="7681:7704" ph="/* label5 ... */" />
+            <marker date="1483391618614" expanded="true" signature="7947:7973" ph="/* groupBox1 ... */" />
+            <marker date="1483391618614" expanded="true" signature="8413:8444" ph="/* BtnSearchDiscs ... */" />
+            <marker date="1483391618614" expanded="true" signature="8845:8873" ph="/* SeasonsTool ... */" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/MainForm.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1483395419319" expanded="true" signature="6:307" ph="..." />
+            <marker date="1483395419319" expanded="true" signature="334:19875" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="437:19873" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="460:3112" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="621:781" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="827:969" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="1009:1170" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="1209:1345" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="1386:1470" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="1509:1647" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="1918:2123" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="2068:2118" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="2160:2490" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="2542:2752" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="2821:2940" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="2879:2935" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="3243:3995" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="3337:3991" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4096:4503" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4251:4443" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4564:5420" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4622:5382" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4877:5365" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="4986:5140" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="5069:5132" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="5165:5330" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="5462:5603" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="5629:6240" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="5767:6109" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6302:6343" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6414:6457" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6523:6561" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6623:6667" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6726:6747" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="6803:7605" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="7004:7601" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="7675:8853" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="7810:8487" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="8495:8848" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="8898:9051" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="9081:9484" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="9289:9480" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="9334:9475" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="9510:10158" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="10180:11070" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="10898:11066" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11172:11235" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11293:11311" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11384:11487" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11451:11483" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11531:11626" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="11682:11942" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12015:12120" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12178:12218" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12279:12324" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12392:12413" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12470:13178" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12523:12680" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12752:12855" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12778:12850" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="12880:13037" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="13275:13499" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="13566:13734" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="13800:13956" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14019:14122" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14068:14118" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14185:14305" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14251:14301" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14370:14883" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14630:14879" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14819:14854" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14917:15037" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="14939:15016" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="15099:15603" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="15327:15599" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="15684:16240" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="15781:16236" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="15939:16087" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="16322:17112" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="16397:17108" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="16430:17103" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="16523:16886" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="16620:16877" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="17174:17183" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="17251:17712" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="17635:17708" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="17787:17832" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="17911:18306" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="18069:18302" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="18385:18510" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="18595:18775" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="18840:19034" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="18928:19030" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19099:19703" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19297:19699" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19310:19597" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19344:19458" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19386:19451" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19623:19694" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19768:19870" ph="{...}" />
+            <marker date="1483395419319" expanded="true" signature="19804:19866" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MediaCollectionDesktop/MainForm.Designer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="36" column="67" lean-forward="true" selection-start-line="36" selection-start-column="67" selection-end-line="36" selection-end-column="67" />
+          <folding>
+            <marker date="1483391254998" expanded="true" signature="25:39563" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="51:39561" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="57:121" ph="/// Required designer variable. ... " />
+            <marker date="1483391254998" expanded="true" signature="187:360" ph="/// Clean up any resources being used. ... " />
+            <marker date="1483391254998" expanded="true" signature="410:524" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="456:492" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="528:36220" ph="Windows Form Designer generated code" />
+            <marker date="1483391254998" expanded="true" signature="576:721" ph="/// Required method for Designer support - do not modify ... " />
+            <marker date="1483391254998" expanded="true" signature="758:36206" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="5394:5420" ph="/* PanelLeft ... */" />
+            <marker date="1483391254998" expanded="true" signature="5867:5893" ph="/* TbxSearch ... */" />
+            <marker date="1483391254998" expanded="true" signature="6328:6353" ph="/* RbnAudio ... */" />
+            <marker date="1483391254998" expanded="true" signature="6810:6835" ph="/* RbnVideo ... */" />
+            <marker date="1483391254998" expanded="true" signature="7447:7472" ph="/* TVTitles ... */" />
+            <marker date="1483391254998" expanded="true" signature="7909:7942" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="9269:9299" ph="/* OlvColumnName ... */" />
+            <marker date="1483391254998" expanded="true" signature="9557:9587" ph="/* TreeImageList ... */" />
+            <marker date="1483391254998" expanded="true" signature="10511:10537" ph="/* menuStrip ... */" />
+            <marker date="1483391254998" expanded="true" signature="10612:10677" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="10911:10938" ph="/* TSMITitles ... */" />
+            <marker date="1483391254998" expanded="true" signature="11022:11216" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="11357:11385" ph="/* TSMIBulkAdd ... */" />
+            <marker date="1483391254998" expanded="true" signature="11609:11641" ph="/* TSMIAddManually ... */" />
+            <marker date="1483391254998" expanded="true" signature="11893:11925" ph="/* TSMIRemoveTitle ... */" />
+            <marker date="1483391254998" expanded="true" signature="12085:12125" ph="/* FilterToolStripMenuItem ... */" />
+            <marker date="1483391254998" expanded="true" signature="12317:12368" ph="/* updateAllFromTMDBToolStripMenuItem ... */" />
+            <marker date="1483391254998" expanded="true" signature="12742:12775" ph="/* TSMITitlesConfig ... */" />
+            <marker date="1483391254998" expanded="true" signature="12865:13007" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="13179:13207" ph="/* TSMIDevices ... */" />
+            <marker date="1483391254998" expanded="true" signature="13430:13467" ph="/* TSMIBulkAddLocations ... */" />
+            <marker date="1483391254998" expanded="true" signature="13746:13787" ph="/* RatingsToolStripMenuItem ... */" />
+            <marker date="1483391254998" expanded="true" signature="14088:14115" ph="/* TSMISystem ... */" />
+            <marker date="1483391254998" expanded="true" signature="14331:14357" ph="/* PanelMain ... */" />
+            <marker date="1483391254998" expanded="true" signature="16083:16114" ph="/* BtnSeasonsTool ... */" />
+            <marker date="1483391254998" expanded="true" signature="16522:16553" ph="/* BtnDeleteTitle ... */" />
+            <marker date="1483391254998" expanded="true" signature="16955:16986" ph="/* BtnOpenBrowser ... */" />
+            <marker date="1483391254998" expanded="true" signature="17384:17411" ph="/* TbxEpisode ... */" />
+            <marker date="1483391254998" expanded="true" signature="17799:17826" ph="/* LblEpisode ... */" />
+            <marker date="1483391254998" expanded="true" signature="18099:18123" ph="/* TbxDisk ... */" />
+            <marker date="1483391254998" expanded="true" signature="18490:18514" ph="/* LblDisk ... */" />
+            <marker date="1483391254998" expanded="true" signature="18767:18793" ph="/* TbxSeason ... */" />
+            <marker date="1483391254998" expanded="true" signature="19173:19199" ph="/* LblSeason ... */" />
+            <marker date="1483391254998" expanded="true" signature="19536:19569" ph="/* BtnSearhProvider ... */" />
+            <marker date="1483391254998" expanded="true" signature="20034:20060" ph="/* TbxImdbId ... */" />
+            <marker date="1483391254998" expanded="true" signature="20442:20465" ph="/* label5 ... */" />
+            <marker date="1483391254998" expanded="true" signature="20714:20738" ph="/* CbxKind ... */" />
+            <marker date="1483391254998" expanded="true" signature="21066:21089" ph="/* label3 ... */" />
+            <marker date="1483391254998" expanded="true" signature="21333:21356" ph="/* BtnNew ... */" />
+            <marker date="1483391254998" expanded="true" signature="21838:21869" ph="/* BtnDeleteImage ... */" />
+            <marker date="1483391254998" expanded="true" signature="22308:22336" ph="/* BtnAddImage ... */" />
+            <marker date="1483391254998" expanded="true" signature="22753:22782" ph="/* BtnNextImage ... */" />
+            <marker date="1483391254998" expanded="true" signature="23218:23247" ph="/* BtnPrevImage ... */" />
+            <marker date="1483391254998" expanded="true" signature="23680:23705" ph="/* PbxImage ... */" />
+            <marker date="1483391254998" expanded="true" signature="24194:24220" ph="/* groupBox2 ... */" />
+            <marker date="1483391254998" expanded="true" signature="24538:24564" ph="/* LVRatings ... */" />
+            <marker date="1483391254998" expanded="true" signature="25180:25258" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="26094:26130" ph="/* olvColumnRatingName ... */" />
+            <marker date="1483391254998" expanded="true" signature="26546:26583" ph="/* olvColumnRatingValue ... */" />
+            <marker date="1483391254998" expanded="true" signature="27076:27102" ph="/* groupBox1 ... */" />
+            <marker date="1483391254998" expanded="true" signature="27623:27657" ph="/* BtnRemoveLocation ... */" />
+            <marker date="1483391254998" expanded="true" signature="28124:28155" ph="/* BtnAddLocation ... */" />
+            <marker date="1483391254998" expanded="true" signature="28515:28542" ph="/* CbxDevices ... */" />
+            <marker date="1483391254998" expanded="true" signature="28790:28813" ph="/* label4 ... */" />
+            <marker date="1483391254998" expanded="true" signature="29067:29095" ph="/* LVLocations ... */" />
+            <marker date="1483391254998" expanded="true" signature="29771:29873" ph="{...}" />
+            <marker date="1483391254998" expanded="true" signature="30941:30968" ph="/* OlvBtnPlay ... */" />
+            <marker date="1483391254998" expanded="true" signature="31685:31721" ph="/* OlvBaseLocationName ... */" />
+            <marker date="1483391254998" expanded="true" signature="31823:31855" ph="/* OlvLocationData ... */" />
+            <marker date="1483391254998" expanded="true" signature="32049:32080" ph="/* TbxDescription ... */" />
+            <marker date="1483391254998" expanded="true" signature="32500:32523" ph="/* label2 ... */" />
+            <marker date="1483391254998" expanded="true" signature="32772:32799" ph="/* BtnDiscard ... */" />
+            <marker date="1483391254998" expanded="true" signature="33318:33342" ph="/* BtnSave ... */" />
+            <marker date="1483391254998" expanded="true" signature="33711:33742" ph="/* TbxReleaseYear ... */" />
+            <marker date="1483391254998" expanded="true" signature="34155:34178" ph="/* label1 ... */" />
+            <marker date="1483391254998" expanded="true" signature="34421:34450" ph="/* TbxTitleName ... */" />
+            <marker date="1483391254998" expanded="true" signature="34741:34765" ph="/* lblName ... */" />
+            <marker date="1483391254998" expanded="true" signature="35014:35039" ph="/* MainForm ... */" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

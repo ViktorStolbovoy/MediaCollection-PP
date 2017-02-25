@@ -59,6 +59,14 @@ namespace MediaCollection
 		}
 
 		#endregion
+
+		public virtual void Delete()
+		{
+			using(var db = DB.GetDatabase())
+			{
+				db.Delete(this);
+			}
+		}
 	}
 
 	/// <summary>

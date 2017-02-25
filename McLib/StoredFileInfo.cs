@@ -223,7 +223,47 @@ namespace MediaCollection
 			return new string(res, 0, resIdx).Trim();
 		}
 
-		private static Regex s_seasonsDisks = new Regex("\\s(S|SEASON)\\s*(\\d{1,2})\\s*D\\s*(\\d{1,2})$", RegexOptions.IgnoreCase);
+        public class SeasonDiskEpisode
+        {
+            public string Name;
+            public int Season;
+            public int Disk;
+            public int Episode;
+
+            public override string ToString()
+            {
+                if (Season > 0)
+                {
+                    return string.Format("{0} (S{1}D{2})", Name, Season, Disk);
+                }
+                else
+                {
+                    return Name;
+                }
+            }
+        }
+
+		private static Regex s_seasonsDisks = new Regex("\\s(S|SEASON)\\s*(\\d{1,2})\\s*(D|DISK|DISC)\\s*(\\d{1,2})$", RegexOptions.IgnoreCase);
+		public static SeasonDiskEpisode ParseSeasonDiskEpisode(string name)
+		{
+            var res = new SeasonDiskEpisode();
+                        
+			var matches = s_seasonsDisks.Match(name);
+			if (matches.Success && matches.Groups.Count == 5)
+			{
+				res.Season = matches.Groups[2].Value.To<int>(0);
+				res.Disk = matches.Groups[4].Value.To<int>(0);
+				res.Name = name.Substring(0, matches.Groups[0].Index).Trim();
+				int len = name.Length;
+				if (len > 0 && name[len - 1] == '(') name = name.Substring(0, len - 1);
+			}
+			else
+			{
+				res.Name = name.Trim();
+			}
+            return res;
+		}
+		
 		private void ProcessCommonPatterns()
 		{
 			string name = FormatName(m_name);
@@ -240,20 +280,11 @@ namespace MediaCollection
 			if (name.EndsWith(" Ii")) name = name.Substring(0, name.Length - 4) + " II";
 
 
-			m_episode = 0;
-			m_season = 0;
-			m_disk = 0;
-			var matches = s_seasonsDisks.Match(name);
-			if (matches.Success && matches.Groups.Count == 4)
-			{
-				m_season = matches.Groups[2].Value.To<int>(0);
-				m_disk = matches.Groups[3].Value.To<int>(0);
-				m_title = string.Format("{0} (S{1}D{2})", name.Substring(0, matches.Groups[0].Index).Trim(), m_season, m_disk);
-			}
-			else
-			{
-				m_title = name.Trim();
-			}
+			var sde = ParseSeasonDiskEpisode(name);
+			m_title = sde.ToString();
+			m_season = sde.Season;
+			m_disk = sde.Disk;
+			m_episode = sde.Episode;
 
 			//m_title = s_seasonsDisks.Replace(name, " S$2D$3").Trim();
 		}
@@ -274,9 +305,16 @@ namespace MediaCollection
 					kind = TitleKind.Track;
 					break;
 				default:
-					if (Episode > 0 || Disk > 0 || Season > 0) 
+					if (Episode == 0 && Disk > 0)
+					{
+						kind = TitleKind.Disk;
+					}
+					else if (Episode > 0) 
 					{
 						kind = TitleKind.Episode;
+					} else if (Season > 0 && Episode == 0 && Disk == 0)
+					{
+						kind = TitleKind.Season;
 					}
 					else 
 					{
@@ -286,7 +324,7 @@ namespace MediaCollection
 			}
 
 			string now = GeneralPersistense.GetTimestamp();
-			var title = new Title { Id = 0, Kind = kind, Ord = 0, TitleName = Title, DateAddedUtc = now, DateModifiedUtc = now, Season = Season, Disk = Disk, EpisodeOrTrack = Episode, ImdbId = "", Description = ""};
+			var title = new Title { Id = 0, Kind = kind, TitleName = Title, DateAddedUtc = now, DateModifiedUtc = now, Season = Season, Disk = Disk, EpisodeOrTrack = Episode, ImdbId = "", Description = ""};
 			using (var db = DB.GetDatabase())
 			{
 				db.Insert(title);
