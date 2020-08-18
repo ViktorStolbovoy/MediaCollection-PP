@@ -336,6 +336,11 @@ namespace MediaCollection
             EndUpdate();
             ClbEpisodes.Items.Clear();
         }
-    }
+
+		private void TbxSeasonPattern_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+	}
    
 }

@@ -504,7 +504,7 @@ namespace MediaCollection
 			if (location == null) return;
 			var device = CbxDevices.SelectedItem as Device;
 			if (device == null) return;
-			LocationPersistence.Run(device.Id, location.Id);
+			LocationPersistence.Run(device.Id, location.TitleId);
 		}
 
 		private void BtnSearhProvider_Click(object sender, EventArgs e)

@@ -33,8 +33,9 @@ namespace MediaCollection
 		{
 			using (var db = DB.GetDatabase())
 			{
-				int cnt = db.Query<DeviceLocationMap>().Where(x => x.LocationBaseId == id).Count();
-				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete Location: it is used by {0} devices", cnt));
+				int cnt = db.Query<Location>().Where(x => x.LocationBaseId == id).Count();
+				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete Location: it is used by {0} title locations", cnt));
+				db.Execute("DELETE FROM DEVICE_LOCATION_MAP WHERE LOCATION_BASE_ID = @0", id);
 				db.Execute("DELETE FROM LOCATION_BASE WHERE LOCATION_BASE_ID = @0", id);
 			}
 		}

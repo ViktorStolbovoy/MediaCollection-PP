@@ -60,19 +60,7 @@
 			this.panelMain.Location = new System.Drawing.Point(0, 0);
 			this.panelMain.Name = "panelMain";
 			this.panelMain.Size = new System.Drawing.Size(772, 463);
-			this.panelMain.TabIndex = 12;
-			// 
-			// BtnDelete
-			// 
-			this.BtnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BtnDelete.ForeColor = System.Drawing.Color.Red;
-			this.BtnDelete.Location = new System.Drawing.Point(685, 35);
-			this.BtnDelete.Name = "BtnDelete";
-			this.BtnDelete.Size = new System.Drawing.Size(75, 23);
-			this.BtnDelete.TabIndex = 13;
-			this.BtnDelete.Text = "Delete";
-			this.BtnDelete.UseVisualStyleBackColor = true;
-			this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+			this.panelMain.TabIndex = 12; 
 			// 
 			// TVDevices
 			// 

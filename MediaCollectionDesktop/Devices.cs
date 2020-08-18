@@ -15,7 +15,7 @@ namespace MediaCollection
 		public Devices()
 		{
 			InitializeComponent();
-			TVDevices.CanExpandGetter = (object o) => {return o is Device;};
+			TVDevices.CanExpandGetter = (object o) => { return o is Device; };
 			TVDevices.ChildrenGetter = (object o) => {
 				var dev = o as Device;
 				if (dev != null)
@@ -41,21 +41,21 @@ namespace MediaCollection
 				return null;
 			};
 
-			
+
 			olvColData.AspectPutter = (object o, object val) => {
 				var dev = o as Device;
 				if (dev != null)
 				{
-					dev.Data = (string) val;
+					dev.Data = (string)val;
 				}
 
 				var loc = o as LocationBaseDeviceMapping;
 				if (loc != null)
 				{
-					loc.Mapping = (string) val;
+					loc.Mapping = (string)val;
 				}
 			};
-			
+
 		}
 
 		private void Devices_Shown(object sender, EventArgs e)
@@ -78,18 +78,18 @@ namespace MediaCollection
 			}
 
 			int width = e.Column.Width;
-			if (e.SubItemIndex == 0) 
+			if (e.SubItemIndex == 0)
 			{
 				width -= imageWidth;
 			}
-			else 
+			else
 			{
 				e.Control.Left -= imageWidth;
 			}
 			e.Control.Width = width;
-			
+
 		}
-				
+
 		private void TVDevices_CellEditFinishing(object sender, BrightIdeasSoftware.CellEditEventArgs e)
 		{
 		}
@@ -98,37 +98,13 @@ namespace MediaCollection
 		{
 			var um = e.RowObject as UpdatableModel;
 			if (um != null) um.Set();
-				
+
 		}
 
 		private void BtnAdd_Click(object sender, EventArgs e)
 		{
 			var d = new Device { Data = "", Id = 0, Name = "New Device" };
 			TVDevices.AddObject(d);
-		}
-
-		private void BtnDelete_Click(object sender, EventArgs e)
-		{
-			var item = TVDevices.SelectedItem;
-			if (item != null)
-			{
-				var d = item.RowObject as Device;
-				if (d != null)
-				{
-					if (MessageBox.Show("Do you want to delete " + d.Name + "?", "Confirm Device Removal", MessageBoxButtons.OKCancel) == DialogResult.OK)
-					{
-						try
-						{
-							d.Delete();
-							Devices_Shown(null, null); //Re-fetch
-						}
-						catch (Exception err)
-						{
-							MessageBox.Show(err.Message, "Error");
-						}
-					}
-				}
-			}
 		}
 	}
 }
