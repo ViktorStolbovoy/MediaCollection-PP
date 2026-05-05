@@ -70,7 +70,7 @@ namespace MediaCollection
         private void CheckSeries(string seriesName)
         {
             m_title = null;
-            var ss = TitlePersistence.ListTitles(seriesName, TitleKind.Series);
+            var ss = TitlePersistence.ListTitles(seriesName, TitleKind.Series, false);
             if (ss != null && ss.Count == 1)
             {
                 m_title = ss[0];
@@ -87,7 +87,7 @@ namespace MediaCollection
             CheckSeries(TbxSeries.Text);
 
 			//Search for pattern
-			foundSeasons = TitlePersistence.ListTitles(sqlPattern, TitleKind.Season);
+			foundSeasons = TitlePersistence.ListTitles(sqlPattern, TitleKind.Season, false);
 			ClbSeasons.Items.Clear();
 			foreach (var title in foundSeasons)
 			{
@@ -97,9 +97,9 @@ namespace MediaCollection
 
 
             //Search for pattern
-            var titlesDisks = TitlePersistence.ListTitles(sqlPattern, TitleKind.Disk);
+            var titlesDisks = TitlePersistence.ListTitles(sqlPattern, TitleKind.Disk, false);
 
-            var titlesEpisodes = TitlePersistence.ListTitles(sqlPattern, TitleKind.Episode);
+            var titlesEpisodes = TitlePersistence.ListTitles(sqlPattern, TitleKind.Episode, false);
 
             ClbEpisodes.Items.Clear();
             foreach (var d in titlesDisks)
@@ -280,7 +280,7 @@ namespace MediaCollection
         private bool FindTitlesToConvert()
         {
             ClbEpisodes.Items.Clear();
-            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, TitleKind.Title);
+            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, TitleKind.Title, false);
             try
             {
                 var regex = new Regex(TbxEpisodesRegexp.Text);

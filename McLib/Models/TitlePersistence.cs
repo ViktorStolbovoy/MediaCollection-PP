@@ -10,43 +10,34 @@ namespace MediaCollection
 	public static class TitlePersistence
 	{
 		
-		public static List<Title> ListTitles(string pattern, TitleKind kind)
+		public static List<Title> ListTitles(string pattern, TitleKind kind, bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
 				if (string.IsNullOrWhiteSpace(pattern))
 				{
-					return db.Fetch<Title>("where KIND = @0", kind);
+					return db.Fetch<Title>("where KIND = @0 and HIDDEN = @1", kind, hidden ? 1 : 0);
 				}
 				else
 				{
-					return db.Fetch<Title>("where KIND = @0 and TITLE_NAME like @1", kind, pattern);
+					return db.Fetch<Title>("where KIND = @0 and TITLE_NAME like @1 and HIDDEN = @2", kind, pattern, hidden ? 1 : 0);
 				}
 			}
 		}
 
-		public static List<Title> ListRootVideo()
+		public static List<Title> ListRootVideo(bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				//public enum TitleKind { Title = 0, Season = 1, Series = 2, Album = 3, /*Video*/ Disk = 4,  Track = 5, AlbumArtist = 6, Episode = 7 }
-				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk);
+                return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) and HIDDEN = @5 ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk, hidden ? 1 : 0);
 			}
 		}
 
-		public static List<Title> ListRootAudio()
+		public static List<Title> ListRootAudio(bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND = @0 or KIND = @1 or KIND = @2) ORDER BY TITLE_NAME, ORD", TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist);
-			}
-		}
-
-		public static List<Title> SearchTitlesByLocationBaseId(long locationBaseId)
-		{
-			using (var db = DB.GetDatabase())
-			{
-				return db.Fetch<Title>("select t.* from TITLE t join LOCATION l on l.TITLE_ID = t.TITLE_ID where l.LOCATION_BASE_IDKIND = @0", locationBaseId);
+				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND = @0 or KIND = @1 or KIND = @2) and HIDDEN = @3 ORDER BY TITLE_NAME, ORD", TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist, hidden ? 1 : 0);
 			}
 		}
 
@@ -62,7 +53,7 @@ namespace MediaCollection
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("WHERE DESCRIPTION = '' AND RELEASE_YEAR = 0 and (KIND =@0 or KIND = @1) ORDER BY TITLE_NAME, ORD", TitleKind.Title, TitleKind.Series);
+				return db.Fetch<Title>("WHERE DESCRIPTION = '' AND RELEASE_YEAR = 0 and (KIND =@0 or KIND = @1) and HIDDEN = 0 ORDER BY TITLE_NAME, ORD", TitleKind.Title, TitleKind.Series);
 			}
 		}
 
@@ -70,7 +61,7 @@ namespace MediaCollection
 		{
 
 			string now = GeneralPersistense.GetTimestamp();
-			var t = new Title { TitleName = name, Kind = kind, Season = season, Disk = disk, EpisodeOrTrack = episodeOrTrack, ParentTitleId = parentId, DateAddedUtc = now, DateModifiedUtc = now, ImdbId = "", Description = ""};
+			var t = new Title { TitleName = name, Kind = kind, Season = season, Disk = disk, EpisodeOrTrack = episodeOrTrack, ParentTitleId = parentId, DateAddedUtc = now, DateModifiedUtc = now, ImdbId = "", Description = "", Hidden = false };
 			using (var db = DB.GetDatabase())
 			{
 				db.Insert(t);
@@ -102,7 +93,15 @@ namespace MediaCollection
 			}
 		}
 
-		public static List<TitleRatingWithName> GetRatings(long titleId) 
+        public static bool SetHidden(long titleId, bool hidden)
+        {
+            using (var db = DB.GetDatabase())
+            {
+                return db.Execute("UPDATE title SET HIDDEN = @0 WHERE TITLE_ID = @1", hidden ? 1 : 0, titleId) > 0;
+            }
+        }
+
+        public static List<TitleRatingWithName> GetRatings(long titleId) 
 		{
 			using (var db = DB.GetDatabase())
 			{
@@ -112,11 +111,18 @@ namespace MediaCollection
 
 		public static void DeleteTitle(long titleId)
 		{
+			var images = MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
+			if (images != null)
+			{
+				foreach (var img in images)
+				{
+					MediaSamplePersistence.RemoveSample(img);
+				}
+			}
+			
 			using (var db = DB.GetDatabase())
 			{
-				int cnt = db.Query<Location>().Where(x => x.TitleId == titleId).Count();
-				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete title: it has {0} locations", cnt));
-				db.Execute("DELETE FROM title WHERE TITLE_ID = @0", titleId);
+                db.Execute("DELETE FROM location WHERE TITLE_ID = @0; DELETE FROM title WHERE TITLE_ID = @0", titleId);
 			}
 		}
 	}

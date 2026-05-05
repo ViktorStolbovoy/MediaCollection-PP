@@ -2,14 +2,14 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using NPoco;
-
+using System.Web.Configuration;
 
 namespace MediaCollection 
 {
 	public enum TitleKind { Title = 0, Season = 1, Series = 2, Album = 3, /*Video*/ Disk = 4, Track = 5, AlbumArtist = 6, Episode = 7 }
 
 	[TableName("title")]
-	[PrimaryKey("TITLE_ID", AutoIncrement=true)]
+	[PrimaryKey("TITLE_ID", AutoIncrement = true)]
 	public class Title : IModelWithId, IComparable<Title>, IComparable
 	{
 		[Column("TITLE_ID")]
@@ -28,9 +28,9 @@ namespace MediaCollection
 		public virtual string Description { get; set; }
 
 		[Column("ORD")]
-		public virtual int Ord 
+		public virtual int Ord
 		{
-			get 
+			get
 			{
 				return Season * SEASON_ORD_MULTIPLIER + Disk * DISK_ORD_MULTIPLIER + EpisodeOrTrack;
 			}
@@ -48,7 +48,21 @@ namespace MediaCollection
 		[Column("RELEASE_YEAR")]
 		public virtual int Year { get; set; }
 
+		[Column("HIDDEN")]
+		protected virtual long InnerHidden {
+			get {
+				return Hidden ? 1 : 0;
+			}
+			set
+			{
+				Hidden = value > 0;
+			}
+		}
+
 		[Ignore]
+        public virtual bool Hidden { get; set; }
+
+        [Ignore]
 		public int Season;
 		[Ignore]
 		public int Disk;

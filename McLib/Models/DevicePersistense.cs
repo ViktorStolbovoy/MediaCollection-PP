@@ -29,7 +29,7 @@ namespace MediaCollection
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Device>("SELECT * FROM DEVICE ORDER BY DEVICE_NAME");
+				return db.Fetch<Device>("SELECT * FROM DEVICE ORDER BY IS_DEFAULT desc, DEVICE_NAME");
 			}
 		}
 

@@ -56,6 +56,25 @@ namespace MediaCollection
 				}
 			};
 
+			olvColIsDefault.AspectGetter = (object o) => {
+				var dev = o as Device;
+				if (dev != null)
+				{
+					return dev.IsDefault > 0;
+				}
+
+				return null;
+			};
+
+			olvColIsDefault.AspectPutter = (object o, object val) => {
+				var dev = o as Device;
+				if (dev != null)
+				{
+					dev.IsDefault = ((bool)val) ? 1 : 0;
+				}
+
+			};
+
 		}
 
 		private void Devices_Shown(object sender, EventArgs e)
@@ -106,5 +125,15 @@ namespace MediaCollection
 			var d = new Device { Data = "", Id = 0, Name = "New Device" };
 			TVDevices.AddObject(d);
 		}
-	}
+
+        private void TVDevices_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic; 
-using System.Linq;
-using System.Web;
-using System.Data;
-using System.Data.Common;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.Configuration;
 
 namespace MediaCollection
@@ -42,7 +36,11 @@ namespace MediaCollection
 
 		public static NPoco.IDatabase GetDatabase()
 		{
-			return new NPoco.Database(s_connectionString, NPoco.DatabaseType.SQLite);
+			var connection = new SQLiteConnection(s_connectionString);
+			connection.Open();
+			var db = new NPoco.Database(connection);
+			db.KeepConnectionAlive = false;
+			return db;
 		}
 
 	}

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stolbovoy.Utils;
 
@@ -15,7 +11,7 @@ using BrightIdeasSoftware;
 
 namespace MediaCollection
 {
-	[Flags]
+    [Flags]
 	enum ResourceKind { None = 0, Audio = 1, Video = 2};
 	public partial class MainForm : Form
 	{
@@ -71,7 +67,7 @@ namespace MediaCollection
 				e.Effect = DragDropEffects.None;
 				var models = GetModelsFromDropEvent(e);
 
-				if (CanDrop(models.Item1, models.Item2))
+				if (models.Item1.All(source => CanDrop(source, models.Item2)))
 				{
 					e.Effect = DragDropEffects.Move;
 				}
@@ -80,11 +76,14 @@ namespace MediaCollection
 			sink.Dropped += (sender, e) => {
 				var models = GetModelsFromDropEvent(e);
 				if (models.Item1 == null || models.Item2 == null) return;
-				SetSeriesHierarchy(models.Item1, models.Item2); 
-				GeneralPersistense.Upsert(models.Item1);
-				e.Effect = DragDropEffects.Move;
-				TVTitles.RemoveObject(models.Item1);
-				TVTitles.RefreshObject(models.Item2);
+				foreach (var source in models.Item1)
+				{
+					SetSeriesHierarchy(source, models.Item2);
+					GeneralPersistense.Upsert(source);
+					TVTitles.RemoveObject(source);
+				}
+                e.Effect = DragDropEffects.Move;
+                TVTitles.RefreshObject(models.Item2);
 			};
 
 			TVTitles.ModelFilter = new ModelFilter((m) => {
@@ -147,17 +146,14 @@ namespace MediaCollection
 			}
 		}
 
-		private static Tuple<Title, Title> GetModelsFromDropEvent(BrightIdeasSoftware.OlvDropEventArgs e)
+		private static Tuple<IList<Title>, Title> GetModelsFromDropEvent(BrightIdeasSoftware.OlvDropEventArgs e)
 		{
 			var dataObject = e.DataObject as BrightIdeasSoftware.OLVDataObject;
-			Title source = null;
-			Title destination = null;
-			if (dataObject != null)
-			{
-				source = dataObject.ModelObjects.Count > 0 ? dataObject.ModelObjects[0] as Title : null;
-				destination = e.DropTargetItem == null ? null : e.DropTargetItem.RowObject as Title;
-			}
-			return new Tuple<Title, Title>(source, destination);
+			Title destination = e.DropTargetItem == null ? null : e.DropTargetItem.RowObject as Title;
+
+			var sources = (dataObject != null) ? dataObject.ModelObjects.Cast<Title>().ToList() : new List<Title>();
+
+			return new Tuple<IList<Title>, Title>(sources, destination);
 		}
 
 		private void SetSeriesHierarchy(Title item, Title parent)
@@ -211,11 +207,11 @@ namespace MediaCollection
 			switch (kind)
 			{
 				case ResourceKind.Audio:
-					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootAudio());
+					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootAudio(CbxHidden.Checked));
 					CbxKind.SetupComboBox<TitleKind>("Audio_");
 					break;
 				case ResourceKind.Video:
-					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootVideo());
+					TVTitles.Roots = new SortableTitles(TitlePersistence.ListRootVideo(CbxHidden.Checked));
 					CbxKind.SetupComboBox<TitleKind>("Video_");
 					break;
 			}
@@ -311,8 +307,9 @@ namespace MediaCollection
 
 				TbxTitleName.Text = title.TitleName;
 				CbxKind.SetSelectedKey(title.Kind);
+				BtnHideTitle.Text = title.Hidden ? "Show" : "Hide";
 
-				LVLocations.AddObjects(LocationPersistence.ListTitleLocations(title.Id));
+                LVLocations.AddObjects(LocationPersistence.ListTitleLocations(title.Id));
 				LVRatings.AddObjects(TitlePersistence.GetRatings(title.Id));
 				SetEpisodeControlsState(m_currentTitle.Kind);
 				m_images = MediaSamplePersistence.GetSamples(title.Id, MediaSampleKind.Image);
@@ -329,7 +326,9 @@ namespace MediaCollection
 
 				TbxTitleName.Text = "";
 				CbxKind.SelectedIndex = -1;
-				SetEpisodeControlsState(TitleKind.Title);
+                BtnHideTitle.Text = "Hide";
+
+                SetEpisodeControlsState(TitleKind.Title);
 				m_images = null;
 				SetImageNavigationControls();
 				PbxImage.Clear();
@@ -460,11 +459,6 @@ namespace MediaCollection
 		private void BtnDiscard_Click(object sender, EventArgs e)
 		{
 			DisplayTitleInfo(m_currentTitle);
-		}
-
-		private void RbnVideo_CheckedChanged(object sender, EventArgs e)
-		{
-			Reload();
 		}
 
 		private void BtnNew_Click(object sender, EventArgs e)
@@ -716,13 +710,6 @@ namespace MediaCollection
 			{
 				try
 				{
-					if (m_images != null) 
-					{
-						foreach(var img in m_images)
-						{
-							MediaSamplePersistence.RemoveSample(img);
-						}
-					}
 					TitlePersistence.DeleteTitle(m_currentTitle.Id);
 					TVTitles.RemoveObject(m_currentTitle);
 					DisplayTitleInfo(null);
@@ -765,6 +752,37 @@ namespace MediaCollection
         private void PanelMain_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void MediaTypeCheckedChanged(object sender, EventArgs e)
+        {
+            Reload();
+        }
+
+        private void BtnHideTitle_Click(object sender, EventArgs e)
+        {
+            if (m_currentTitle == null) return;
+         
+            if (MessageBox.Show("Do you want to " + (m_currentTitle.Hidden ? "show " : "hide ") + m_currentTitle.TitleName + " ?", "Confirm Status Change", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                try
+                {
+                    TitlePersistence.SetHidden(m_currentTitle.Id, !m_currentTitle.Hidden);
+					m_currentTitle.Hidden = !m_currentTitle.Hidden;
+					TVTitles.RemoveObject(m_currentTitle);
+					DisplayTitleInfo(null);
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(err.Message, "Error Deleting Title");
+                }
+            }
+            
+        }
+
+        private void CbxHidden_CheckedChanged(object sender, EventArgs e)
+        {
+			Reload();
         }
     }
 }

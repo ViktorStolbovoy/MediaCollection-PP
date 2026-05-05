@@ -20,6 +20,9 @@ namespace MediaCollection
 		[Column("DEVICE_DATA")]
 		public virtual string Data { get; set; }
 
+		[Column("IS_DEFAULT")]
+		public virtual long IsDefault { get; set; }
+
 		public override string ToString()
 		{
 			return Name;

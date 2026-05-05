@@ -16,7 +16,6 @@ namespace MediaCollection
 			using (var db = DB.GetDatabase())
 			{
 				return db.Fetch<LocationForDisplay>("SELECT l.*, b.LOCATION_KIND, b.LOCATION FROM location l JOIN location_base b ON  b.LOCATION_BASE_ID = l.LOCATION_BASE_ID WHERE l.title_id = @0", titleId);
-				//Oz9erTqa175325
 			}
 		}
 
@@ -110,14 +109,6 @@ namespace MediaCollection
 			using (var db = DB.GetDatabase())
 			{
 				db.Delete<Location>(Id);
-				if (m_title != null)
-				{
-					if (db.Query<Location>().Where(l => l.TitleId == m_title.Id).Count() == 0)
-					{
-						db.Delete(m_title);
-						m_title = null;
-					}
-				}
 			}
 		}
 
