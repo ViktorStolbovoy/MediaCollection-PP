@@ -1,44 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection
 {
 	public class LocationBaseController : MCControllerBase
 	{
-		//
-		// GET: /Location/
-
-		public ActionResult Index()
+		public IActionResult Index()
 		{
 			return View("~/Views/LocationBases.cshtml", SetRequest.FromPoco(LocationPersistence.ListBases()));
 		}
 
-		public ActionResult Set(SetRequest rq)
+		[HttpPost]
+		public IActionResult Set([FromBody] SetRequest rq)
 		{
-			if (rq == null) throw new ArgumentNullException("rq");
+			if (rq == null) throw new ArgumentNullException(nameof(rq));
 			rq.Persist<LocationBase>(LocationBase.Delete);
-			return Json(SetRequest.FromPoco(LocationPersistence.ListBases()), JsonRequestBehavior.AllowGet);
+			return Json(SetRequest.FromPoco(LocationPersistence.ListBases()));
 		}
 
-
-		public ActionResult GetForDevice(int id)
+		public IActionResult GetForDevice(int id)
 		{
 			var res = LocationPersistence.GetLocationsForBase(id);
-			return Json(res, JsonRequestBehavior.AllowGet);
+			return Json(res);
 		}
 
-		public ActionResult GetLocations(int id)
+		public IActionResult GetLocations(int id)
 		{
 			var res = LocationPersistence.GetLocationsForBase(id);
-			return Json(res, JsonRequestBehavior.AllowGet);
+			return Json(res);
 		}
 
-		public ActionResult GetLocationBaseTitles(long deviceId, long locationBaseId)
+		public IActionResult GetLocationBaseTitles(long deviceId, long locationBaseId)
 		{
-			return null;
+			return new EmptyResult();
 		}
 	}
 }

@@ -58,9 +58,14 @@
 
 	function getLocations()
 	{
-		var post = {};
-		post.deviceId = $("#devices").val();
-		$.ajax("@Url.Content("~/Title/GetLocationBases")", { "data": JSON.stringify(post), "type": "POST", "dataType": "json", "contentType": "application/json", "success": replaceLocations })
+		var deviceId = $("#devices").val();
+		$.ajax({
+			url: "@Url.Action("GetLocationBases", "Title")",
+			type: "GET",
+			data: { deviceId: deviceId },
+			dataType: "json",
+			success: replaceLocations
+		});
 	}
 
 	function replaceLocations(data, status)

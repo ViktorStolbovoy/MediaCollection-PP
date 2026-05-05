@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McLib", "McLib\McLib.csproj", "{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCollection", "MediaCollection\MediaCollection.csproj", "{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCollectionDesktop", "MediaCollectionDesktop\MediaCollectionDesktop.csproj", "{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34069D57-EF1F-4559-9CDA-DC6588269E91}"
@@ -26,6 +28,10 @@ Global
 		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9EE1B70-2D39-4709-AAA9-30937AFEA5E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D44772A-7EEB-4A78-BDDA-0A4FDB313C84}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BE2DAB1-3B8A-47EC-A4CA-BFAA65AF9180}.Release|Any CPU.ActiveCfg = Release|Any CPU

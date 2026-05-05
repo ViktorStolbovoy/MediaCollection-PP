@@ -1,47 +1,50 @@
-﻿using System.Data.SQLite;
-using System.Configuration;
+﻿using System;
+using Microsoft.Data.Sqlite;
+using NPoco;
 
 namespace MediaCollection
 {
 	public static class DB
 	{
-		private static string s_connectionString = GetConnectionStringInternal();
+		private static string s_connectionString;
 
-		private static string GetConnectionStringInternal()
+		public static void Configure(string sqliteDatabasePath)
 		{
-			//TODO : set path from config
-			var cb = new SQLiteConnectionStringBuilder {
-				DataSource = ConfigurationManager.AppSettings["DataSource"],
-				//DataSource = System.IO.Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data"), "MediaCollection.s3db"),
+			if (string.IsNullOrWhiteSpace(sqliteDatabasePath))
+				throw new ArgumentException("Database path is required.", nameof(sqliteDatabasePath));
+
+			var cb = new SqliteConnectionStringBuilder
+			{
+				DataSource = sqliteDatabasePath,
+				Mode = SqliteOpenMode.ReadWriteCreate,
 				ForeignKeys = true,
-				DateTimeFormat = SQLiteDateFormats.ISO8601
+				Cache = SqliteCacheMode.Shared
 			};
-
-
-			return cb.ToString();
+			s_connectionString = cb.ConnectionString;
 		}
 
-		public static string GetConnectionString()
+		private static string GetConnectionString()
 		{
+			if (string.IsNullOrEmpty(s_connectionString))
+				throw new InvalidOperationException("Database is not configured. Call DB.Configure(path) at startup.");
+
 			return s_connectionString;
 		}
 
-		public static SQLiteConnection GetConnection()
+		public static SqliteConnection GetConnection()
 		{
-			var conn = new SQLiteConnection(s_connectionString);
-			//"Server=127.0.0.1;Port=5432;Database=MediaCollection;User Id=sa;Password=4wg;Enlist=true; SSL=True; Sslmode=Prefer");
+			var conn = new SqliteConnection(GetConnectionString());
 			conn.Open();
 			return conn;
 		}
 
-		public static NPoco.IDatabase GetDatabase()
+		public static IDatabase GetDatabase()
 		{
-			var connection = new SQLiteConnection(s_connectionString);
+			var connection = new SqliteConnection(GetConnectionString());
 			connection.Open();
-			var db = new NPoco.Database(connection);
+			var db = new Database(connection);
 			db.KeepConnectionAlive = false;
 			return db;
 		}
-
 	}
 }

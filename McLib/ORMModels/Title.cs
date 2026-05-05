@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using NPoco;
-using System.Web.Configuration;
 
 namespace MediaCollection 
 {

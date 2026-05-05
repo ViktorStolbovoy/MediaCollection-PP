@@ -1,151 +1,118 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection
 {
-    public class HomeController : MCControllerBase
-    {
-        //
-        // GET: /Home/
-
-        public ActionResult Index()
-        {
-			var titles = TitlePersistence.ListTitles(null, TitleKind.Title);
-			return View();									    
-        }
-
-		public ActionResult AddTitle()
-		{
-			return null;
-		}
-
-		public ActionResult UpdateTitleName()
-		{
-			return null;
-		}
-
-		public ActionResult ReparentTitle()
-		{
-			return null;
-		}
-
-		public ActionResult SetTitleOrder()
-		{
-			return null;
-		}
-
-		public ActionResult SetTitleLocation()
-		{
-			return null;
-		}
-
-
-
-
-		public ActionResult Search()
-		{
-			return View();
-		}
-		
-		public ActionResult RescanLocation(int locationId)
-		{
-
-			return View();
-		}
-
-		public ActionResult Previos(int id)
+	public class HomeController : MCControllerBase
+	{
+		public IActionResult Index()
 		{
 			return View();
 		}
 
-        //
-        // GET: /Home/Details/5
+		public IActionResult AddTitle()
+		{
+			return new EmptyResult();
+		}
 
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+		public IActionResult UpdateTitleName()
+		{
+			return new EmptyResult();
+		}
 
-        //
-        // GET: /Home/Create
+		public IActionResult ReparentTitle()
+		{
+			return new EmptyResult();
+		}
 
-        public ActionResult Create()
-        {
-            return View();
-        }
+		public IActionResult SetTitleOrder()
+		{
+			return new EmptyResult();
+		}
 
-        //
-        // POST: /Home/Create
+		public IActionResult SetTitleLocation()
+		{
+			return new EmptyResult();
+		}
 
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+		public IActionResult Search()
+		{
+			return View();
+		}
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+		public IActionResult RescanLocation(int locationId)
+		{
+			return View();
+		}
 
-        //
-        // GET: /Home/Edit/5
+		public IActionResult Previos(int id)
+		{
+			return View();
+		}
 
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+		public IActionResult Details(int id)
+		{
+			return View();
+		}
 
-        //
-        // POST: /Home/Edit/5
+		public IActionResult Create()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
+		[HttpPost]
+		public IActionResult Create(IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+		public IActionResult Edit(int id)
+		{
+			return View();
+		}
 
-        //
-        // GET: /Home/Delete/5
+		[HttpPost]
+		public IActionResult Edit(int id, IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+		public IActionResult Delete(int id)
+		{
+			return View();
+		}
 
-        //
-        // POST: /Home/Delete/5
+		[HttpPost]
+		public IActionResult Delete(int id, IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
 
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-    }
+		public IActionResult Error()
+		{
+			return View();
+		}
+	}
 }

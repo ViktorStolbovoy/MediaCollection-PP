@@ -1,39 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection
 {
 	public class DeviceController : MCControllerBase
 	{
-		//
-		// GET: /Device/
-		
-
-		public ActionResult Index()
+		public IActionResult Index()
 		{
 			return View("~/Views/Devices.cshtml", SetRequest.FromPoco(DevicePersistense.List()));
 		}
-						
-		public ActionResult Set(SetRequest rq)
+
+		[HttpPost]
+		public IActionResult Set([FromBody] SetRequest rq)
 		{
-			if (rq == null) throw new ArgumentNullException("rq");
+			if (rq == null) throw new ArgumentNullException(nameof(rq));
 			rq.Persist<Device>(Device.Delete);
-			return Json(SetRequest.FromPoco(DevicePersistense.List()), JsonRequestBehavior.AllowGet);
+			return Json(SetRequest.FromPoco(DevicePersistense.List()));
 		}
 
-		public ActionResult ListLocations(long id)
+		public IActionResult ListLocations(long id)
 		{
-			return Json(SetRequest.FromPoco(DevicePersistense.GetLocations(id)), JsonRequestBehavior.AllowGet);
+			return Json(SetRequest.FromPoco(DevicePersistense.GetLocations(id)));
 		}
 
-
-		public ActionResult UpdateLocations(SetRequest rq)
+		[HttpPost]
+		public IActionResult UpdateLocations([FromBody] SetRequest rq)
 		{
-			if (rq == null) throw new ArgumentNullException("rq");
+			if (rq == null) throw new ArgumentNullException(nameof(rq));
 			if (!rq.ParentId.HasValue) throw new ArgumentException("Request should have parentId");
 			long pid = rq.ParentId.Value;
 			if (pid <= 0) throw new ArgumentException("parentId should be positive");
@@ -41,8 +34,8 @@ namespace MediaCollection
 			{
 				foreach (var e in rq.ToPoco<LocationBaseDeviceMapping>())
 				{
-					var data = new DeviceLocationMap {DeviceId = pid, LocationBaseId = e.LocationBaseId, Mapping = e.Mapping };
-					GeneralPersistense.Upsert(data); 
+					var data = new DeviceLocationMap { DeviceId = pid, LocationBaseId = e.LocationBaseId, Mapping = e.Mapping };
+					GeneralPersistense.Upsert(data);
 				}
 			}
 			return ListLocations(pid);
