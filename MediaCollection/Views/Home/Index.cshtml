@@ -1,17 +1,11 @@
-﻿@{
-    Layout = null;
+@using System.Text.Json
+@{
+	ViewBag.Title = "Media Collection";
+	var cfg = new { readOnly = ViewBag.ReadOnly is bool b && b };
+	var json = JsonSerializer.Serialize(cfg);
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Media Collection</title>
-</head>
-<body>
-    <div>
-        
-    </div>
-</body>
-</html>
+<div id="root"></div>
+<script>
+	window.__APP_CONFIG__ = @Html.Raw(json);
+</script>
+<script type="module" src="~/app/assets/main.js" asp-append-version="true"></script>

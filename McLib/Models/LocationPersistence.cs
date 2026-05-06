@@ -143,7 +143,7 @@ namespace MediaCollection
 		{
 			var res = new RescanResults();
 
-			//DEVICE_KIND = 1 - PC
+			//DEVICE_KIND = 1 - Local
 			const string SQL = @"SELECT dl.LOCATION_MAPPING
 					FROM device_location_map dl
 					JOIN device d

@@ -1,12 +1,96 @@
+# Build outputs — .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
 *.dll
+*.exe
 *.pdb
+*.mdb
+*.apk
+*.aab
+*.ipa
+*.msix
+*.appx
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Legacy NuGet (packages.config restore)
+packages/
+
+# User-specific / machine state
 *.user
+*.userosscache
+*.rsuser
+*.suo
+*.sln.docstates
 *.cache
-NPoco/*
-.nuget/*
-**/bin/**
-**/obj/**
-packages/**
-SQLIte/**
-*.suo
-*.suo
+
+# Secrets & local config overrides
+appsettings.*.local.json
+**/appsettings.*.local.json
+secrets.json
+
+# Node / Vite (React ClientApp)
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn/cache
+.yarn/install-state.gz
+
+# Vite build output (regenerate with: cd MediaCollection/ClientApp && npm run build)
+MediaCollection/wwwroot/app/
+
+# IDE / editors
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+
+# Rider / ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+coverage*.json
+coverage*.xml
+*.coverage
+*.coveragexml
+
+# Cursor / tooling (optional local agent state)
+.cursor/*.local.*
+
+# Legacy solution NuGet bootstrap (if still present)
+.nuget/
+
+# Local SQLite dumps / large DB copies (keep App_Data defaults tracked separately if desired)
+*.db-journal
+*.db-shm
+*.db-wal
+
+# User's data
+**/App_Data/
