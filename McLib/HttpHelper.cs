@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,14 +14,16 @@ namespace MediaCollection
 			var client = new HttpClient();
 			try
 			{
-				return client.GetAsync(url, cancellationToken).ContinueWith(t => {
+				return client.GetAsync(url, cancellationToken).ContinueWith(t =>
+				{
 					HttpResponseMessage res = null;
 					try
 					{
 						res = t.Result;
 						if (res.StatusCode == System.Net.HttpStatusCode.OK)
 						{
-							return res.Content.ReadAsByteArrayAsync().ContinueWith<byte[]>(t1 => {
+							return res.Content.ReadAsByteArrayAsync().ContinueWith(t1 =>
+							{
 								try
 								{
 									return t1.Result;
@@ -37,7 +37,8 @@ namespace MediaCollection
 						}
 						else
 						{
-							return res.Content.ReadAsByteArrayAsync().ContinueWith<byte[]>(t1 => {
+							return res.Content.ReadAsByteArrayAsync().ContinueWith<byte[]>(t1 =>
+							{
 								try
 								{
 									throw new HttpException(Encoding.UTF8.GetString(t1.Result), null, res.StatusCode);

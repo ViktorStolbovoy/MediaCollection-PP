@@ -2,6 +2,7 @@ using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 
 namespace MediaCollection
 {
@@ -11,6 +12,8 @@ namespace MediaCollection
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+			builder.Services.AddMemoryCache();
+			builder.Services.AddSingleton<ScanSessionStore>();
 			builder.Services.AddControllersWithViews()
 				.AddNewtonsoftJson(options =>
 				{
@@ -29,6 +32,14 @@ namespace MediaCollection
 				dataSource = Path.Combine(contentRoot, dataSource);
 
 			DB.Configure(dataSource);
+
+			var mediaPath = app.Configuration["MediaSamplesPath"];
+			if (string.IsNullOrWhiteSpace(mediaPath))
+				mediaPath = Path.Combine(contentRoot, "App_Data", "media_samples");
+			else if (!Path.IsPathRooted(mediaPath))
+				mediaPath = Path.Combine(contentRoot, mediaPath);
+			Directory.CreateDirectory(mediaPath);
+			MediaSamplePersistence.s_dataFolder = mediaPath;
 
 			if (app.Environment.IsDevelopment())
 				app.UseDeveloperExceptionPage();
@@ -50,7 +61,8 @@ namespace MediaCollection
 			});
 
 			app.UseRouting();
-
+			app.UseMiddleware<ReadOnlyApiMiddleware>();
+			app.MapControllers();
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Home}/{action=Index}/{id?}");

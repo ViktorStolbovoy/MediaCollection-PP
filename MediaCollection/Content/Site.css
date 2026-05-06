@@ -1,4 +1,4 @@
-﻿body {
+body {
     font-size: .85em;
     font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
@@ -58,4 +58,146 @@ textarea {
 
 .validation-summary-valid {
     display: none;
+}
+
+/* React shell */
+.mc-body {
+	margin: 0;
+}
+
+.mc-app header {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+	padding: 0.75rem 1rem;
+	background: #1b2838;
+	color: #e0e0e0;
+}
+
+.mc-app header a {
+	color: #c7d5f0;
+	text-decoration: none;
+	margin-right: 0.75rem;
+}
+
+.mc-app header a.mc-active {
+	font-weight: bold;
+	color: #fff;
+}
+
+.mc-readonly-badge {
+	background: #8b4513;
+	color: #fff;
+	padding: 0.2rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.8rem;
+}
+
+.mc-main {
+	padding: 1rem;
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.mc-split {
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) minmax(400px, 2fr);
+	gap: 1rem;
+	align-items: start;
+}
+
+@media (max-width: 900px) {
+	.mc-split {
+		grid-template-columns: 1fr;
+	}
+}
+
+.mc-tree {
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	max-height: 70vh;
+	overflow: auto;
+	background: #fafafa;
+	padding: 0.25rem;
+}
+
+.mc-tree-row {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.15rem 0.35rem;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.mc-tree-row:hover {
+	background: #eee;
+}
+
+.mc-tree-row.mc-selected {
+	background: #d4e4ff;
+}
+
+.mc-tree-row span.mc-drag {
+	cursor: grab;
+	opacity: 0.5;
+	font-size: 0.75rem;
+}
+
+.mc-detail fieldset {
+	margin-bottom: 1rem;
+}
+
+.mc-detail label {
+	display: block;
+	margin-top: 0.5rem;
+	font-weight: 600;
+	font-size: 0.85rem;
+}
+
+.mc-detail input[type="text"], .mc-detail input[type="number"], .mc-detail textarea, .mc-detail select {
+	width: 100%;
+	max-width: 520px;
+	box-sizing: border-box;
+}
+
+.mc-detail textarea {
+	min-height: 100px;
+}
+
+.mc-stack {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-top: 0.5rem;
+}
+
+.mc-muted {
+	color: #666;
+	font-size: 0.9rem;
+}
+
+.mc-table-wrap {
+	overflow: auto;
+	max-width: 100%;
+}
+
+table.mc-table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 0.9rem;
+}
+
+table.mc-table th, table.mc-table td {
+	border: 1px solid #ddd;
+	padding: 0.35rem 0.5rem;
+	text-align: left;
+}
+
+.mc-thumb {
+	max-width: 280px;
+	max-height: 280px;
+	border: 1px solid #ccc;
+	margin-top: 0.5rem;
 }

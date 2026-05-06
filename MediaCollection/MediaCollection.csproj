@@ -1,15 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>MediaCollection</RootNamespace>
     <AssemblyName>MediaCollection</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\McLib\McLib.csproj" />
   </ItemGroup>
+  <Target Name="BuildReactApp" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildProjectDirectory)\ClientApp\package.json') AND Exists('$(MSBuildProjectDirectory)\ClientApp\node_modules')">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)\ClientApp" Command="npm run build" />
+  </Target>
 </Project>

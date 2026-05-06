@@ -19,9 +19,10 @@ namespace MediaCollection
 
 		public static List<Device> ListForTitleUpdate()
 		{
+			// We update titles using local mapping.
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Device>("SELECT * FROM DEVICE WHERE DEVICE_KIND = @0 ORDER BY DEVICE_NAME", DeviceType.PC);
+				return db.Fetch<Device>("SELECT * FROM DEVICE WHERE DEVICE_KIND = @0 ORDER BY DEVICE_NAME", DeviceType.Local);
 			}
 		}
 

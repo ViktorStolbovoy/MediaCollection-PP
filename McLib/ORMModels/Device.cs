@@ -6,7 +6,7 @@ using NPoco;
 
 namespace MediaCollection
 {
-	public enum DeviceType {Dune = 0, PC = 1};
+	public enum DeviceType {Dune = 0, Local = 1};
 	[TableName("device")]
 	[PrimaryKey("DEVICE_ID", AutoIncrement = true)]
 	public class Device : UpdatableModelWithId

@@ -9,11 +9,11 @@ namespace MediaCollection
 	public class DeviceLocationResult
 	{
 		[Column("DEVICE_DATA")]
-		public string DeviceData {get; set;}
+		public string DeviceData { get; set; }
 		[Column("LOCATION_MAPPING")]
-		public string LocationMapping {get; set;}
+		public string LocationMapping { get; set; }
 		[Column("LOCATION_DATA")]
-		public string LocationData {get; set;}
+		public string LocationData { get; set; }
 		[Column("MEDIA_KIND")]
 		public MediaType MediaKind { get; set; }
 		[Column("DEVICE_KIND")]
@@ -21,15 +21,14 @@ namespace MediaCollection
 
 
 		public void Run()
-		{ 
-			switch(DeviceKind)
+		{
+			switch (DeviceKind)
 			{
-				case DeviceType.Dune: 
+				case DeviceType.Dune:
 					ExecHttpCommand(DuneCommand());
 					break;
-				case DeviceType.PC: 
-					ExecPcCommand(PcCommand());
-					return;
+				case DeviceType.Local:
+					throw new NotSupportedException("Local client execution is available only from MediaCollectionDesktop via RunOnClient().");
 				default: throw new NotSupportedException(string.Format("Device type {0} is not supported", DeviceKind));
 			}
 		}
@@ -42,7 +41,7 @@ namespace MediaCollection
 
 			string locationParam = Uri.EscapeDataString(LocationMapping + LocationData.Replace('\\', '/'));
 
-			switch(MediaKind)
+			switch (MediaKind)
 			{
 				case MediaType.PictureFolder:
 				case MediaType.AudioFolder: return string.Format("http://{0}/cgi-bin/do?cmd=start_playlist_playback&media_url={1}", DeviceData, locationParam);
@@ -62,22 +61,9 @@ namespace MediaCollection
 			}
 		}
 
-		private string PcCommand()
+		public string ClientCommand()
 		{
-			//DeviceData is ignored
 			return System.IO.Path.Combine(LocationMapping, LocationData);
-		}
-
-		public void ExecPcCommand(string command)
-		{
-			if(string.IsNullOrWhiteSpace(DeviceData))
-			{
-				System.Diagnostics.Process.Start(command);
-			}
-			else
-			{
-				System.Diagnostics.Process.Start(DeviceData, command);
-			}
 		}
 
 
