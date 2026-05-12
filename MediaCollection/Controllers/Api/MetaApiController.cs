@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MediaCollection;
 
@@ -33,7 +34,10 @@ namespace MediaCollection.Controllers.Api
 		[HttpGet("devices-playback")]
 		public IActionResult DevicesPlayback()
 		{
-			return Ok(DevicePersistense.ListForPalyback());
+			var devices = DevicePersistense.ListForPalyback()
+				.Where(d => d.Kind != DeviceType.Local)
+				.ToList();
+			return Ok(devices);
 		}
 
 		[HttpGet("locations-for-device/{deviceId:long}")]

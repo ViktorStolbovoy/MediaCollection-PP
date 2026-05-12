@@ -94,7 +94,7 @@ export function LibraryPage() {
   useEffect(() => {
     apiJson<KindOpt[]>(`/api/meta/title-kinds?resourceKind=${resourceKind}`)
       .then(setKinds)
-      .catch(() => {});
+      .catch(() => { });
   }, [resourceKind]);
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export function LibraryPage() {
         setPlaybackDevices(d);
         if (d.length) setPlaybackDeviceId((prev) => prev || d[0].Id);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -427,21 +427,23 @@ export function LibraryPage() {
               </fieldset>
               <fieldset>
                 <legend>Locations</legend>
-                <div className="mc-stack">
-                  <label>
-                    Playback device{' '}
-                    <select
-                      value={playbackDeviceId}
-                      onChange={(e) => setPlaybackDeviceId(Number(e.target.value))}
-                    >
-                      {playbackDevices.map((d) => (
-                        <option key={d.Id} value={d.Id}>
-                          {d.Name}
-                        </option>
-                      ))}
-                    </select>
+                <div className="mc-playback-controls">
+                  <label className="mc-playback-controls-label" htmlFor="mc-playback-device">
+                    Playback device
                   </label>
+                  <select
+                    id="mc-playback-device"
+                    value={playbackDeviceId}
+                    onChange={(e) => setPlaybackDeviceId(Number(e.target.value))}
+                  >
+                    {playbackDevices.map((d) => (
+                      <option key={d.Id} value={d.Id}>
+                        {d.Name}
+                      </option>
+                    ))}
+                  </select>
                   <button
+                    className="mc-play-btn"
                     type="button"
                     onClick={() => {
                       if (!selectedId || !playbackDeviceId) return;
@@ -451,7 +453,7 @@ export function LibraryPage() {
                       }).catch((e) => setMessage(String(e)));
                     }}
                   >
-                    Play (launch path)
+                    Play
                   </button>
                 </div>
                 <div className="mc-table-wrap">
@@ -506,28 +508,45 @@ export function LibraryPage() {
               </fieldset>
               <fieldset>
                 <legend>Ratings</legend>
-                {detail.Ratings.map((r) => (
-                  <label key={r.RatingId}>
-                    {r.RatingName}{' '}
-                    <input
-                      type="number"
-                      step={r.RatingStep}
-                      min={r.RatingMin}
-                      max={r.RatingMax}
-                      disabled={ro}
-                      value={r.RatingValue}
-                      onChange={(e) => {
-                        const v = Number(e.target.value);
-                        setDetail({
-                          ...detail,
-                          Ratings: detail.Ratings.map((x) =>
-                            x.RatingId === r.RatingId ? { ...x, RatingValue: v } : x
-                          ),
-                        });
-                      }}
-                    />
-                  </label>
-                ))}
+                <div className="mc-table-wrap">
+                  <table className="mc-table mc-ratings-table">
+                    <thead>
+                      <tr>
+                        <th>Rating</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {detail.Ratings.map((r) => (
+                        <tr key={r.RatingId}>
+                          <td>
+                            <label htmlFor={`mc-rating-${r.RatingId}`}>{r.RatingName}</label>
+                          </td>
+                          <td>
+                            <input
+                              id={`mc-rating-${r.RatingId}`}
+                              type="number"
+                              step={r.RatingStep}
+                              min={r.RatingMin}
+                              max={r.RatingMax}
+                              disabled={ro}
+                              value={r.RatingValue}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                setDetail({
+                                  ...detail,
+                                  Ratings: detail.Ratings.map((x) =>
+                                    x.RatingId === r.RatingId ? { ...x, RatingValue: v } : x
+                                  ),
+                                });
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 {!ro && (
                   <button type="button" onClick={saveRatings}>
                     Save ratings

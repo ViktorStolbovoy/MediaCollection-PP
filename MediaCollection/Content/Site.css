@@ -1,4 +1,4 @@
-body {
+﻿body {
     font-size: .85em;
     font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
@@ -173,6 +173,45 @@ textarea {
 	margin-top: 0.5rem;
 }
 
+.mc-detail .mc-playback-controls {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+	min-width: 0;
+}
+
+.mc-detail .mc-playback-controls-label {
+	display: inline-block;
+	margin: 0;
+	font-weight: 600;
+	font-size: 0.85rem;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.mc-detail .mc-playback-controls select {
+	width: auto;
+	flex: 1 1 160px;
+	min-width: 0;
+	max-width: 520px;
+	min-height: 2.25rem;
+	height: 2.25rem;
+	box-sizing: border-box;
+}
+
+.mc-detail .mc-playback-controls .mc-play-btn {
+	flex-shrink: 0;
+	min-height: 2.25rem;
+	height: 2.25rem;
+	box-sizing: border-box;
+	padding: 0 1rem;
+	line-height: 1;
+	margin: 0;
+}
+
 .mc-muted {
 	color: #666;
 	font-size: 0.9rem;
@@ -193,6 +232,39 @@ table.mc-table th, table.mc-table td {
 	border: 1px solid #ddd;
 	padding: 0.35rem 0.5rem;
 	text-align: left;
+}
+
+.mc-detail table.mc-ratings-table {
+	table-layout: auto;
+	width: max-content;
+	max-width: 100%;
+}
+
+.mc-detail table.mc-ratings-table th:last-child,
+.mc-detail table.mc-ratings-table td:last-child {
+	width: 0;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.mc-detail table.mc-ratings-table th:first-child,
+.mc-detail table.mc-ratings-table td:first-child {
+	width: 0;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.mc-detail table.mc-ratings-table td:first-child label {
+	display: inline;
+	margin: 0;
+	font-weight: 600;
+	font-size: 0.85rem;
+}
+
+.mc-detail table.mc-ratings-table input[type="number"] {
+	width: 6rem;
+	max-width: 100%;
+	vertical-align: middle;
 }
 
 .mc-thumb {
