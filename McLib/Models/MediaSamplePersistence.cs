@@ -10,12 +10,12 @@ namespace MediaCollection
 {
 	public static class MediaSamplePersistence
 	{
-		public static string s_dataFolder = Settings.Get<string>("MEDIA_PATH");
+		public static string s_dataFolder;
 		public static MediaSample AddSample(byte[] data, long titleId, MediaSampleKind kind, string extension)
 		{
 			if (data == null) throw new ArgumentNullException("data", "Sample data can't be null");
 			var ms = new MediaSample { TitleId = titleId, Extension = extension, MediaKind = kind };
-			using(var db = DB.GetDatabase())
+			using (var db = DB.GetDatabase())
 			{
 				db.Insert(ms);
 			}
@@ -33,7 +33,7 @@ namespace MediaCollection
 				db.Delete(ms);
 			}
 		}
-		
+
 
 		public static List<MediaSample> GetSamples(long titleId, MediaSampleKind kind)
 		{
@@ -53,18 +53,18 @@ namespace MediaCollection
 
 		private static string GetSampleFileName(MediaSample ms)
 		{
-			if(ms.TitleId < 1) throw new ApplicationException("Can't manipulate media sample file before title was saved");
-			if(ms.Id < 1) throw new ApplicationException("Can't manipulate media sample file before metadata was saved");
+			if (ms.TitleId < 1) throw new ApplicationException("Can't manipulate media sample file before title was saved");
+			if (ms.Id < 1) throw new ApplicationException("Can't manipulate media sample file before metadata was saved");
 			string folder = Path.Combine(s_dataFolder, ms.TitleId.ToString());
 			if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 			string fileName = Path.Combine(folder, ms.Id.ToString());
 			if (!string.IsNullOrEmpty(ms.Extension))
 			{
-				if (ms.Extension[0] != '.') 
+				if (ms.Extension[0] != '.')
 				{
 					fileName += "." + ms.Extension;
 				}
-				else 
+				else
 				{
 					fileName += ms.Extension;
 				}
@@ -80,7 +80,7 @@ namespace MediaCollection
 
 		public static Image GetImage(this MediaSample item)
 		{
-			using(var strm = item.GetData())
+			using (var strm = item.GetData())
 			{
 				return Image.FromStream(strm);
 			}
