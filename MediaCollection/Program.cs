@@ -1,7 +1,6 @@
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace MediaCollection
@@ -48,19 +47,6 @@ namespace MediaCollection
 				app.UseExceptionHandler("/Home/Error");
 
 			app.UseStaticFiles();
-
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				FileProvider = new PhysicalFileProvider(Path.Combine(contentRoot, "Content")),
-				RequestPath = "/Content"
-			});
-
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				FileProvider = new PhysicalFileProvider(Path.Combine(contentRoot, "Scripts")),
-				RequestPath = "/Scripts"
-			});
-
 			app.UseRouting();
 			app.UseMiddleware<ReadOnlyApiMiddleware>();
 			app.MapControllers();

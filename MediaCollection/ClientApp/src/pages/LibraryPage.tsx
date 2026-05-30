@@ -52,6 +52,21 @@ interface KindOpt {
   name: string;
 }
 
+const KIND_ICONS: Record<number, { icon: string; label: string }> = {
+  0: { icon: '🎬', label: 'Title' },
+  1: { icon: '📅', label: 'Season' },
+  2: { icon: '🎥', label: 'Series' },
+  3: { icon: '📁', label: 'Album' },
+  4: { icon: '💿', label: 'Disk' },
+  5: { icon: '🎵', label: 'Track' },
+  6: { icon: '👤', label: 'AlbumArtist' },
+  7: { icon: '🎞️', label: 'Episode' },
+};
+
+function kindIcon(kind: number): { icon: string; label: string } {
+  return KIND_ICONS[kind] ?? { icon: '❔', label: String(kind) };
+}
+
 function matchesSearch(t: Title, q: string): boolean {
   if (!q.trim()) return true;
   return (t.TitleName ?? '').toLowerCase().includes(q.trim().toLowerCase());
@@ -186,8 +201,10 @@ export function LibraryPage() {
             ⧉
           </span>
         )}
+        <span className="mc-kind-icon" title={kindIcon(t.Kind).label} aria-label={kindIcon(t.Kind).label}>
+          {kindIcon(t.Kind).icon}
+        </span>
         <span>{t.TitleName}</span>
-        <span className="mc-muted">({t.Kind})</span>
       </div>
     );
     const rest: JSX.Element[] = [row];
@@ -445,6 +462,7 @@ export function LibraryPage() {
                   <button
                     className="mc-play-btn"
                     type="button"
+                    disabled={!detail.Locations.length}
                     onClick={() => {
                       if (!selectedId || !playbackDeviceId) return;
                       apiJson('/api/playback/run', {
