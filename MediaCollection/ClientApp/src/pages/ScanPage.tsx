@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiJson } from '../api';
-import { isReadOnly } from '../config';
+import { useIsReadOnly } from '../config';
 
 interface Device {
   Id: number;
@@ -19,7 +19,7 @@ interface ScanPreview {
 }
 
 export function ScanPage() {
-  const ro = isReadOnly();
+  const ro = useIsReadOnly();
   const [devices, setDevices] = useState<Device[]>([]);
   const [deviceId, setDeviceId] = useState(0);
   const [locations, setLocations] = useState<LocationBase[]>([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiJson } from '../api';
-import { isReadOnly } from '../config';
+import { useIsReadOnly } from '../config';
 
 interface Device {
   Id: number;
@@ -24,7 +24,7 @@ interface Workspace {
 }
 
 export function DevicesPage() {
-  const ro = isReadOnly();
+  const ro = useIsReadOnly();
   const [data, setData] = useState<Workspace | null>(null);
   const [err, setErr] = useState<string | null>(null);
 

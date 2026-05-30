@@ -2,7 +2,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { apiJson } from '../api';
 import { TitleDetailForm } from '../components/TitleDetailForm';
 import { TitleDetailFormReadOnly } from '../components/TitleDetailFormReadOnly';
-import { isReadOnly } from '../config';
+import { useIsReadOnly } from '../config';
 
 export interface Title {
   Id: number;
@@ -75,7 +75,7 @@ function matchesSearch(t: Title, q: string): boolean {
 }
 
 export function LibraryPage() {
-  const ro = isReadOnly();
+  const ro = useIsReadOnly();
   const [resourceKind, setResourceKind] = useState<'video' | 'audio'>('video');
   const [includeHidden, setIncludeHidden] = useState(false);
   const [search, setSearch] = useState('');
