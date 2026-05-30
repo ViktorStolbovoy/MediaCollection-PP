@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Stolbovoy.Utils;
 
 namespace MediaCollection
@@ -49,17 +46,6 @@ namespace MediaCollection
 			}
 		}
 
-		private string StringFromKind(TitlePropertyKind k)
-		{
-			switch(k)
-			{
-				case TitlePropertyKind.StringProperty: return "S";
-				case TitlePropertyKind.IntegerProperty: return "I";
-				case TitlePropertyKind.DecimalProperty: return "D";
-				default: throw new ApplicationException("Invalid property kind: " + k.ToString());
-			}
-		}
-
 		public void Reset()
 		{
 			m_cachedTitleId = 0;
@@ -96,7 +82,7 @@ namespace MediaCollection
 
 				using (var db = DB.GetDatabase())
 				{
-					db.Save <TitleProperty>(prop);
+					db.Save(prop);
 				}
 				m_cachedTitleId = titleId;
 				m_cachedValue = value;
