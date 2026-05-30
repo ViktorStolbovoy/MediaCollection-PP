@@ -11,6 +11,7 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit",
+      "source.removeUnusedImports": "explicit",
       "source.fixAll.csharp": "explicit"
     }
   },
@@ -23,6 +24,7 @@
     "editor.formatOnSave": true
   },
   "csharp.format.enable": true,
+  "dotnet.formatting.organizeImportsOnFormat": true,
   "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "fullSolution",
   "eslint.workingDirectories": [
     {
