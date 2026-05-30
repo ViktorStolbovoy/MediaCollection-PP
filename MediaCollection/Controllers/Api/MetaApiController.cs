@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using MediaCollection;
 
 namespace MediaCollection.Controllers.Api
 {
@@ -10,21 +8,6 @@ namespace MediaCollection.Controllers.Api
 	[Route("api/meta")]
 	public sealed class MetaApiController : ControllerBase
 	{
-		[HttpGet("title-kinds")]
-		public ActionResult<IEnumerable<object>> TitleKinds([FromQuery] string resourceKind = "video")
-		{
-			IEnumerable<TitleKind> kinds;
-			if (string.Equals(resourceKind, "audio", StringComparison.OrdinalIgnoreCase))
-				kinds = new[] { TitleKind.AlbumArtist, TitleKind.Album, TitleKind.Track };
-			else
-				kinds = new[] { TitleKind.Title, TitleKind.Series, TitleKind.Season, TitleKind.Disk, TitleKind.Episode };
-
-			var list = new List<object>();
-			foreach (var k in kinds)
-				list.Add(new { value = (int)k, name = k.ToString() });
-			return Ok(list);
-		}
-
 		[HttpGet("devices-for-title-update")]
 		public IActionResult DevicesForTitleUpdate()
 		{
