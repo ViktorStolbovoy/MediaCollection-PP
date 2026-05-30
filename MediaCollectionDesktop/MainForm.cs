@@ -351,10 +351,13 @@ namespace MediaCollection
 			{
                 try
                 {
-				    using (var img = sample.GetImage())
+				    using (var stream = sample.GetData())
 				    {
-                        var imgResized = img.ResizeKeepAspectRatio(PbxImage.Width, PbxImage.Height, Color.White);
-                        PbxImage.Image = imgResized;
+						using (var image = Image.FromStream(stream))
+						{
+							var imgResized = image.ResizeKeepAspectRatio(PbxImage.Width, PbxImage.Height, Color.White);
+							PbxImage.Image = imgResized;
+						}
                     }
                 }
                 catch (Exception err)
