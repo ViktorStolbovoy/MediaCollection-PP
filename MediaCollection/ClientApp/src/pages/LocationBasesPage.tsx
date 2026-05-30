@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiJson } from '../api';
-import { isReadOnly } from '../config';
+import { useIsReadOnly } from '../config';
 
 /** Mirrors McLib `LocationBaseKind` (LOCATION_KIND). */
 const LOCATION_BASE_KIND_OPTIONS = [
@@ -17,7 +17,7 @@ interface LocationBase {
 }
 
 export function LocationBasesPage() {
-  const ro = isReadOnly();
+  const ro = useIsReadOnly();
   const [rows, setRows] = useState<LocationBase[]>([]);
   const [err, setErr] = useState<string | null>(null);
 

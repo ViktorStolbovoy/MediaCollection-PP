@@ -97,6 +97,117 @@ textarea {
 	font-size: 0.8rem;
 }
 
+.mc-app header nav {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	flex: 1;
+}
+
+.mc-config-btn {
+	margin-left: auto;
+	background: #3a6ea5;
+	color: #fff;
+	border: none;
+	padding: 0.35rem 0.75rem;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.85rem;
+}
+
+.mc-config-btn:hover {
+	background: #4d83bf;
+}
+
+.mc-config-btn:disabled {
+	background: #6e7d8c;
+	cursor: not-allowed;
+}
+
+.mc-modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.mc-modal {
+	background: #fff;
+	color: #232323;
+	border-radius: 8px;
+	padding: 1.25rem 1.5rem;
+	width: min(380px, 90vw);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mc-modal-title {
+	margin: 0 0 0.5rem 0;
+	font-size: 1.1rem;
+}
+
+.mc-modal-help {
+	margin: 0 0 1rem 0;
+	color: #555;
+	font-size: 0.85rem;
+}
+
+.mc-modal-label {
+	display: block;
+	font-weight: 600;
+	font-size: 0.85rem;
+	margin-bottom: 0.25rem;
+}
+
+.mc-modal input[type="password"] {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.4rem 0.5rem;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+	font-size: 0.95rem;
+}
+
+.mc-modal-error {
+	margin-top: 0.5rem;
+	color: #b00020;
+	font-size: 0.85rem;
+}
+
+.mc-modal-actions {
+	margin-top: 1rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.5rem;
+}
+
+.mc-modal-actions button {
+	padding: 0.4rem 0.85rem;
+	border-radius: 4px;
+	border: 1px solid #bbb;
+	background: #f4f4f4;
+	cursor: pointer;
+	font-size: 0.85rem;
+}
+
+.mc-modal-actions button[type="submit"] {
+	background: #3a6ea5;
+	color: #fff;
+	border-color: #3a6ea5;
+}
+
+.mc-modal-actions button[type="submit"]:hover:not(:disabled) {
+	background: #4d83bf;
+}
+
+.mc-modal-actions button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 .mc-main {
 	padding: 1rem;
 	max-width: 1400px;

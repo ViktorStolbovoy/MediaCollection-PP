@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiJson } from '../api';
-import { isReadOnly } from '../config';
+import { useIsReadOnly } from '../config';
 
 interface RatingProvider {
   Id: number;
@@ -12,7 +12,7 @@ interface RatingProvider {
 }
 
 export function RatingsPage() {
-  const ro = isReadOnly();
+  const ro = useIsReadOnly();
   const [rows, setRows] = useState<RatingProvider[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
