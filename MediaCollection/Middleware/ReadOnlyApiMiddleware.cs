@@ -1,30 +1,32 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace MediaCollection
 {
+	/// <summary>
+	/// Allows GET/HEAD/OPTIONS on /api for everyone, but only authenticated users may
+	/// issue mutating requests (POST/PUT/PATCH/DELETE). The login/logout endpoints are
+	/// explicitly excluded so that anonymous users can authenticate.
+	/// </summary>
 	public sealed class ReadOnlyApiMiddleware
 	{
 		private readonly RequestDelegate _next;
-		private readonly IConfiguration _configuration;
 
-		public ReadOnlyApiMiddleware(RequestDelegate next, IConfiguration configuration)
+		public ReadOnlyApiMiddleware(RequestDelegate next)
 		{
 			_next = next;
-			_configuration = configuration;
 		}
 
 		public async Task InvokeAsync(HttpContext context)
 		{
-			if (!_configuration.GetValue<bool>("ReadOnly"))
+			var path = context.Request.Path.Value ?? "";
+			if (!path.StartsWith("/api"))
 			{
 				await _next(context);
 				return;
 			}
 
-			var path = context.Request.Path.Value ?? "";
-			if (!path.StartsWith("/api"))
+			if (path.StartsWith("/api/auth"))
 			{
 				await _next(context);
 				return;
@@ -37,9 +39,16 @@ namespace MediaCollection
 				return;
 			}
 
-			context.Response.StatusCode = StatusCodes.Status403Forbidden;
+			if (context.User?.Identity?.IsAuthenticated == true)
+			{
+				await _next(context);
+				return;
+			}
+
+			context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 			context.Response.ContentType = "application/json";
-			await context.Response.WriteAsync("{\"error\":\"Read-only mode is enabled; mutations are disabled.\"}");
+			await context.Response.WriteAsync(
+				"{\"error\":\"Authentication required. Click Configure to log in before making changes.\"}");
 		}
 	}
 }
