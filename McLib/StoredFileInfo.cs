@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.IO;
-using log4net;
+using Microsoft.Extensions.Logging;
 using Stolbovoy.Utils;
 
 namespace MediaCollection
@@ -336,10 +334,8 @@ namespace MediaCollection
 
 	public static class SearchFileStorage
 	{
-		private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILogger s_logger = McLog.Get(typeof(SearchFileStorage));
 
-		
- 
 		public static List<StoredItem> Generate(string path, long locationBaseId)
 		{
 			var res = new List<StoredItem>();
@@ -417,14 +413,14 @@ namespace MediaCollection
 					}
 				}
 			}
+			catch (UnauthorizedAccessException ex)
+			{
+				// $RECYCLE.BIN, "System Volume Information", etc. — expected, just skip
+				s_logger.LogDebug(ex, "Skipping inaccessible folder {Path}", path.FullName);
+			}
 			catch (Exception err)
 			{
-				if (err is UnauthorizedAccessException)
-				{
-					string msg = err.Message.ToLowerInvariant();
-					if (msg.Contains("recycle") || msg.Contains("system")) return;
-				}
-				s_log.Error("Error parsing folder", err);
+				s_logger.LogError(err, "Error parsing folder {Path}", path.FullName);
 			}
 		}
 
