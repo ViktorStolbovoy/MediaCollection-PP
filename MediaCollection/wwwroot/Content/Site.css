@@ -1,63 +1,66 @@
 ﻿body {
-    font-size: .85em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
-    color: #232323;
-    background-color: #fff;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	color: #232323;
+	background-color: #fff;
 }
 
-header, footer, nav, section {
-    display: block;
+header,
+footer,
+nav,
+section {
+	display: block;
 }
 
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
 fieldset {
-    border: 1px solid #ddd;
-    padding: 0 1.4em 1.4em 1.4em;
-    margin: 0 0 1.5em 0;
+	border: 1px solid #ddd;
+	padding: 0 1.4em 1.4em 1.4em;
+	margin: 0 0 1.5em 0;
 }
 
 legend {
-    font-size: 1.2em;
-    font-weight: bold;
+	font-size: 1.2em;
+	font-weight: bold;
 }
 
 textarea {
-    min-height: 75px;
+	min-height: 75px;
 }
 
 .editor-label {
-    margin: 1em 0 0 0;
+	margin: 1em 0 0 0;
 }
 
 .editor-field {
-    margin: 0.5em 0 0 0;
+	margin: 0.5em 0 0 0;
 }
 
 
 /* Styles for validation helpers
 -----------------------------------------------------------*/
 .field-validation-error {
-    color: #f00;
+	color: #f00;
 }
 
 .field-validation-valid {
-    display: none;
+	display: none;
 }
 
 .input-validation-error {
-    border: 1px solid #f00;
-    background-color: #fee;
+	border: 1px solid #f00;
+	background-color: #fee;
 }
 
 .validation-summary-errors {
-    font-weight: bold;
-    color: #f00;
+	font-weight: bold;
+	color: #f00;
 }
 
 .validation-summary-valid {
-    display: none;
+	display: none;
 }
 
 /* React shell */
@@ -102,15 +105,9 @@ textarea {
 
 .mc-split {
 	display: grid;
-	grid-template-columns: minmax(260px, 1fr) minmax(400px, 2fr);
+	grid-template-columns: minmax(200px, 1fr) minmax(200px, 2fr);
 	gap: 1rem;
 	align-items: start;
-}
-
-@media (max-width: 900px) {
-	.mc-split {
-		grid-template-columns: 1fr;
-	}
 }
 
 .mc-tree {
@@ -156,7 +153,10 @@ textarea {
 	font-size: 0.85rem;
 }
 
-.mc-detail input[type="text"], .mc-detail input[type="number"], .mc-detail textarea, .mc-detail select {
+.mc-detail input[type="text"],
+.mc-detail input[type="number"],
+.mc-detail textarea,
+.mc-detail select {
 	width: 100%;
 	max-width: 520px;
 	box-sizing: border-box;
@@ -228,7 +228,8 @@ table.mc-table {
 	font-size: 0.9rem;
 }
 
-table.mc-table th, table.mc-table td {
+table.mc-table th,
+table.mc-table td {
 	border: 1px solid #ddd;
 	padding: 0.35rem 0.5rem;
 	text-align: left;

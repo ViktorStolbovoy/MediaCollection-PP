@@ -1,5 +1,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { apiJson, uploadTitleImage } from '../api';
+import { apiJson } from '../api';
+import { TitleDetailForm } from '../components/TitleDetailForm';
+import { TitleDetailFormReadOnly } from '../components/TitleDetailFormReadOnly';
 import { isReadOnly } from '../config';
 
 export interface Title {
@@ -16,14 +18,14 @@ export interface Title {
   Hidden: boolean;
 }
 
-interface TitleDetailDto {
+export interface TitleDetailDto {
   Title: Title;
   Locations: LocationRow[];
   Ratings: RatingRow[];
   Images: { Id: number; Extension?: string }[];
 }
 
-interface LocationRow {
+export interface LocationRow {
   Id: number;
   TitleId: number;
   LocationBaseId: number;
@@ -32,7 +34,7 @@ interface LocationRow {
   LocationKind: number;
 }
 
-interface RatingRow {
+export interface RatingRow {
   RatingId: number;
   RatingName: string;
   RatingValue: number;
@@ -42,12 +44,12 @@ interface RatingRow {
   TitleId: number;
 }
 
-interface Device {
+export interface Device {
   Id: number;
   Name: string;
 }
 
-interface KindOpt {
+export interface KindOpt {
   value: number;
   name: string;
 }
@@ -83,7 +85,6 @@ export function LibraryPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<TitleDetailDto | null>(null);
   const [draft, setDraft] = useState<Partial<Title> | null>(null);
-  const [kinds, setKinds] = useState<KindOpt[]>([]);
   const [playbackDevices, setPlaybackDevices] = useState<Device[]>([]);
   const [playbackDeviceId, setPlaybackDeviceId] = useState<number>(0);
   const [imageIndex, setImageIndex] = useState(0);
@@ -105,12 +106,6 @@ export function LibraryPage() {
   useEffect(() => {
     reloadRoots().catch((e) => setMessage(String(e)));
   }, [reloadRoots]);
-
-  useEffect(() => {
-    apiJson<KindOpt[]>(`/api/meta/title-kinds?resourceKind=${resourceKind}`)
-      .then(setKinds)
-      .catch(() => { });
-  }, [resourceKind]);
 
   useEffect(() => {
     apiJson<Device[]>('/api/meta/devices-playback')
@@ -163,7 +158,7 @@ export function LibraryPage() {
     if (!matchesSearch(t, search) && depth > 0) {
       /* still show if any descendant matches — simplified: always show structure when parent open */
     }
-    const kids = childCache[t.Id] ?? [];
+
     const isOpen = open.has(t.Id);
     const row = (
       <div
@@ -255,10 +250,6 @@ export function LibraryPage() {
     }
   };
 
-  const currentImage = detail?.Images?.[imageIndex];
-  const imageUrl =
-    selectedId && currentImage ? `/api/titles/${selectedId}/images/${currentImage.Id}/file` : '';
-
   return (
     <div>
       <h2>Library</h2>
@@ -304,7 +295,7 @@ export function LibraryPage() {
           <button
             type="button"
             onClick={async () => {
-              const kind = kinds[0]?.value ?? (resourceKind === 'audio' ? 6 : 0);
+              const kind = resourceKind === 'audio' ? 6 : 0;
               try {
                 const t = await apiJson<Title>('/api/titles', {
                   method: 'POST',
@@ -335,306 +326,37 @@ export function LibraryPage() {
         </div>
         <div className="mc-detail">
           {!draft && <p className="mc-muted">Select a title.</p>}
-          {draft && detail && (
-            <form onSubmit={saveTitle}>
-              <fieldset>
-                <legend>Title</legend>
-                <label>Name</label>
-                <input
-                  type="text"
-                  value={draft.TitleName ?? ''}
-                  disabled={ro}
-                  onChange={(e) => setDraft({ ...draft, TitleName: e.target.value })}
-                />
-                <label>Kind</label>
-                <select
-                  value={draft.Kind ?? 0}
-                  disabled={ro}
-                  onChange={(e) => setDraft({ ...draft, Kind: Number(e.target.value) })}
-                >
-                  {kinds.map((k) => (
-                    <option key={k.value} value={k.value}>
-                      {k.name}
-                    </option>
-                  ))}
-                </select>
-                <label>Year</label>
-                <input
-                  type="number"
-                  value={draft.Year ?? 0}
-                  disabled={ro}
-                  onChange={(e) => setDraft({ ...draft, Year: Number(e.target.value) })}
-                />
-                <label>IMDb Id</label>
-                <input
-                  type="text"
-                  value={draft.ImdbId ?? ''}
-                  disabled={ro}
-                  onChange={(e) => setDraft({ ...draft, ImdbId: e.target.value })}
-                />
-                <label>Season / Disk / Episode</label>
-                <div className="mc-stack">
-                  <input
-                    type="number"
-                    disabled={ro}
-                    value={draft.Season ?? 0}
-                    onChange={(e) => setDraft({ ...draft, Season: Number(e.target.value) })}
-                  />
-                  <input
-                    type="number"
-                    disabled={ro}
-                    value={draft.Disk ?? 0}
-                    onChange={(e) => setDraft({ ...draft, Disk: Number(e.target.value) })}
-                  />
-                  <input
-                    type="number"
-                    disabled={ro}
-                    value={draft.EpisodeOrTrack ?? 0}
-                    onChange={(e) => setDraft({ ...draft, EpisodeOrTrack: Number(e.target.value) })}
-                  />
-                </div>
-                <label>Description</label>
-                <textarea
-                  disabled={ro}
-                  value={draft.Description ?? ''}
-                  onChange={(e) => setDraft({ ...draft, Description: e.target.value })}
-                />
-                <div className="mc-stack">
-                  {!ro && <button type="submit">Save title</button>}
-                  {!ro && (
-                    <button type="button" onClick={() => setDraft({ ...detail.Title })}>
-                      Discard
-                    </button>
-                  )}
-                  {!ro && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        apiJson(`/api/titles/${selectedId}/toggle-hidden`, { method: 'POST' }).then(
-                          () => reloadRoots()
-                        )
-                      }
-                    >
-                      {detail.Title.Hidden ? 'Show' : 'Hide'}
-                    </button>
-                  )}
-                  {!ro && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!selectedId || !confirm('Delete this title?')) return;
-                        apiJson(`/api/titles/${selectedId}`, { method: 'DELETE' }).then(() =>
-                          reloadRoots()
-                        );
-                      }}
-                    >
-                      Delete
-                    </button>
-                  )}
-                  {draft.ImdbId && (
-                    <a
-                      href={`https://www.imdb.com/title/${draft.ImdbId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Open IMDb
-                    </a>
-                  )}
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>Locations</legend>
-                <div className="mc-playback-controls">
-                  <label className="mc-playback-controls-label" htmlFor="mc-playback-device">
-                    Playback device
-                  </label>
-                  <select
-                    id="mc-playback-device"
-                    value={playbackDeviceId}
-                    onChange={(e) => setPlaybackDeviceId(Number(e.target.value))}
-                  >
-                    {playbackDevices.map((d) => (
-                      <option key={d.Id} value={d.Id}>
-                        {d.Name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    className="mc-play-btn"
-                    type="button"
-                    disabled={!detail.Locations.length}
-                    onClick={() => {
-                      if (!selectedId || !playbackDeviceId) return;
-                      apiJson('/api/playback/run', {
-                        method: 'POST',
-                        body: JSON.stringify({ DeviceId: playbackDeviceId, TitleId: selectedId }),
-                      }).catch((e) => setMessage(String(e)));
-                    }}
-                  >
-                    Play
-                  </button>
-                </div>
-                <div className="mc-table-wrap">
-                  <table className="mc-table">
-                    <thead>
-                      <tr>
-                        <th>Base</th>
-                        <th>Path</th>
-                        <th />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {detail.Locations.map((loc) => (
-                        <tr key={loc.Id}>
-                          <td>{loc.LocationBase}</td>
-                          <td>
-                            <input
-                              type="text"
-                              defaultValue={loc.LocationData}
-                              disabled={ro}
-                              onBlur={(e) => {
-                                if (ro) return;
-                                apiJson(`/api/titles/${selectedId}/locations/${loc.Id}`, {
-                                  method: 'PUT',
-                                  body: JSON.stringify({ LocationData: e.target.value }),
-                                }).catch((err) => setMessage(String(err)));
-                              }}
-                            />
-                          </td>
-                          <td>
-                            {!ro && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  if (!confirm('Remove location row?')) return;
-                                  apiJson(`/api/titles/${selectedId}/locations/${loc.Id}`, {
-                                    method: 'DELETE',
-                                  }).then(() =>
-                                    apiJson<TitleDetailDto>(`/api/titles/${selectedId}`).then(setDetail)
-                                  );
-                                }}
-                              >
-                                ✕
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>Ratings</legend>
-                <div className="mc-table-wrap">
-                  <table className="mc-table mc-ratings-table">
-                    <thead>
-                      <tr>
-                        <th>Rating</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {detail.Ratings.map((r) => (
-                        <tr key={r.RatingId}>
-                          <td>
-                            <label htmlFor={`mc-rating-${r.RatingId}`}>{r.RatingName}</label>
-                          </td>
-                          <td>
-                            <input
-                              id={`mc-rating-${r.RatingId}`}
-                              type="number"
-                              step={r.RatingStep}
-                              min={r.RatingMin}
-                              max={r.RatingMax}
-                              disabled={ro}
-                              value={r.RatingValue}
-                              onChange={(e) => {
-                                const v = Number(e.target.value);
-                                setDetail({
-                                  ...detail,
-                                  Ratings: detail.Ratings.map((x) =>
-                                    x.RatingId === r.RatingId ? { ...x, RatingValue: v } : x
-                                  ),
-                                });
-                              }}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {!ro && (
-                  <button type="button" onClick={saveRatings}>
-                    Save ratings
-                  </button>
-                )}
-              </fieldset>
-              <fieldset>
-                <legend>Images</legend>
-                {currentImage && <img className="mc-thumb" src={imageUrl} alt="" />}
-                <div className="mc-stack">
-                  <button
-                    type="button"
-                    disabled={imageIndex <= 0}
-                    onClick={() => setImageIndex((i) => Math.max(0, i - 1))}
-                  >
-                    Prev
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!detail.Images || imageIndex >= detail.Images.length - 1}
-                    onClick={() =>
-                      setImageIndex((i) =>
-                        detail.Images ? Math.min(detail.Images.length - 1, i + 1) : i
-                      )
-                    }
-                  >
-                    Next
-                  </button>
-                  {!ro && (
-                    <label>
-                      Add image{' '}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (!f || !selectedId) return;
-                          uploadTitleImage(selectedId, f)
-                            .then(() =>
-                              apiJson<TitleDetailDto>(`/api/titles/${selectedId}`).then((d) => {
-                                setDetail(d);
-                                setImageIndex(d.Images.length - 1);
-                              })
-                            )
-                            .catch((err) => setMessage(String(err)));
-                        }}
-                      />
-                    </label>
-                  )}
-                  {!ro && currentImage && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!selectedId || !confirm('Delete current image?')) return;
-                        apiJson(`/api/titles/${selectedId}/images/${currentImage.Id}`, {
-                          method: 'DELETE',
-                        }).then(() =>
-                          apiJson<TitleDetailDto>(`/api/titles/${selectedId}`).then((d) => {
-                            setDetail(d);
-                            setImageIndex(0);
-                          })
-                        );
-                      }}
-                    >
-                      Delete image
-                    </button>
-                  )}
-                </div>
-              </fieldset>
-            </form>
+          {!ro && draft && detail && (
+            <TitleDetailForm
+              draft={draft}
+              setDraft={setDraft}
+              detail={detail}
+              setDetail={setDetail}
+              selectedId={selectedId}
+              resourceKind={resourceKind}
+              playbackDevices={playbackDevices}
+              playbackDeviceId={playbackDeviceId}
+              setPlaybackDeviceId={setPlaybackDeviceId}
+              imageIndex={imageIndex}
+              setImageIndex={setImageIndex}
+              reloadRoots={reloadRoots}
+              saveTitle={saveTitle}
+              saveRatings={saveRatings}
+              setMessage={setMessage}
+            />
+          )}
+          {ro && detail && (
+            <TitleDetailFormReadOnly
+              detail={detail}
+              selectedId={selectedId}
+              resourceKind={resourceKind}
+              playbackDevices={playbackDevices}
+              playbackDeviceId={playbackDeviceId}
+              setPlaybackDeviceId={setPlaybackDeviceId}
+              imageIndex={imageIndex}
+              setImageIndex={setImageIndex}
+              setMessage={setMessage}
+            />
           )}
         </div>
       </div>
