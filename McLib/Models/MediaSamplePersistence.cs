@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 
 namespace MediaCollection
@@ -73,14 +72,6 @@ namespace MediaCollection
 		{
 			string fn = GetSampleFileName(item);
 			return File.OpenRead(fn);
-		}
-
-		public static Image GetImage(this MediaSample item)
-		{
-			using (var strm = item.GetData())
-			{
-				return Image.FromStream(strm);
-			}
 		}
 	}
 }

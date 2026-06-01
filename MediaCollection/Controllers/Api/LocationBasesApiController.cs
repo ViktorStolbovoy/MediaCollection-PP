@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using MediaCollection;
 
 namespace MediaCollection.Controllers.Api
 {
