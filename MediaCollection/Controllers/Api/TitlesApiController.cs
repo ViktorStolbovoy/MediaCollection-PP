@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NPoco;
-using MediaCollection;
 
 namespace MediaCollection.Controllers.Api
 {
