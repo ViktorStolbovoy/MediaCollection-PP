@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using Stolbovoy.Utils;
@@ -67,7 +68,7 @@ namespace MediaCollection
         private void CheckSeries(string seriesName)
         {
             m_title = null;
-            var ss = TitlePersistence.ListTitles(seriesName, TitleKind.Series, false);
+            var ss = TitlePersistence.ListTitles(seriesName, TitleKind.Series, false).GetAwaiter().GetResult();
             if (ss != null && ss.Count == 1)
             {
                 m_title = ss[0];
@@ -76,7 +77,7 @@ namespace MediaCollection
         }
 
 		List<Title> foundSeasons = new List<Title>();
-		private void BtnSearchForSeasons_Click(object sender, EventArgs e)
+		private async void BtnSearchForSeasons_Click(object sender, EventArgs e)
 		{
             var seasonNumbersFound = new HashSet<int>();
             var seasonNumbersNotFound = new HashSet<int>();
@@ -84,7 +85,7 @@ namespace MediaCollection
             CheckSeries(TbxSeries.Text);
 
 			//Search for pattern
-			foundSeasons = TitlePersistence.ListTitles(sqlPattern, TitleKind.Season, false);
+			foundSeasons = await TitlePersistence.ListTitles(sqlPattern, TitleKind.Season, false);
 			ClbSeasons.Items.Clear();
 			foreach (var title in foundSeasons)
 			{
@@ -94,9 +95,9 @@ namespace MediaCollection
 
 
             //Search for pattern
-            var titlesDisks = TitlePersistence.ListTitles(sqlPattern, TitleKind.Disk, false);
+            var titlesDisks = await TitlePersistence.ListTitles(sqlPattern, TitleKind.Disk, false);
 
-            var titlesEpisodes = TitlePersistence.ListTitles(sqlPattern, TitleKind.Episode, false);
+            var titlesEpisodes = await TitlePersistence.ListTitles(sqlPattern, TitleKind.Episode, false);
 
             ClbEpisodes.Items.Clear();
             foreach (var d in titlesDisks)
@@ -124,7 +125,7 @@ namespace MediaCollection
 			
         }
 
-		private void BtnCreateSeasons_Click(object sender, EventArgs e)
+		private async void BtnCreateSeasons_Click(object sender, EventArgs e)
 		{
             if (m_title == null)
             {
@@ -168,7 +169,7 @@ namespace MediaCollection
 				}
 				if (found) continue;
 
-				var season = TitlePersistence.AddTitle(string.Format(pattern, i), TitleKind.Season, i, 0 , 0 , m_title.Id);
+				var season = await TitlePersistence.AddTitle(string.Format(pattern, i), TitleKind.Season, i, 0 , 0 , m_title.Id);
 				ClbSeasons.Items.Add(season, true);
 				TbxSeasonsToCreate.Text = "";
 			}
@@ -182,9 +183,9 @@ namespace MediaCollection
 
 		}
 
-        private void BtnCreateSeries_Click(object sender, EventArgs e)
+        private async void BtnCreateSeries_Click(object sender, EventArgs e)
         {
-            TitlePersistence.AddTitle(TbxSeries.Text, TitleKind.Series, 0, 0, 0, null);
+            await TitlePersistence.AddTitle(TbxSeries.Text, TitleKind.Series, 0, 0, 0, null);
             BtnCreateSeries.Enabled = false;
         }
 
@@ -193,7 +194,7 @@ namespace MediaCollection
 
         }
 
-        private void BtnAutoMove_Click(object sender, EventArgs e)
+        private async void BtnAutoMove_Click(object sender, EventArgs e)
         {
             if (m_title == null)
             {
@@ -216,7 +217,7 @@ namespace MediaCollection
                     if (ClbSeasons.GetItemChecked(i) && !s.ParentTitleId.HasValue)
                     {
                         s.ParentTitleId = seriesTitleId;
-                        TitlePersistence.ReparentTitle(s.Id, seriesTitleId);
+                        await TitlePersistence.ReparentTitle(s.Id, seriesTitleId);
                     }
                     if (!seasons.ContainsKey(s.Season)) seasons.Add(s.Season, s.Id);
                 }
@@ -234,7 +235,7 @@ namespace MediaCollection
                         if (seasons.TryGetValue(ep.Season, out seasonTitleId))
                         {
                             ep.ParentTitleId = seasonTitleId;
-                            TitlePersistence.ReparentTitle(ep.Id, seasonTitleId);
+                            await TitlePersistence.ReparentTitle(ep.Id, seasonTitleId);
                         }
                     }
                 }
@@ -277,7 +278,7 @@ namespace MediaCollection
         private bool FindTitlesToConvert()
         {
             ClbEpisodes.Items.Clear();
-            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, TitleKind.Title, false);
+            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, TitleKind.Title, false).GetAwaiter().GetResult();
             try
             {
                 var regex = new Regex(TbxEpisodesRegexp.Text);
@@ -321,7 +322,7 @@ namespace MediaCollection
                     {
                         try
                         {
-                            GeneralPersistense.Upsert(t);
+                            GeneralPersistense.Upsert(t).GetAwaiter().GetResult();
                         }
                         catch (Exception e)
                         {

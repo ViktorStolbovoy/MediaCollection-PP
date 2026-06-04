@@ -127,7 +127,7 @@ namespace MediaCollection
 			e.Text = item.Overview.Wrap(50);
 		}
 
-		private void SetTitle(TmdbResult searchResult)
+		private async Task SetTitle(TmdbResult searchResult)
 		{
 			if (m_currentTitle == null) return;
 
@@ -148,20 +148,20 @@ namespace MediaCollection
 				StoredItem.EpisodePersistence*/
 
 			if (m_currentTitle.TitleName == null) m_currentTitle.TitleName = "";
-			GeneralPersistense.Upsert(m_currentTitle);
+			await GeneralPersistense.Upsert(m_currentTitle);
 			
 			if (searchResult.Poster != null && searchResult.Poster.Length > 0)
 			{
-				MediaSamplePersistence.AddSample(searchResult.Poster, m_currentTitle.Id, MediaSampleKind.Image, Path.GetExtension(searchResult.PosterPath));
+				await MediaSamplePersistence.AddSample(searchResult.Poster, m_currentTitle.Id, MediaSampleKind.Image, Path.GetExtension(searchResult.PosterPath));
 			}
 		}
 
-		private void LVResults_DoubleClick(object sender, EventArgs e)
+		private async void LVResults_DoubleClick(object sender, EventArgs e)
 		{
 			var res = LVResults.SelectedObject as TmdbResult;
 			if (res != null)
 			{
-				SetTitle(res);
+				await SetTitle(res);
 				if (BtnNext.Enabled)
 				{
 					BtnNext_Click(sender, e);
@@ -218,7 +218,7 @@ namespace MediaCollection
 			};
 		}
 
-		private void buttonManSave_Click(object sender, EventArgs e)
+		private async void buttonManSave_Click(object sender, EventArgs e)
 		{
 			if (m_currentTitle == null) return; //I don't see the use case, but still
 			string description = TbxDescription.Text;
@@ -238,7 +238,7 @@ namespace MediaCollection
 			if (modified) 
 			{
 				m_currentTitle.DateModifiedUtc = GeneralPersistense.GetTimestamp();
-				GeneralPersistense.Upsert(m_currentTitle);
+				await GeneralPersistense.Upsert(m_currentTitle);
 			}
 			BtnNext_Click(sender, e);
 		}

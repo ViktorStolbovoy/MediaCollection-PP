@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NPoco;
@@ -12,53 +13,54 @@ namespace MediaCollection.Controllers.Api
 	[Route("api/titles")]
 	public sealed class TitlesApiController : ControllerBase
 	{
-		private static Title FetchTitle(IDatabase db, long id)
+		private static async Task<Title> FetchTitle(IDatabase db, long id)
 		{
-			return db.Fetch<Title>("WHERE TITLE_ID = @0", id).FirstOrDefault();
+			var rows = await db.FetchAsync<Title>("WHERE TITLE_ID = @0", id);
+			return rows.FirstOrDefault();
 		}
 
 		[HttpGet("roots")]
-		public ActionResult<IEnumerable<Title>> GetRoots([FromQuery] string resourceKind = "video", [FromQuery] bool includeHidden = false)
+		public async Task<ActionResult<IEnumerable<Title>>> GetRoots([FromQuery] string resourceKind = "video", [FromQuery] bool includeHidden = false)
 		{
 			List<Title> list;
 			if (string.Equals(resourceKind, "audio", StringComparison.OrdinalIgnoreCase))
-				list = TitlePersistence.ListRootAudio(includeHidden);
+				list = await TitlePersistence.ListRootAudio(includeHidden);
 			else
-				list = TitlePersistence.ListRootVideo(includeHidden);
+				list = await TitlePersistence.ListRootVideo(includeHidden);
 			list.Sort();
 			return Ok(list);
 		}
 
 		[HttpGet("{parentId:long}/children")]
-		public ActionResult<IEnumerable<Title>> GetChildren(long parentId)
+		public async Task<ActionResult<IEnumerable<Title>>> GetChildren(long parentId)
 		{
-			var list = TitlePersistence.ListTitlesByParent(parentId);
+			var list = await TitlePersistence.ListTitlesByParent(parentId);
 			list.Sort();
 			return Ok(list);
 		}
 
 		[HttpGet("{id:long}", Name = "TitleDetail")]
-		public ActionResult<TitleDetailDto> GetDetail(long id)
+		public async Task<ActionResult<TitleDetailDto>> GetDetail(long id)
 		{
 			using var db = DB.GetDatabase();
-			var title = FetchTitle(db, id);
+			var title = await FetchTitle(db, id);
 			if (title == null) return NotFound();
 			var dto = new TitleDetailDto
 			{
 				Title = title,
-				Locations = LocationPersistence.ListTitleLocations(id),
-				Ratings = TitlePersistence.GetRatings(id),
-				Images = MediaSamplePersistence.GetSamples(id, MediaSampleKind.Image)
+				Locations = await LocationPersistence.ListTitleLocations(id),
+				Ratings = await TitlePersistence.GetRatings(id),
+				Images = await MediaSamplePersistence.GetSamples(id, MediaSampleKind.Image)
 			};
 			return Ok(dto);
 		}
 
 		[HttpPut("{id:long}")]
-		public IActionResult Update(long id, [FromBody] TitleUpdateDto body)
+		public async Task<IActionResult> Update(long id, [FromBody] TitleUpdateDto body)
 		{
 			if (body == null) return BadRequest();
 			using var db = DB.GetDatabase();
-			var title = FetchTitle(db, id);
+			var title = await FetchTitle(db, id);
 			if (title == null) return NotFound();
 			title.TitleName = body.TitleName ?? title.TitleName;
 			title.Kind = body.Kind;
@@ -69,25 +71,25 @@ namespace MediaCollection.Controllers.Api
 			title.Disk = body.Disk;
 			title.EpisodeOrTrack = body.EpisodeOrTrack;
 			title.DateModifiedUtc = GeneralPersistense.GetTimestamp();
-			GeneralPersistense.Upsert(title);
+			await GeneralPersistense.Upsert(title);
 			return Ok(title);
 		}
 
 		[HttpPost]
-		public ActionResult<Title> Create([FromBody] TitleCreateDto body)
+		public async Task<ActionResult<Title>> Create([FromBody] TitleCreateDto body)
 		{
 			if (body == null || string.IsNullOrWhiteSpace(body.TitleName)) return BadRequest();
 			var now = GeneralPersistense.GetTimestamp();
-			var t = TitlePersistence.AddTitle(body.TitleName.Trim(), body.Kind, body.Season, body.Disk, body.EpisodeOrTrack, body.ParentTitleId);
+			var t = await TitlePersistence.AddTitle(body.TitleName.Trim(), body.Kind, body.Season, body.Disk, body.EpisodeOrTrack, body.ParentTitleId);
 			return CreatedAtAction("TitleDetail", new { id = t.Id }, t);
 		}
 
 		[HttpDelete("{id:long}")]
-		public IActionResult Delete(long id)
+		public async Task<IActionResult> Delete(long id)
 		{
 			try
 			{
-				TitlePersistence.DeleteTitle(id);
+				await TitlePersistence.DeleteTitle(id);
 				return NoContent();
 			}
 			catch (Exception ex)
@@ -97,47 +99,47 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPost("{id:long}/toggle-hidden")]
-		public IActionResult ToggleHidden(long id)
+		public async Task<IActionResult> ToggleHidden(long id)
 		{
 			using var db = DB.GetDatabase();
-			var title = FetchTitle(db, id);
+			var title = await FetchTitle(db, id);
 			if (title == null) return NotFound();
 			var hidden = !title.Hidden;
-			TitlePersistence.SetHidden(id, hidden);
+			await TitlePersistence.SetHidden(id, hidden);
 			title.Hidden = hidden;
 			return Ok(title);
 		}
 
 		[HttpPost("{id:long}/move")]
-		public IActionResult Move(long id, [FromBody] MoveTitleRequest body)
+		public async Task<IActionResult> Move(long id, [FromBody] MoveTitleRequest body)
 		{
 			if (body == null) return BadRequest();
-			var err = TitleHierarchyService.TryMove(id, body.ParentId);
+			var err = await TitleHierarchyService.TryMove(id, body.ParentId);
 			if (err != null) return BadRequest(new { error = err });
 			using var db = DB.GetDatabase();
-			return Ok(FetchTitle(db, id));
+			return Ok(await FetchTitle(db, id));
 		}
 
 		[HttpPut("{titleId:long}/locations/{locationId:long}")]
-		public IActionResult UpdateLocation(long titleId, long locationId, [FromBody] LocationPatchDto body)
+		public async Task<IActionResult> UpdateLocation(long titleId, long locationId, [FromBody] LocationPatchDto body)
 		{
 			if (body == null) return BadRequest();
 			using var db = DB.GetDatabase();
-			var loc = db.Fetch<Location>("WHERE LOCATION_ID = @0 AND TITLE_ID = @1", locationId, titleId).FirstOrDefault();
+			var loc = (await db.FetchAsync<Location>("WHERE LOCATION_ID = @0 AND TITLE_ID = @1", locationId, titleId)).FirstOrDefault();
 			if (loc == null) return NotFound();
 			if (body.LocationBaseId.HasValue) loc.LocationBaseId = body.LocationBaseId.Value;
 			if (body.LocationData != null) loc.LocationData = body.LocationData;
 			loc.DateModifiedUtc = GeneralPersistense.GetTimestamp();
-			GeneralPersistense.Upsert(loc);
+			await GeneralPersistense.Upsert(loc);
 			return Ok(loc);
 		}
 
 		[HttpPost("{titleId:long}/locations")]
-		public ActionResult<Location> AddLocation(long titleId, [FromBody] LocationCreateDto body)
+		public async Task<ActionResult<Location>> AddLocation(long titleId, [FromBody] LocationCreateDto body)
 		{
 			if (body == null) return BadRequest();
 			using var db = DB.GetDatabase();
-			if (FetchTitle(db, titleId) == null) return NotFound();
+			if (await FetchTitle(db, titleId) == null) return NotFound();
 			var now = GeneralPersistense.GetTimestamp();
 			var loc = new Location
 			{
@@ -148,29 +150,30 @@ namespace MediaCollection.Controllers.Api
 				DateAddedUtc = now,
 				DateModifiedUtc = now
 			};
-			GeneralPersistense.Upsert(loc);
+			await GeneralPersistense.Upsert(loc);
 			return CreatedAtAction("TitleDetail", new { id = titleId }, loc);
 		}
 
 		[HttpDelete("{titleId:long}/locations/{locationId:long}")]
-		public IActionResult DeleteLocation(long titleId, long locationId)
+		public async Task<IActionResult> DeleteLocation(long titleId, long locationId)
 		{
 			using var db = DB.GetDatabase();
-			var loc = db.Fetch<Location>("WHERE LOCATION_ID = @0 AND TITLE_ID = @1", locationId, titleId).FirstOrDefault();
+			var loc = (await db.FetchAsync<Location>("WHERE LOCATION_ID = @0 AND TITLE_ID = @1", locationId, titleId)).FirstOrDefault();
 			if (loc == null) return NotFound();
-			loc.Delete();
+			await loc.Delete();
 			return NoContent();
 		}
 
 		[HttpPut("{titleId:long}/ratings")]
-		public IActionResult PutRatings(long titleId, [FromBody] List<RatingValueDto> ratings)
+		public async Task<IActionResult> PutRatings(long titleId, [FromBody] List<RatingValueDto> ratings)
 		{
 			if (ratings == null) return BadRequest();
 			using var db = DB.GetDatabase();
-			if (FetchTitle(db, titleId) == null) return NotFound();
+			if (await FetchTitle(db, titleId) == null) return NotFound();
 			foreach (var rv in ratings)
 			{
-				var existing = TitlePersistence.GetRatings(titleId).FirstOrDefault(r => r.RatingId == rv.RatingId);
+				var current = await TitlePersistence.GetRatings(titleId);
+				var existing = current.FirstOrDefault(r => r.RatingId == rv.RatingId);
 				if (existing == null)
 				{
 					var tw = new TitleRatingWithName
@@ -179,21 +182,21 @@ namespace MediaCollection.Controllers.Api
 						RatingValue = rv.Value,
 						TitleId = 0
 					};
-					tw.Set(titleId);
+					await tw.Set(titleId);
 				}
 				else
 				{
 					existing.RatingValue = rv.Value;
-					existing.Set(titleId);
+					await existing.Set(titleId);
 				}
 			}
-			return Ok(TitlePersistence.GetRatings(titleId));
+			return Ok(await TitlePersistence.GetRatings(titleId));
 		}
 
 		[HttpGet("{titleId:long}/images/{sampleId:long}/file")]
-		public IActionResult GetImageFile(long titleId, long sampleId)
+		public async Task<IActionResult> GetImageFile(long titleId, long sampleId)
 		{
-			var list = MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
+			var list = await MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
 			var sample = list.FirstOrDefault(s => s.Id == sampleId);
 			if (sample == null) return NotFound();
 			var stream = sample.GetData();
@@ -211,25 +214,25 @@ namespace MediaCollection.Controllers.Api
 
 		[HttpPost("{titleId:long}/images")]
 		[RequestSizeLimit(52_428_800)]
-		public IActionResult UploadImage(long titleId, IFormFile file)
+		public async Task<IActionResult> UploadImage(long titleId, IFormFile file)
 		{
 			if (file == null || file.Length == 0) return BadRequest();
 			using var db = DB.GetDatabase();
-			if (FetchTitle(db, titleId) == null) return NotFound();
+			if (await FetchTitle(db, titleId) == null) return NotFound();
 			using var ms = new MemoryStream();
 			file.CopyTo(ms);
 			var ext = Path.GetExtension(file.FileName) ?? ".jpg";
-			var sample = MediaSamplePersistence.AddSample(ms.ToArray(), titleId, MediaSampleKind.Image, ext);
+			var sample = await MediaSamplePersistence.AddSample(ms.ToArray(), titleId, MediaSampleKind.Image, ext);
 			return Ok(sample);
 		}
 
 		[HttpDelete("{titleId:long}/images/{sampleId:long}")]
-		public IActionResult DeleteImage(long titleId, long sampleId)
+		public async Task<IActionResult> DeleteImage(long titleId, long sampleId)
 		{
-			var list = MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
+			var list = await MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
 			var sample = list.FirstOrDefault(s => s.Id == sampleId);
 			if (sample == null) return NotFound();
-			MediaSamplePersistence.RemoveSample(sample);
+			await MediaSamplePersistence.RemoveSample(sample);
 			return NoContent();
 		}
 	}

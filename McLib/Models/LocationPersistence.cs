@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NPoco;
 
 
@@ -8,45 +9,45 @@ namespace MediaCollection
 	public static class LocationPersistence
 	{
 
-		public static List<LocationForDisplay> ListTitleLocations(long titleId)
+		public static async Task<List<LocationForDisplay>> ListTitleLocations(long titleId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<LocationForDisplay>("SELECT l.*, b.LOCATION_KIND, b.LOCATION FROM location l JOIN location_base b ON  b.LOCATION_BASE_ID = l.LOCATION_BASE_ID WHERE l.title_id = @0", titleId);
+				return await db.FetchAsync<LocationForDisplay>("SELECT l.*, b.LOCATION_KIND, b.LOCATION FROM location l JOIN location_base b ON  b.LOCATION_BASE_ID = l.LOCATION_BASE_ID WHERE l.title_id = @0", titleId);
 			}
 		}
 
-		public static List<TitleLocation> GetLocationsForBase(long baseId)
+		public static async Task<List<TitleLocation>> GetLocationsForBase(long baseId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return GetLocationForBase(baseId, db);
+				return await GetLocationForBase(baseId, db);
 			}
 		}
 
-		public static List<TitleLocation> GetLocationForBase(long baseId, IDatabase db)
+		public static async Task<List<TitleLocation>> GetLocationForBase(long baseId, IDatabase db)
 		{
-			return db.Fetch<TitleLocation>("SELECT * FROM location WHERE LOCATION_BASE_ID = @0", baseId);
+			return await db.FetchAsync<TitleLocation>("SELECT * FROM location WHERE LOCATION_BASE_ID = @0", baseId);
 		}
 
-		public static IList<LocationBase> ListBases()
-		{
-			using (var db = DB.GetDatabase())
-			{
-				return db.Fetch<LocationBase>("SELECT * FROM location_base ORDER BY LOCATION");
-			}
-		}
-
-		public static LocationBase GetBase(long id)
+		public static async Task<IList<LocationBase>> ListBases()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<LocationBase>("SELECT * FROM location_base WHERE LOCATION_BASE_ID = @0", id).FirstOrDefault();
+				return await db.FetchAsync<LocationBase>("SELECT * FROM location_base ORDER BY LOCATION");
+			}
+		}
+
+		public static async Task<LocationBase> GetBase(long id)
+		{
+			using (var db = DB.GetDatabase())
+			{
+				return (await db.FetchAsync<LocationBase>("SELECT * FROM location_base WHERE LOCATION_BASE_ID = @0", id)).FirstOrDefault();
 			}
 		}
 
 
-		public static DeviceLocationResult GetTitleLocationFull(long deviceId, long titleId)
+		public static async Task<DeviceLocationResult> GetTitleLocationFull(long deviceId, long titleId)
 		{
 			//TitleId points to Location(of a title)
 			//Location has Location Data (0) and LocationBase data
@@ -65,18 +66,20 @@ namespace MediaCollection
 					JOIN device d
 					  ON d.DEVICE_ID = dl.DEVICE_ID
 					WHERE l.TITLE_ID =@0";
-				var lr = db.Fetch<DeviceLocationResult>(SQL, titleId, deviceId);
+				var lr = await db.FetchAsync<DeviceLocationResult>(SQL, titleId, deviceId);
 				if (lr.Count == 0) return null;
 				return lr[0];
 			}
 		}
 
-		public static void Run(long deviceId, long titleId)
+		public static async Task<bool> Run(long deviceId, long titleId)
 		{
-			var dl = GetTitleLocationFull(deviceId, titleId);
-			if (dl == null) return;
+			var dl = await GetTitleLocationFull(deviceId, titleId);
+			if (dl == null) return false;
 
-			dl.Run();
+			await dl.Run();
+
+			return true;
 		}
 	}
 
@@ -94,22 +97,24 @@ namespace MediaCollection
 		private Title m_title;
 
 		//Get title info
-		public void RetrieveTitleInfo(IDatabase db)
+		public async Task RetrieveTitleInfo(IDatabase db)
 		{
-			if (TitleId > 0) m_title = db.SingleById<Title>(this.TitleId);
+			if (TitleId > 0) {
+				m_title = await db.SingleByIdAsync<Title>(this.TitleId);
+			}
 		}
 
 		public bool ShouldDelete { get; set; }
 
-		public override void Delete()
+		public override async Task Delete()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				db.Delete<Location>(Id);
+				await db.DeleteAsync(Id);
 			}
 		}
 
-		public void SetNewLocation()
+		public async Task SetNewLocation()
 		{
 			LocationBaseId = NewLocationBaseId;
 			LocationData = NewLocationData;
@@ -117,7 +122,7 @@ namespace MediaCollection
 
 			using (var db = DB.GetDatabase())
 			{
-				db.Update(this);
+				await db.UpdateAsync(this);
 			}
 		}
 	}
@@ -128,15 +133,15 @@ namespace MediaCollection
 		public readonly List<StoredItem> NewFiles = new List<StoredItem>();
 		public readonly List<TitleLocation> MissingFiles = new List<TitleLocation>();
 
-		private void RetrieveMissingTitleInfo()
+		private async Task RetrieveMissingTitleInfo()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				foreach (var mf in MissingFiles) mf.RetrieveTitleInfo(db);
+				foreach (var mf in MissingFiles) await mf.RetrieveTitleInfo(db);
 			}
 		}
 
-		public static RescanResults Run(long locationBaseId, long deviceId)
+		public static async Task<RescanResults> Run(long locationBaseId, long deviceId)
 		{
 			var res = new RescanResults();
 
@@ -153,8 +158,8 @@ namespace MediaCollection
 			List<TitleLocation> databaseStorage;
 			using (var db = DB.GetDatabase())
 			{
-				basePath = db.Fetch<string>(SQL, locationBaseId, deviceId).FirstOrDefault();
-				databaseStorage = LocationPersistence.GetLocationForBase(locationBaseId, db);
+				basePath = (await db.FetchAsync<string>(SQL, locationBaseId, deviceId)).FirstOrDefault();
+				databaseStorage = await LocationPersistence.GetLocationForBase(locationBaseId, db);
 			}
 
 			//Don't process images and unknown files
@@ -205,7 +210,7 @@ namespace MediaCollection
 			for (; idxFile < fileStorage.Count; idxFile++) res.NewFiles.Add(fileStorage[idxFile]);
 			for (; idxDb < databaseStorage.Count; idxDb++) res.MissingFiles.Add(databaseStorage[idxDb]);
 
-			res.RetrieveMissingTitleInfo();
+			await res.RetrieveMissingTitleInfo();
 			return res;
 		}
 	}

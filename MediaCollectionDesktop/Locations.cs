@@ -13,7 +13,7 @@ namespace MediaCollection
 		public Locations()
 		{
 			InitializeComponent();
-			var locations = LocationPersistence.ListBases();
+			var locations = LocationPersistence.ListBases().GetAwaiter().GetResult();
 			LVLocations.VirtualMode = false;
 			LVLocations.SetObjects(locations);
 		}
@@ -33,7 +33,7 @@ namespace MediaCollection
 		private void LVLocations_CellEditFinished(object sender, BrightIdeasSoftware.CellEditEventArgs e)
 		{
 			var um = e.RowObject as UpdatableModel;
-			if (um != null) um.Set();
+			if (um != null) um.Set().GetAwaiter().GetResult();
 				
 		}
 
@@ -43,7 +43,7 @@ namespace MediaCollection
 			LVLocations.AddObject(d);
 		}
 
-		private void BtnDelete_Click(object sender, EventArgs e)
+		private async void BtnDelete_Click(object sender, EventArgs e)
 		{
 			var item = LVLocations.SelectedItem;
 			if (item != null)
@@ -53,7 +53,7 @@ namespace MediaCollection
 				{
 					if (MessageBox.Show("Do you want to delete " + d.Name + "?", "Confirm Location Removal", MessageBoxButtons.OKCancel) == DialogResult.OK)
 					{
-						d.Delete();
+						await d.Delete();
 						item.Remove();
 					}
 				}

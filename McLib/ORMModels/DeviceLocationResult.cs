@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NPoco;
 
 namespace MediaCollection
@@ -17,12 +18,12 @@ namespace MediaCollection
 		public DeviceType DeviceKind { get; set; }
 
 
-		public void Run()
+		public async Task Run()
 		{
 			switch (DeviceKind)
 			{
 				case DeviceType.Dune:
-					ExecHttpCommand(DuneCommand());
+					await ExecHttpCommand(DuneCommand());
 					break;
 				case DeviceType.Local:
 					throw new NotSupportedException("Local client execution is available only from MediaCollectionDesktop via RunOnClient().");
@@ -64,12 +65,12 @@ namespace MediaCollection
 		}
 
 
-		public void ExecHttpCommand(string command)
+		public async Task ExecHttpCommand(string command)
 		{
 			//TODO: Add error handling and cancellation
 			using (var cts = new System.Threading.CancellationTokenSource())
 			{
-				HttpHelper.MakeHttpRequest(command, cts.Token).Wait(); //Make it synchronous 
+				await HttpHelper.MakeHttpRequest(command, cts.Token);
 			}
 		}
 	}

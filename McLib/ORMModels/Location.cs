@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NPoco;
 
 
@@ -58,11 +59,11 @@ namespace MediaCollection
 
 		#endregion
 
-		public virtual void Delete()
+		public virtual async Task Delete()
 		{
-			using(var db = DB.GetDatabase())
+			using (var db = DB.GetDatabase())
 			{
-				db.Delete(this);
+				await db.DeleteAsync(this);
 			}
 		}
 	}

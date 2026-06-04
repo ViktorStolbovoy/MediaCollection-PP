@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MediaCollection
 {
 	public static class MediaSamplePersistence
 	{
 		public static string s_dataFolder;
-		public static MediaSample AddSample(byte[] data, long titleId, MediaSampleKind kind, string extension)
+		public static async Task<MediaSample> AddSample(byte[] data, long titleId, MediaSampleKind kind, string extension)
 		{
 			if (data == null) throw new ArgumentNullException("data", "Sample data can't be null");
 			var ms = new MediaSample { TitleId = titleId, Extension = extension, MediaKind = kind };
 			using (var db = DB.GetDatabase())
 			{
-				db.Insert(ms);
+				await db.InsertAsync(ms);
 			}
 			string fn = GetSampleFileName(ms);
-			File.WriteAllBytes(fn, data);
+			await File.WriteAllBytesAsync(fn, data);
 			return ms;
 		}
 
-		public static void RemoveSample(MediaSample ms)
+		public static async Task RemoveSample(MediaSample ms)
 		{
 			string fn = GetSampleFileName(ms);
 			File.Delete(fn);
 			using (var db = DB.GetDatabase())
 			{
-				db.Delete(ms);
+				await db.DeleteAsync(ms);
 			}
 		}
 
 
-		public static List<MediaSample> GetSamples(long titleId, MediaSampleKind kind)
+		public static async Task<List<MediaSample>> GetSamples(long titleId, MediaSampleKind kind)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				var res = db.Fetch<MediaSample>("SELECT * FROM MEDIA_SAMPLE WHERE TITLE_ID = @0 and MEDIA_KIND = @1", titleId, kind);
-				return res;
+				return await db.FetchAsync<MediaSample>("SELECT * FROM MEDIA_SAMPLE WHERE TITLE_ID = @0 and MEDIA_KIND = @1", titleId, kind);
 			}
 		}
 

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,7 +14,7 @@ namespace MediaCollection
 			
 		}
 
-		private void CbxDevice_SelectedIndexChanged(object sender, EventArgs e)
+		private async void CbxDevice_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			m_rescanResults = null;
 			CbxLocation.Items.Clear();
@@ -25,15 +22,15 @@ namespace MediaCollection
 			if (selected != null)
 			{
 				CbxLocation.Items.Add(new LocationBase { Id = -1, Kind = LocationBaseKind.Local, Name = "All" });
-				CbxLocation.Items.AddRange(DevicePersistense.GetLocationsForTitleUpdate(selected.Id).ToArray());
+				CbxLocation.Items.AddRange((await DevicePersistense.GetLocationsForTitleUpdate(selected.Id)).ToArray());
 			}
 			CbxLocation.Enabled = true;
 			BtnApply.Enabled = false;
 		}
 
-		private void BulkUpdate_Shown(object sender, EventArgs e)
+		private async void BulkUpdate_Shown(object sender, EventArgs e)
 		{
-			CbxDevice.Items.AddRange(DevicePersistense.ListForTitleUpdate().ToArray());
+			CbxDevice.Items.AddRange((await DevicePersistense.ListForTitleUpdate()).ToArray());
 			if (CbxDevice.Items.Count == 1)
 			{
 				CbxDevice.SelectedIndex = 0;
@@ -54,7 +51,7 @@ namespace MediaCollection
 			return CbxDevice.SelectedItem as Device;
 		}
 
-		private void BtnScan_Click(object sender, EventArgs e)
+		private async void BtnScan_Click(object sender, EventArgs e)
 		{
 			var device = GetSelectedDevice();
 			LVMissing.ClearObjects();
@@ -65,12 +62,12 @@ namespace MediaCollection
 				{
 					for(int i = 1; i < CbxLocation.Items.Count; i ++)
 					{
-						ScanLocation(CbxLocation.Items[i] as LocationBase, device);
+						await ScanLocation(CbxLocation.Items[i] as LocationBase, device);
 					}
 				}
 				else 
 				{
-					ScanLocation(CbxLocation.SelectedItem as LocationBase, device);
+					await ScanLocation(CbxLocation.SelectedItem as LocationBase, device);
 				}
 				FindMoved();
 			}
@@ -80,13 +77,13 @@ namespace MediaCollection
 		}
 
 		RescanResults m_rescanResults;
-		private void ScanLocation(LocationBase location, Device device)
+		private async Task ScanLocation(LocationBase location, Device device)
 		{
 			UpdateWaitStatus("Processing " + location.Name + " ...");
 			try
 			{
 				if (location == null || device == null) return;
-				m_rescanResults = RescanResults.Run(location.Id, device.Id);
+				m_rescanResults = await RescanResults.Run(location.Id, device.Id);
 				LVNew.AddObjects(m_rescanResults.NewFiles);
 				LVMissing.AddObjects(m_rescanResults.MissingFiles);
 				Application.DoEvents();
@@ -122,7 +119,7 @@ namespace MediaCollection
 			Application.DoEvents();
 		}
 
-		private void BtnApply_Click(object sender, EventArgs e)
+		private async void BtnApply_Click(object sender, EventArgs e)
 		{
 			if (m_rescanResults == null) return;
 			
@@ -130,12 +127,12 @@ namespace MediaCollection
 			UpdateWaitStatus("Removing missing...");
 			foreach(var mf in m_rescanResults.MissingFiles)
 			{
-				if (mf.ShouldDelete) mf.Delete();
+				if (mf.ShouldDelete) await mf.Delete();
 				else 
 				{
 					if (mf.NewLocationBaseId > 0 && !string.IsNullOrEmpty(mf.NewLocationData))
 					{
-						mf.SetNewLocation();
+						await mf.SetNewLocation();
 					}
 				}
 			}
@@ -146,7 +143,7 @@ namespace MediaCollection
 			UpdateWaitStatus("Adding new...");
 			foreach(var nf in m_rescanResults.NewFiles)
 			{
-				nf.Save();
+				await nf.Save();
 			}
 			LVNew.ClearObjects();
 

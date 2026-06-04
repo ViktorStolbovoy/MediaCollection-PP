@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection.Controllers.Api
@@ -15,43 +16,47 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpGet]
-		public ActionResult<DeviceWorkspaceDto> GetWorkspace()
+		public async Task<ActionResult<DeviceWorkspaceDto>> GetWorkspace()
 		{
-			var devices = DevicePersistense.List();
-			var map = devices.ToDictionary(d => d.Id, d => DevicePersistense.GetLocations(d.Id));
+			var devices = await DevicePersistense.List();
+			var map = new Dictionary<long, List<LocationBaseDeviceMapping>>();
+			foreach (var d in devices)
+			{
+				map[d.Id] = await DevicePersistense.GetLocations(d.Id);
+			}
 			return Ok(new DeviceWorkspaceDto { Devices = devices, MappingsByDeviceId = map });
 		}
 
 		[HttpPost]
-		public ActionResult<Device> Create([FromBody] Device device)
+		public async Task<ActionResult<Device>> Create([FromBody] Device device)
 		{
 			if (device == null || string.IsNullOrWhiteSpace(device.Name)) return BadRequest();
 			device.Id = 0;
-			device.Set();
+			await device.Set();
 			return Ok(device);
 		}
 
 		[HttpPut("{id:long}")]
-		public IActionResult Update(long id, [FromBody] Device patch)
+		public async Task<IActionResult> Update(long id, [FromBody] Device patch)
 		{
 			if (patch == null) return BadRequest();
-			var list = DevicePersistense.List();
+			var list = await DevicePersistense.List();
 			var d = list.FirstOrDefault(x => x.Id == id);
 			if (d == null) return NotFound();
 			if (!string.IsNullOrEmpty(patch.Name)) d.Name = patch.Name;
 			if (patch.Data != null) d.Data = patch.Data;
 			d.Kind = patch.Kind;
 			d.IsDefault = patch.IsDefault;
-			d.Set();
+			await d.Set();
 			return Ok(d);
 		}
 
 		[HttpDelete("{id:long}")]
-		public IActionResult Delete(long id)
+		public async Task<IActionResult> Delete(long id)
 		{
 			try
 			{
-				Device.Delete(id);
+				await Device.Delete(id);
 				return NoContent();
 			}
 			catch (System.Exception ex)
@@ -61,7 +66,7 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPut("{deviceId:long}/mappings")]
-		public IActionResult PutMappings(long deviceId, [FromBody] List<MappingPatchDto> mappings)
+		public async Task<IActionResult> PutMappings(long deviceId, [FromBody] List<MappingPatchDto> mappings)
 		{
 			if (mappings == null) return BadRequest();
 			foreach (var m in mappings)
@@ -72,9 +77,9 @@ namespace MediaCollection.Controllers.Api
 					LocationBaseId = m.LocationBaseId,
 					Mapping = m.Mapping ?? ""
 				};
-				row.Set();
+				await row.Set();
 			}
-			return Ok(DevicePersistense.GetLocations(deviceId));
+			return Ok(await DevicePersistense.GetLocations(deviceId));
 		}
 	}
 

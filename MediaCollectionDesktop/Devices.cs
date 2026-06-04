@@ -13,7 +13,7 @@ namespace MediaCollection
 				var dev = o as Device;
 				if (dev != null)
 				{
-					return DevicePersistense.GetLocations(dev.Id);
+					return DevicePersistense.GetLocations(dev.Id).GetAwaiter().GetResult();
 				}
 				return null;
 			};
@@ -72,7 +72,7 @@ namespace MediaCollection
 
 		private void Devices_Shown(object sender, EventArgs e)
 		{
-			TVDevices.Roots = DevicePersistense.List();
+			TVDevices.Roots = DevicePersistense.List().GetAwaiter().GetResult();
 		}
 
 		private void TVDevices_CellEditStarting(object sender, BrightIdeasSoftware.CellEditEventArgs e)
@@ -109,7 +109,7 @@ namespace MediaCollection
 		private void TVDevices_CellEditFinished(object sender, BrightIdeasSoftware.CellEditEventArgs e)
 		{
 			var um = e.RowObject as UpdatableModel;
-			if (um != null) um.Set();
+			if (um != null) um.Set().GetAwaiter().GetResult();
 
 		}
 

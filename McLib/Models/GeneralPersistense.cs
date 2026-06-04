@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MediaCollection
 {
 	public static class GeneralPersistense
 	{
-		public static void Upsert<T>(T data)
+		public static async Task Upsert<T>(T data)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				if (db.Update(data) == 0)
+				if (await db.UpdateAsync(data) == 0)
 				{
-					db.Insert(data);
+					await db.InsertAsync(data);
 				}
 			}
 		}
@@ -22,11 +23,11 @@ namespace MediaCollection
 			return DateTime.UtcNow.ToString(DT_FORMAT);
 		}
 
-		public static List<T> FetchAll<T>()
+		public static async Task<List<T>> FetchAll<T>()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<T>();
+				return await db.FetchAsync<T>();
 			}
 		}
 	}

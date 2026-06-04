@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace MediaCollection
@@ -6,119 +7,119 @@ namespace MediaCollection
 	public static class TitlePersistence
 	{
 		
-		public static List<Title> ListTitles(string pattern, TitleKind kind, bool hidden)
+		public static async Task<List<Title>> ListTitles(string pattern, TitleKind kind, bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
 				if (string.IsNullOrWhiteSpace(pattern))
 				{
-					return db.Fetch<Title>("where KIND = @0 and HIDDEN = @1", kind, hidden ? 1 : 0);
+					return await db.FetchAsync<Title>("where KIND = @0 and HIDDEN = @1", kind, hidden ? 1 : 0);
 				}
 				else
 				{
-					return db.Fetch<Title>("where KIND = @0 and TITLE_NAME like @1 and HIDDEN = @2", kind, pattern, hidden ? 1 : 0);
+					return await db.FetchAsync<Title>("where KIND = @0 and TITLE_NAME like @1 and HIDDEN = @2", kind, pattern, hidden ? 1 : 0);
 				}
 			}
 		}
 
-		public static List<Title> ListRootVideo(bool hidden)
+		public static async Task<List<Title>> ListRootVideo(bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
-                return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) and HIDDEN = @5 ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk, hidden ? 1 : 0);
+                return await db.FetchAsync<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) and HIDDEN = @5 ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk, hidden ? 1 : 0);
 			}
 		}
 
-		public static List<Title> ListRootAudio(bool hidden)
+		public static async Task<List<Title>> ListRootAudio(bool hidden)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND = @0 or KIND = @1 or KIND = @2) and HIDDEN = @3 ORDER BY TITLE_NAME, ORD", TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist, hidden ? 1 : 0);
+				return await db.FetchAsync<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND = @0 or KIND = @1 or KIND = @2) and HIDDEN = @3 ORDER BY TITLE_NAME, ORD", TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist, hidden ? 1 : 0);
 			}
 		}
 
-		public static List<Title> ListTitlesByParent(long parentTitleId)
+		public static async Task<List<Title>> ListTitlesByParent(long parentTitleId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("select * from TITLE where PARENT_TITLE_ID = @0 ORDER BY ORD, TITLE_NAME", parentTitleId);
+				return await db.FetchAsync<Title>("select * from TITLE where PARENT_TITLE_ID = @0 ORDER BY ORD, TITLE_NAME", parentTitleId);
 			}
 		}
 
-		public static List<Title>GetTitlesForAutoupdate()
+		public static async Task<List<Title>> GetTitlesForAutoupdate()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Title>("WHERE DESCRIPTION = '' AND RELEASE_YEAR = 0 and (KIND =@0 or KIND = @1) and HIDDEN = 0 ORDER BY TITLE_NAME, ORD", TitleKind.Title, TitleKind.Series);
+				return await db.FetchAsync<Title>("WHERE DESCRIPTION = '' AND RELEASE_YEAR = 0 and (KIND =@0 or KIND = @1) and HIDDEN = 0 ORDER BY TITLE_NAME, ORD", TitleKind.Title, TitleKind.Series);
 			}
 		}
 
-		public static Title AddTitle(string name, TitleKind kind, int season, int disk, int episodeOrTrack, long? parentId)
+		public static async Task<Title> AddTitle(string name, TitleKind kind, int season, int disk, int episodeOrTrack, long? parentId)
 		{
 
 			string now = GeneralPersistense.GetTimestamp();
 			var t = new Title { TitleName = name, Kind = kind, Season = season, Disk = disk, EpisodeOrTrack = episodeOrTrack, ParentTitleId = parentId, DateAddedUtc = now, DateModifiedUtc = now, ImdbId = "", Description = "", Hidden = false };
 			using (var db = DB.GetDatabase())
 			{
-				db.Insert(t);
+				await db.InsertAsync(t);
 			}
 			return t;
 		}
 
-		public static bool SaveTitleName(int titleId, string newName)
+		public static async Task<bool> SaveTitleName(int titleId, string newName)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Execute("UPDATE TITLE SET TITLE_NAME= @0 WHERE TITLE_ID = @1", newName, titleId) > 0;
+				return await db.ExecuteAsync("UPDATE TITLE SET TITLE_NAME= @0 WHERE TITLE_ID = @1", newName, titleId) > 0;
 			}
 		}
 
-		public static bool ReparentTitle(long titleId, long? parentId)
+		public static async Task<bool> ReparentTitle(long titleId, long? parentId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Execute("UPDATE title SET PARENT_TITLE_ID= @0 WHERE TITLE_ID = @1", parentId, titleId) > 0;
+				return await db.ExecuteAsync("UPDATE title SET PARENT_TITLE_ID= @0 WHERE TITLE_ID = @1", parentId, titleId) > 0;
 			}
 		}
 
-		public static bool MoveTitle(int titleId, int ord)
+		public static async Task<bool> MoveTitle(int titleId, int ord)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Execute("UPDATE title SET ORD= @0 WHERE TITLE_ID = @1", ord, titleId) > 0;
+				return await db.ExecuteAsync("UPDATE title SET ORD= @0 WHERE TITLE_ID = @1", ord, titleId) > 0;
 			}
 		}
 
-        public static bool SetHidden(long titleId, bool hidden)
+        public static async Task<bool> SetHidden(long titleId, bool hidden)
         {
             using (var db = DB.GetDatabase())
             {
-                return db.Execute("UPDATE title SET HIDDEN = @0 WHERE TITLE_ID = @1", hidden ? 1 : 0, titleId) > 0;
+                return await db.ExecuteAsync("UPDATE title SET HIDDEN = @0 WHERE TITLE_ID = @1", hidden ? 1 : 0, titleId) > 0;
             }
         }
 
-        public static List<TitleRatingWithName> GetRatings(long titleId) 
+        public static async Task<List<TitleRatingWithName>> GetRatings(long titleId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<TitleRatingWithName>("select p.*, tr.RATING_VALUE, tr.TITLE_ID from RATING_PROVIDER p LEFT JOIN TITLE_RATING tr ON p.RATING_ID = tr.RATING_ID and tr.TITLE_ID = @0 ORDER BY p.RATING_NAME", titleId);
+				return await db.FetchAsync<TitleRatingWithName>("select p.*, tr.RATING_VALUE, tr.TITLE_ID from RATING_PROVIDER p LEFT JOIN TITLE_RATING tr ON p.RATING_ID = tr.RATING_ID and tr.TITLE_ID = @0 ORDER BY p.RATING_NAME", titleId);
 			}
 		}
 
-		public static void DeleteTitle(long titleId)
+		public static async Task DeleteTitle(long titleId)
 		{
-			var images = MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
+			var images = await MediaSamplePersistence.GetSamples(titleId, MediaSampleKind.Image);
 			if (images != null)
 			{
 				foreach (var img in images)
 				{
-					MediaSamplePersistence.RemoveSample(img);
+					await MediaSamplePersistence.RemoveSample(img);
 				}
 			}
 			
 			using (var db = DB.GetDatabase())
 			{
-                db.Execute("DELETE FROM location WHERE TITLE_ID = @0; DELETE FROM title WHERE TITLE_ID = @0", titleId);
+                await db.ExecuteAsync("DELETE FROM location WHERE TITLE_ID = @0; DELETE FROM title WHERE TITLE_ID = @0", titleId);
 			}
 		}
 	}
