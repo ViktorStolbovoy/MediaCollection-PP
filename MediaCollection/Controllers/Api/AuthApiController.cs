@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using MediaCollection.Auth;
+using MediaCollection.WebSockets;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,12 @@ namespace MediaCollection.Controllers.Api
 	public sealed class AuthApiController : ControllerBase
 	{
 		private readonly IConfiguration _configuration;
+		private readonly WebSocketHub _webSockets;
 
-		public AuthApiController(IConfiguration configuration)
+		public AuthApiController(IConfiguration configuration, WebSocketHub webSockets)
 		{
 			_configuration = configuration;
+			_webSockets = webSockets;
 		}
 
 		public sealed class LoginRequest
@@ -81,6 +84,7 @@ namespace MediaCollection.Controllers.Api
 					ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
 				});
 
+			await _webSockets.BroadcastAsync("auth-changed", new { authenticated = true });
 			return Ok(new AuthStatusResponse { IsAuthenticated = true });
 		}
 
@@ -88,6 +92,7 @@ namespace MediaCollection.Controllers.Api
 		public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			await _webSockets.BroadcastAsync("auth-changed", new { authenticated = false });
 			return Ok(new AuthStatusResponse { IsAuthenticated = false });
 		}
 	}

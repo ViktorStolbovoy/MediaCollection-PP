@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using MediaCollection.Auth;
+using MediaCollection.Filters;
+using MediaCollection.WebSockets;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +26,12 @@ namespace MediaCollection
 
 			builder.Services.AddMemoryCache();
 			builder.Services.AddSingleton<ScanSessionStore>();
-			builder.Services.AddControllersWithViews()
+			builder.Services.AddMediaCollectionWebSockets();
+			builder.Services.AddScoped<DataChangedBroadcastFilter>();
+			builder.Services.AddControllersWithViews(options =>
+				{
+					options.Filters.AddService<DataChangedBroadcastFilter>();
+				})
 				.AddNewtonsoftJson(options =>
 				{
 					options.SerializerSettings.ContractResolver =
@@ -94,6 +101,7 @@ namespace MediaCollection
 			app.UseStaticFiles();
 			app.UseRouting();
 			app.UseMiddleware<ReadOnlyApiMiddleware>();
+			app.UseMediaCollectionWebSockets();
 			app.MapControllers();
 			app.MapControllerRoute(
 				name: "default",
