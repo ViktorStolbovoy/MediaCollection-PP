@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { apiJson } from '../api';
+import { clearStickyMessage, sendMessage, subscribe } from '../websocket';
 import { TitleDetailForm } from '../components/TitleDetailForm';
 import { TitleDetailFormReadOnly } from '../components/TitleDetailFormReadOnly';
 import { useIsReadOnly } from '../config';
@@ -54,6 +55,14 @@ export interface KindOpt {
   name: string;
 }
 
+interface LibrarySnapshot {
+  ResourceKind: string;
+  IncludeHidden: boolean;
+  SelectedTitleId: number | null;
+  Roots: Title[];
+  Detail: TitleDetailDto | null;
+}
+
 const KIND_ICONS: Record<number, { icon: string; label: string }> = {
   0: { icon: '🎬', label: 'Title' },
   1: { icon: '📅', label: 'Season' },
@@ -79,7 +88,7 @@ export function LibraryPage() {
   const [resourceKind, setResourceKind] = useState<'video' | 'audio'>('video');
   const [includeHidden, setIncludeHidden] = useState(false);
   const [search, setSearch] = useState('');
-  const [roots, setRoots] = useState<Title[]>([]);
+  const [roots, setRoots] = useState<Title[] | null>(null);
   const [open, setOpen] = useState<Set<number>>(new Set());
   const [childCache, setChildCache] = useState<Record<number, Title[]>>({});
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -91,21 +100,66 @@ export function LibraryPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [dragTitleId, setDragTitleId] = useState<number | null>(null);
 
-  const reloadRoots = useCallback(async () => {
-    const list = await apiJson<Title[]>(
-      `/api/titles/roots?resourceKind=${resourceKind}&includeHidden=${includeHidden}`
+  useEffect(() => {
+    const unsub = subscribe('library', (raw) => {
+      const snap = raw as LibrarySnapshot | undefined;
+      if (!snap) return;
+      setRoots(snap.Roots ?? []);
+      if (snap.Detail && snap.Detail.Title) {
+        const title = snap.Detail.Title;
+        setDetail(snap.Detail);
+        setDraft((prev) => {
+          const prevId = (prev as Title | null)?.Id;
+          return prevId === title.Id ? prev : { ...title };
+        });
+      } else {
+        setDetail(null);
+        setDraft(null);
+      }
+    });
+    return () => {
+      unsub();
+      sendMessage('unsubscribe-library');
+      clearStickyMessage('subscribe-library');
+    };
+  }, []);
+
+  useEffect(() => {
+    sendMessage(
+      'subscribe-library',
+      {
+        ResourceKind: resourceKind,
+        IncludeHidden: includeHidden,
+        SelectedTitleId: selectedId,
+      },
+      { sticky: true }
     );
-    setRoots(list);
+  }, [resourceKind, includeHidden, selectedId]);
+
+  useEffect(() => {
+    setImageIndex(0);
+  }, [selectedId]);
+
+  const requestRefresh = useCallback(() => {
+    setChildCache({});
+    sendMessage(
+      'subscribe-library',
+      {
+        ResourceKind: resourceKind,
+        IncludeHidden: includeHidden,
+        SelectedTitleId: selectedId,
+      },
+      { sticky: true }
+    );
+  }, [resourceKind, includeHidden, selectedId]);
+
+  const changeFilter = useCallback((next: { resourceKind?: 'video' | 'audio'; includeHidden?: boolean }) => {
+    if (next.resourceKind !== undefined) setResourceKind(next.resourceKind);
+    if (next.includeHidden !== undefined) setIncludeHidden(next.includeHidden);
     setOpen(new Set());
     setChildCache({});
     setSelectedId(null);
-    setDetail(null);
-    setDraft(null);
-  }, [resourceKind, includeHidden]);
-
-  useEffect(() => {
-    reloadRoots().catch((e) => setMessage(String(e)));
-  }, [reloadRoots]);
+  }, []);
 
   useEffect(() => {
     apiJson<Device[]>('/api/meta/devices-playback')
@@ -116,23 +170,8 @@ export function LibraryPage() {
       .catch(() => { });
   }, []);
 
-  useEffect(() => {
-    if (!selectedId) {
-      setDetail(null);
-      setDraft(null);
-      return;
-    }
-    apiJson<TitleDetailDto>(`/api/titles/${selectedId}`)
-      .then((d) => {
-        setDetail(d);
-        setDraft({ ...d.Title });
-        setImageIndex(0);
-      })
-      .catch((e) => setMessage(String(e)));
-  }, [selectedId]);
-
   const filteredRoots = useMemo(
-    () => roots.filter((t) => matchesSearch(t, search)),
+    () => (roots ?? []).filter((t) => matchesSearch(t, search)),
     [roots, search]
   );
 
@@ -174,9 +213,7 @@ export function LibraryPage() {
           apiJson(`/api/titles/${sid}/move`, {
             method: 'POST',
             body: JSON.stringify({ ParentId: t.Id }),
-          })
-            .then(() => reloadRoots())
-            .catch((err) => setMessage(String(err)));
+          }).catch((err) => setMessage(String(err)));
         }}
       >
         <button type="button" className="mc-muted" onClick={(e) => toggleOpen(t.Id, e)}>
@@ -228,10 +265,6 @@ export function LibraryPage() {
           EpisodeOrTrack: draft.EpisodeOrTrack ?? 0,
         }),
       });
-      await reloadRoots();
-      const d = await apiJson<TitleDetailDto>(`/api/titles/${selectedId}`);
-      setDetail(d);
-      setDraft({ ...d.Title });
       setMessage(null);
     } catch (e) {
       setMessage(String(e));
@@ -243,8 +276,6 @@ export function LibraryPage() {
     const body = detail.Ratings.map((r) => ({ RatingId: r.RatingId, Value: r.RatingValue }));
     try {
       await apiJson(`/api/titles/${selectedId}/ratings`, { method: 'PUT', body: JSON.stringify(body) });
-      const d = await apiJson<TitleDetailDto>(`/api/titles/${selectedId}`);
-      setDetail(d);
     } catch (e) {
       setMessage(String(e));
     }
@@ -259,7 +290,7 @@ export function LibraryPage() {
           <input
             type="radio"
             checked={resourceKind === 'video'}
-            onChange={() => setResourceKind('video')}
+            onChange={() => changeFilter({ resourceKind: 'video' })}
           />{' '}
           Video
         </label>
@@ -267,7 +298,7 @@ export function LibraryPage() {
           <input
             type="radio"
             checked={resourceKind === 'audio'}
-            onChange={() => setResourceKind('audio')}
+            onChange={() => changeFilter({ resourceKind: 'audio' })}
           />{' '}
           Audio
         </label>
@@ -275,11 +306,11 @@ export function LibraryPage() {
           <input
             type="checkbox"
             checked={includeHidden}
-            onChange={(e) => setIncludeHidden(e.target.checked)}
+            onChange={(e) => changeFilter({ includeHidden: e.target.checked })}
           />{' '}
           Include hidden
         </label>
-        <button type="button" onClick={() => reloadRoots()}>
+        <button type="button" onClick={requestRefresh}>
           Refresh
         </button>
       </div>
@@ -308,7 +339,6 @@ export function LibraryPage() {
                     EpisodeOrTrack: 0,
                   }),
                 });
-                await reloadRoots();
                 setSelectedId(t.Id);
               } catch (e) {
                 setMessage(String(e));
@@ -321,8 +351,9 @@ export function LibraryPage() {
       </div>
       <div className="mc-split">
         <div className="mc-tree">
-          {filteredRoots.flatMap((t) => renderBranch(t, 0))}
-          {!filteredRoots.length && <div className="mc-muted">No titles.</div>}
+          {roots === null && <div className="mc-muted">Loading…</div>}
+          {roots !== null && filteredRoots.flatMap((t) => renderBranch(t, 0))}
+          {roots !== null && !filteredRoots.length && <div className="mc-muted">No titles.</div>}
         </div>
         <div className="mc-detail">
           {!draft && <p className="mc-muted">Select a title.</p>}
@@ -339,7 +370,7 @@ export function LibraryPage() {
               setPlaybackDeviceId={setPlaybackDeviceId}
               imageIndex={imageIndex}
               setImageIndex={setImageIndex}
-              reloadRoots={reloadRoots}
+              reloadRoots={requestRefresh}
               saveTitle={saveTitle}
               saveRatings={saveRatings}
               setMessage={setMessage}
