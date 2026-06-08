@@ -59,20 +59,36 @@ namespace MediaCollection
 			item.ParentTitleId = parentId;
 		}
 
-		public static async Task<string> TryMove(long sourceId, long parentId)
+		public sealed class MoveTitleOutcome
+		{
+			public string Error { get; set; }
+			public Title Title { get; set; }
+			public long? SourceParentId { get; set; }
+			public long DestinationParentId { get; set; }
+			public long DropTargetParentId { get; set; }
+		}
+
+		public static async Task<MoveTitleOutcome> TryMove(long sourceId, long parentId)
 		{
 			using (var db = DB.GetDatabase())
 			{
 				var source = await db.SingleByIdAsync<Title>(sourceId);
 				var parent = await db.SingleByIdAsync<Title>(parentId);
-				if (source == null) return "Source title not found.";
-				if (parent == null) return "Parent title not found.";
-				if (!CanDrop(source, parent)) return "Cannot move this title under the selected parent.";
+				if (source == null) return new MoveTitleOutcome { Error = "Source title not found." };
+				if (parent == null) return new MoveTitleOutcome { Error = "Parent title not found." };
+				if (!CanDrop(source, parent)) return new MoveTitleOutcome { Error = "Cannot move this title under the selected parent." };
+				var sourceParentId = source.ParentTitleId;
 				await ApplyReparent(source, parent);
 				source.DateModifiedUtc = GeneralPersistense.GetTimestamp();
 				await GeneralPersistense.Upsert(source);
+				return new MoveTitleOutcome
+				{
+					Title = source,
+					SourceParentId = sourceParentId,
+					DestinationParentId = source.ParentTitleId ?? parentId,
+					DropTargetParentId = parentId
+				};
 			}
-			return null;
 		}
 	}
 }

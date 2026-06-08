@@ -683,7 +683,7 @@ namespace MediaCollection
 			if (numEditor != null)
 			{
 				var r = e.RowObject as TitleRatingWithName;
-				numEditor.Minimum = (decimal) r.RatingMin;
+				numEditor.Minimum = 0m;
 				numEditor.Maximum = (decimal)r.RatingMax;
 				numEditor.Increment = (decimal)r.RatingStep;
 				numEditor.DecimalPlaces = 1;
