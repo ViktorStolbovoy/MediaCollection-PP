@@ -111,13 +111,30 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPost("{id:long}/move")]
-		public async Task<IActionResult> Move(long id, [FromBody] MoveTitleRequest body)
+		public async Task<ActionResult<MoveTitleResponse>> Move(long id, [FromBody] MoveTitleRequest body)
 		{
 			if (body == null) return BadRequest();
-			var err = await TitleHierarchyService.TryMove(id, body.ParentId);
-			if (err != null) return BadRequest(new { error = err });
-			using var db = DB.GetDatabase();
-			return Ok(await FetchTitle(db, id));
+			var outcome = await TitleHierarchyService.TryMove(id, body.ParentId);
+			if (outcome.Error != null) return BadRequest(new { error = outcome.Error });
+
+			var affectedParentIds = new HashSet<long> { outcome.DestinationParentId };
+			if (outcome.SourceParentId.HasValue)
+				affectedParentIds.Add(outcome.SourceParentId.Value);
+			if (outcome.DropTargetParentId != outcome.DestinationParentId)
+				affectedParentIds.Add(outcome.DropTargetParentId);
+
+			var refreshedParents = new List<MoveTitleParentChildren>();
+			foreach (var parentId in affectedParentIds)
+			{
+				var children = await TitlePersistence.ListTitlesByParent(parentId);
+				refreshedParents.Add(new MoveTitleParentChildren { ParentId = parentId, Children = children });
+			}
+
+			return Ok(new MoveTitleResponse
+			{
+				Title = outcome.Title,
+				RefreshedParents = refreshedParents
+			});
 		}
 
 		[HttpPut("{titleId:long}/locations/{locationId:long}")]
@@ -270,6 +287,18 @@ namespace MediaCollection.Controllers.Api
 	public sealed class MoveTitleRequest
 	{
 		public long ParentId { get; set; }
+	}
+
+	public sealed class MoveTitleResponse
+	{
+		public Title Title { get; set; }
+		public List<MoveTitleParentChildren> RefreshedParents { get; set; }
+	}
+
+	public sealed class MoveTitleParentChildren
+	{
+		public long ParentId { get; set; }
+		public List<Title> Children { get; set; }
 	}
 
 	public sealed class LocationPatchDto
