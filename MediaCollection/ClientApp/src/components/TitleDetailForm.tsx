@@ -252,11 +252,14 @@ export function TitleDetailForm({
                       id={`mc-rating-${r.RatingId}`}
                       type="number"
                       step={r.RatingStep}
-                      min={r.RatingMin}
+                      min={0}
                       max={r.RatingMax}
-                      value={r.RatingValue}
+                      placeholder="not set"
+                      title={`0 = not set; otherwise ${r.RatingMin}\u2013${r.RatingMax}`}
+                      value={r.RatingValue ? r.RatingValue : ''}
                       onChange={(e) => {
-                        const v = Number(e.target.value);
+                        const raw = e.target.value;
+                        const v = raw === '' ? 0 : Number(raw);
                         setDetail({
                           ...detail,
                           Ratings: detail.Ratings.map((x) =>

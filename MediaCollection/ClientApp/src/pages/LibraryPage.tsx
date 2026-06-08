@@ -63,6 +63,11 @@ interface LibrarySnapshot {
   Detail: TitleDetailDto | null;
 }
 
+interface MoveTitleResponse {
+  Title: Title;
+  RefreshedParents: { ParentId: number; Children: Title[] }[];
+}
+
 const KIND_ICONS: Record<number, { icon: string; label: string }> = {
   0: { icon: '🎬', label: 'Title' },
   1: { icon: '📅', label: 'Season' },
@@ -210,10 +215,22 @@ export function LibraryPage() {
           e.preventDefault();
           const sid = Number(e.dataTransfer.getData('text/title-id'));
           if (!sid || sid === t.Id || ro) return;
-          apiJson(`/api/titles/${sid}/move`, {
+          apiJson<MoveTitleResponse>(`/api/titles/${sid}/move`, {
             method: 'POST',
             body: JSON.stringify({ ParentId: t.Id }),
-          }).catch((err) => setMessage(String(err)));
+          })
+            .then((res) => {
+              setMessage(null);
+              if (!res.RefreshedParents?.length) return;
+              setChildCache((c) => {
+                const next = { ...c };
+                for (const p of res.RefreshedParents) {
+                  next[p.ParentId] = p.Children;
+                }
+                return next;
+              });
+            })
+            .catch((err) => setMessage(String(err)));
         }}
       >
         <button type="button" className="mc-muted" onClick={(e) => toggleOpen(t.Id, e)}>

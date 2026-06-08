@@ -24,14 +24,18 @@ namespace MediaCollection
 		[Column("DESCRIPTION")]
 		public virtual string Description { get; set; }
 
+		// Ord is the packed (Season|Disk|EpisodeOrTrack) value persisted in the ORD column.
+		// It is intentionally non-public: callers (API, UI, business logic) read/write the
+		// individual Season / Disk / EpisodeOrTrack properties below; only the ORM layer
+		// touches Ord via reflection when reading from / writing to the DB.
 		[Column("ORD")]
-		public virtual int Ord
+		protected virtual int Ord
 		{
 			get
 			{
 				return Season * SEASON_ORD_MULTIPLIER + Disk * DISK_ORD_MULTIPLIER + EpisodeOrTrack;
 			}
-			private set
+			set
 			{
 				Season = value / SEASON_ORD_MULTIPLIER;
 				int theRest = value % SEASON_ORD_MULTIPLIER;
@@ -57,14 +61,14 @@ namespace MediaCollection
 		}
 
 		[Ignore]
-        public virtual bool Hidden { get; set; }
+		public virtual bool Hidden { get; set; }
 
-        [Ignore]
-		public int Season;
 		[Ignore]
-		public int Disk;
+		public int Season { get; set; }
 		[Ignore]
-		public int EpisodeOrTrack;
+		public int Disk { get; set; }
+		[Ignore]
+		public int EpisodeOrTrack { get; set; }
 
 		public override string ToString()
 		{
