@@ -70,14 +70,6 @@ namespace MediaCollection
 			return item == null ? defaultValue : (T)item.Key;
 		}
 
-
-
-		public static TitlePropertyAccessor AssignControl(this TitlePropertyAccessor accessor, TextBox textbox, bool hideZero = true)
-		{
-			accessor.SetAccessors(() => textbox.Text, (val) => { textbox.Text = (hideZero && val == "0") ? "" : val; });
-			return accessor;
-		}
-
 		public static Image ResizeKeepAspectRatio(this Image image, int targetWidth, int targetHeight, Color bgColor)
 		{
 			if (image == null) return null;

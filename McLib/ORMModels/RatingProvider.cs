@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NPoco;
 
 namespace MediaCollection {
@@ -23,18 +24,18 @@ namespace MediaCollection {
 		[Column("RATING_STEP")]
 		public virtual float RatingStep { get; set; }
 
-		public override void Delete()
+		public override Task Delete()
 		{
-			Delete(Id);
+			return Delete(Id);
 		}
 
-		public static void Delete(long id)
+		public static async Task Delete(long id)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				int cnt = db.Query<TitleRating>().Where(x => x.RatingId == id).Count();
+				int cnt = await db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM TITLE_RATING WHERE RATING_ID = @0", id);
 				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete rating provider: it is used by {0} ratings", cnt));
-				db.Execute("DELETE FROM RATING_PROVIDER WHERE RATING_ID = @0", id);
+				await db.ExecuteAsync("DELETE FROM RATING_PROVIDER WHERE RATING_ID = @0", id);
 			}
 		}
     }

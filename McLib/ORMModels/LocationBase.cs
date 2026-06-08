@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NPoco;
 
 namespace MediaCollection 
@@ -22,19 +23,19 @@ namespace MediaCollection
 			return Name;
 		}
 
-		public override void Delete()
+		public override Task Delete()
 		{
-			Delete(Id);
+			return Delete(Id);
 		}
 
-		public static void Delete(long id)
+		public static async Task Delete(long id)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				int cnt = db.Query<Location>().Where(x => x.LocationBaseId == id).Count();
+				int cnt = await db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM LOCATION WHERE LOCATION_BASE_ID = @0", id);
 				if (cnt > 0) throw new ApplicationException(string.Format("Can't delete Location: it is used by {0} title locations", cnt));
-				db.Execute("DELETE FROM DEVICE_LOCATION_MAP WHERE LOCATION_BASE_ID = @0", id);
-				db.Execute("DELETE FROM LOCATION_BASE WHERE LOCATION_BASE_ID = @0", id);
+				await db.ExecuteAsync("DELETE FROM DEVICE_LOCATION_MAP WHERE LOCATION_BASE_ID = @0", id);
+				await db.ExecuteAsync("DELETE FROM LOCATION_BASE WHERE LOCATION_BASE_ID = @0", id);
 			}
 		}
 	}

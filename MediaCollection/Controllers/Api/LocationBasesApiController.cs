@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection.Controllers.Api
@@ -8,40 +9,40 @@ namespace MediaCollection.Controllers.Api
 	public sealed class LocationBasesApiController : ControllerBase
 	{
 		[HttpGet]
-		public IActionResult List()
+		public async Task<IActionResult> List()
 		{
-			return Ok(LocationPersistence.ListBases());
+			return Ok(await LocationPersistence.ListBases());
 		}
 
 		[HttpPost]
-		public ActionResult<LocationBase> Create([FromBody] LocationBase body)
+		public async Task<ActionResult<LocationBase>> Create([FromBody] LocationBase body)
 		{
 			if (body == null) return BadRequest();
 			body.Id = 0;
 			body.Name = body.Name ?? "";
-			body.Set();
+			await body.Set();
 			return Ok(body);
 		}
 
 		[HttpPut("{id:long}")]
-		public IActionResult Update(long id, [FromBody] LocationBase patch)
+		public async Task<IActionResult> Update(long id, [FromBody] LocationBase patch)
 		{
 			if (patch == null) return BadRequest();
-			var list = LocationPersistence.ListBases();
+			var list = await LocationPersistence.ListBases();
 			var b = list.FirstOrDefault(x => x.Id == id);
 			if (b == null) return NotFound();
 			b.Name = patch.Name ?? b.Name;
 			b.Kind = patch.Kind;
-			b.Set();
+			await b.Set();
 			return Ok(b);
 		}
 
 		[HttpDelete("{id:long}")]
-		public IActionResult Delete(long id)
+		public async Task<IActionResult> Delete(long id)
 		{
 			try
 			{
-				LocationBase.Delete(id);
+				await LocationBase.Delete(id);
 				return NoContent();
 			}
 			catch (System.Exception ex)

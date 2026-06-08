@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Stolbovoy.Utils;
+using System.Threading.Tasks;
 
 namespace MediaCollection
 {
@@ -288,7 +289,7 @@ namespace MediaCollection
 		}
 		#endregion
 		
-		public void Save()
+		public async Task Save()
 		{
 			TitleKind kind;
 
@@ -325,9 +326,9 @@ namespace MediaCollection
 			var title = new Title { Id = 0, Kind = kind, TitleName = Title, DateAddedUtc = now, DateModifiedUtc = now, Season = Season, Disk = Disk, EpisodeOrTrack = Episode, ImdbId = "", Description = ""};
 			using (var db = DB.GetDatabase())
 			{
-				db.Insert(title);
+				await db.InsertAsync(title);
 				var location = new Location { Id = 0, LocationBaseId = m_locationBaseId, LocationData = RelativePath, MediaKind = DataType, TitleId = title.Id, DateAddedUtc = now, DateModifiedUtc = now };
-				db.Insert(location);
+				await db.InsertAsync(location);
 			}
 		}
 	}

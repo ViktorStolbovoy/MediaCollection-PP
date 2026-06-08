@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace MediaCollection
 {
 	public static class TitleHierarchyService
@@ -18,7 +20,7 @@ namespace MediaCollection
 			}
 		}
 
-		public static void ApplyReparent(Title item, Title parent)
+		public static async Task ApplyReparent(Title item, Title parent)
 		{
 			long parentId = parent.Id;
 			switch (parent.Kind)
@@ -31,7 +33,7 @@ namespace MediaCollection
 					if (item.Kind != TitleKind.Season && item.Season > 0)
 					{
 						long seasonId = -1;
-						foreach (var title in TitlePersistence.ListTitlesByParent(parentId))
+						foreach (var title in await TitlePersistence.ListTitlesByParent(parentId))
 						{
 							if (title.Kind == TitleKind.Season && title.Season == item.Season)
 							{
@@ -41,13 +43,14 @@ namespace MediaCollection
 						}
 						if (seasonId < 0)
 						{
-							seasonId = TitlePersistence.AddTitle(
+							var season = await TitlePersistence.AddTitle(
 								parent.TitleName + " Season " + item.Season.ToString(),
 								TitleKind.Season,
 								item.Season,
 								0,
 								0,
-								parentId).Id;
+								parentId);
+							seasonId = season.Id;
 						}
 						parentId = seasonId;
 					}
@@ -56,18 +59,18 @@ namespace MediaCollection
 			item.ParentTitleId = parentId;
 		}
 
-		public static string TryMove(long sourceId, long parentId)
+		public static async Task<string> TryMove(long sourceId, long parentId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				var source = db.SingleById<Title>(sourceId);
-				var parent = db.SingleById<Title>(parentId);
+				var source = await db.SingleByIdAsync<Title>(sourceId);
+				var parent = await db.SingleByIdAsync<Title>(parentId);
 				if (source == null) return "Source title not found.";
 				if (parent == null) return "Parent title not found.";
 				if (!CanDrop(source, parent)) return "Cannot move this title under the selected parent.";
-				ApplyReparent(source, parent);
+				await ApplyReparent(source, parent);
 				source.DateModifiedUtc = GeneralPersistense.GetTimestamp();
-				GeneralPersistense.Upsert(source);
+				await GeneralPersistense.Upsert(source);
 			}
 			return null;
 		}

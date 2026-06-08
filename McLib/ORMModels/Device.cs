@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NPoco;
 
 
@@ -25,17 +26,17 @@ namespace MediaCollection
 			return Name;
 		}
 
-		public override void Delete()
+		public override Task Delete()
 		{
-			Delete(Id);
+			return Delete(Id);
 		}
 
-		public static void Delete(long id)
+		public static async Task Delete(long id)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				db.Execute("DELETE FROM DEVICE_LOCATION_MAP WHERE DEVICE_ID = @0", id);
-				db.Execute("DELETE FROM DEVICE WHERE DEVICE_ID = @0", id);
+				await db.ExecuteAsync("DELETE FROM DEVICE_LOCATION_MAP WHERE DEVICE_ID = @0", id);
+				await db.ExecuteAsync("DELETE FROM DEVICE WHERE DEVICE_ID = @0", id);
 			}
 		}
 	}

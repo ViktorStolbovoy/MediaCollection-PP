@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NPoco;
 
 
@@ -32,18 +33,18 @@ namespace MediaCollection {
 		/// <summary>
 		/// Upsert
 		/// </summary>
-		public void Set(long titleId)
+		public async Task Set(long titleId)
 		{
 			using (var db = DB.GetDatabase())
 			{
 				if (TitleId <= 0)
 				{
 					TitleId = titleId;
-					db.Insert(this);
+					await db.InsertAsync(this);
 				}
 				else
 				{
-					db.Update(this);
+					await db.UpdateAsync(this);
 				}
 			}
 		}

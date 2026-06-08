@@ -1,36 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MediaCollection
 {
 	public static class DevicePersistense
 	{
-		public static List<Device> List()
+		public static async Task<List<Device>> List()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Device>();
+				return await db.FetchAsync<Device>();
 			}
 		}
 
-		public static List<Device> ListForTitleUpdate()
+		public static async Task<List<Device>> ListForTitleUpdate()
 		{
 			// We update titles using local mapping.
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Device>("SELECT * FROM DEVICE WHERE DEVICE_KIND = @0 ORDER BY DEVICE_NAME", DeviceType.Local);
+				return await db.FetchAsync<Device>("SELECT * FROM DEVICE WHERE DEVICE_KIND = @0 ORDER BY DEVICE_NAME", DeviceType.Local);
 			}
 		}
 
-		public static List<Device> ListForPalyback()
+		public static async Task<List<Device>> ListForPalyback()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<Device>("SELECT * FROM DEVICE ORDER BY IS_DEFAULT desc, DEVICE_NAME");
+				return await db.FetchAsync<Device>("SELECT * FROM DEVICE ORDER BY IS_DEFAULT desc, DEVICE_NAME");
 			}
 		}
 
 
-		public static List<LocationBaseDeviceMapping> GetLocations(long deviceId)
+		public static async Task<List<LocationBaseDeviceMapping>> GetLocations(long deviceId)
 		{
 			const string SQL = @"SELECT b.LOCATION_BASE_ID, b.LOCATION_KIND, b.LOCATION, m.LOCATION_MAPPING, @0 DEVICE_ID
 			FROM location_base b
@@ -41,11 +42,11 @@ namespace MediaCollection
 			
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<LocationBaseDeviceMapping>(SQL, deviceId, LocationBaseKind.Shelf);
+				return await db.FetchAsync<LocationBaseDeviceMapping>(SQL, deviceId, LocationBaseKind.Shelf);
 			}
 		}
 
-		public static List<LocationBase> GetLocationsForTitleUpdate(long deviceId)
+		public static async Task<List<LocationBase>> GetLocationsForTitleUpdate(long deviceId)
 		{
 			const string SQL = @"SELECT b.LOCATION_BASE_ID, b.LOCATION_KIND, b.LOCATION
 			FROM location_base b
@@ -57,7 +58,7 @@ namespace MediaCollection
 
 			using (var db = DB.GetDatabase())
 			{
-				return db.Fetch<LocationBase>(SQL, deviceId, new [] {LocationBaseKind.Shelf, LocationBaseKind.HTTP});
+				return await db.FetchAsync<LocationBase>(SQL, deviceId, new [] {LocationBaseKind.Shelf, LocationBaseKind.HTTP});
 			}
 		}
 	}

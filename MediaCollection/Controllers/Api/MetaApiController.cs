@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection.Controllers.Api
@@ -9,25 +10,26 @@ namespace MediaCollection.Controllers.Api
 	public sealed class MetaApiController : ControllerBase
 	{
 		[HttpGet("devices-for-title-update")]
-		public IActionResult DevicesForTitleUpdate()
+		public async Task<IActionResult> DevicesForTitleUpdate()
 		{
-			return Ok(DevicePersistense.ListForTitleUpdate());
+			return Ok(await DevicePersistense.ListForTitleUpdate());
 		}
 
 		[HttpGet("devices-playback")]
-		public IActionResult DevicesPlayback()
+		public async Task<IActionResult> DevicesPlayback()
 		{
-			var devices = DevicePersistense.ListForPalyback()
+			var all = await DevicePersistense.ListForPalyback();
+			var devices = all
 				.Where(d => d.Kind != DeviceType.Local)
 				.ToList();
 			return Ok(devices);
 		}
 
 		[HttpGet("locations-for-device/{deviceId:long}")]
-		public IActionResult LocationsForDevice(long deviceId)
+		public async Task<IActionResult> LocationsForDevice(long deviceId)
 		{
 			var bases = new List<LocationBase> { new LocationBase { Id = -1, Kind = LocationBaseKind.Local, Name = "All" } };
-			bases.AddRange(DevicePersistense.GetLocationsForTitleUpdate(deviceId));
+			bases.AddRange(await DevicePersistense.GetLocationsForTitleUpdate(deviceId));
 			return Ok(bases);
 		}
 	}

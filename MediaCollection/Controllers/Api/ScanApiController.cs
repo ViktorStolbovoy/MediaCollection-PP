@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection.Controllers.Api
@@ -52,10 +53,10 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPost("preview")]
-		public ActionResult<ScanPreviewResponse> Preview([FromBody] ScanRequestDto req)
+		public async Task<ActionResult<ScanPreviewResponse>> Preview([FromBody] ScanRequestDto req)
 		{
 			if (req == null) return BadRequest();
-			var res = RescanResults.Run(req.LocationBaseId, req.DeviceId);
+			var res = await RescanResults.Run(req.LocationBaseId, req.DeviceId);
 			var id = _sessions.Put(res);
 			var preview = new ScanPreviewResponse
 			{
@@ -78,18 +79,18 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPost("apply")]
-		public IActionResult Apply([FromBody] ScanApplyRequest req)
+		public async Task<IActionResult> Apply([FromBody] ScanApplyRequest req)
 		{
 			if (req == null) return BadRequest();
 			if (!_sessions.TryGet(req.ScanId, out var res)) return BadRequest(new { error = "Scan session expired or unknown." });
 
 			var deleteSet = new HashSet<long>(req.DeleteMissingLocationIds ?? new List<long>());
 			foreach (var mf in res.MissingFiles.Where(m => deleteSet.Contains(m.Id)))
-				mf.Delete();
+				await mf.Delete();
 
 			var importSet = new HashSet<string>((req.ImportNewRelativePaths ?? new List<string>()).Where(s => !string.IsNullOrEmpty(s)), StringComparer.OrdinalIgnoreCase);
 			foreach (var nf in res.NewFiles.Where(f => importSet.Contains(f.RelativePath)))
-				nf.Save();
+				await nf.Save();
 
 			_sessions.Remove(req.ScanId);
 			return Ok();

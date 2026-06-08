@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace MediaCollection
 {
 	public abstract class UpdatableModel
 	{
-		public virtual void Set()
+		public virtual async Task Set()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				if (db.Update(this) == 0)
+				if (await db.UpdateAsync(this) == 0)
 				{
-					db.Insert(this);
+					await db.InsertAsync(this);
 				}
 			}
 		}
 
-		public abstract void Delete();
+		public abstract Task Delete();
 		
 	}
 
@@ -27,37 +28,37 @@ namespace MediaCollection
 		/// <summary>
 		/// Upsert
 		/// </summary>
-		public override void Set()
+		public override async Task Set()
 		{
 			using (var db = DB.GetDatabase())
 			{
 				if (Id <= 0)
 				{
-					db.Insert(this);
+					await db.InsertAsync(this);
 				}
 				else
 				{
-					db.Update(this);
+					await db.UpdateAsync(this);
 				}
 			}
 		}
 
 
-		public virtual void Update()
+		public virtual async Task Update()
 		{
 			if (this.Id <= 0) throw new ArgumentException("Id should be positive");
 
 			using (var db = DB.GetDatabase())
 			{
-				db.Update(this);
+				await db.UpdateAsync(this);
 			}
 		}
 
-		public virtual void Insert()
+		public virtual async Task Insert()
 		{
 			using (var db = DB.GetDatabase())
 			{
-				db.Insert(this);
+				await db.InsertAsync(this);
 			}
 		}
 	}

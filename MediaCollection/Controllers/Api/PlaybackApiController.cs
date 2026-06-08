@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollection.Controllers.Api
@@ -13,14 +14,14 @@ namespace MediaCollection.Controllers.Api
 		}
 
 		[HttpPost("run")]
-		public IActionResult Run([FromBody] PlaybackRequest req)
+		public async Task<IActionResult> Run([FromBody] PlaybackRequest req)
 		{
 			if (req == null) return BadRequest();
-			var result = LocationPersistence.GetTitleLocationFull(req.DeviceId, req.TitleId);
+			var result = await LocationPersistence.GetTitleLocationFull(req.DeviceId, req.TitleId);
 			if (result == null) return NotFound();
 			if (result.DeviceKind == DeviceType.Local)
 				return BadRequest(new { error = "Local playback is available only from MediaCollectionDesktop." });
-			result.Run();
+			await result.Run();
 			return Ok();
 		}
 	}

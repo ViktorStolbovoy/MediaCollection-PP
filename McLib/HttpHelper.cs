@@ -8,67 +8,20 @@ namespace MediaCollection
 {
 	public static class HttpHelper
 	{
-		public static Task<byte[]> MakeHttpRequest(string url, CancellationToken cancellationToken)
+		public static async Task<byte[]> MakeHttpRequest(string url, CancellationToken cancellationToken)
 		{
 			System.Diagnostics.Debug.WriteLine(url);
-			var client = new HttpClient();
-			try
+			using (var client = new HttpClient())
+			using (var res = await client.GetAsync(url, cancellationToken))
 			{
-				return client.GetAsync(url, cancellationToken).ContinueWith(t =>
+				var body = await res.Content.ReadAsByteArrayAsync(cancellationToken);
+				if (res.StatusCode == System.Net.HttpStatusCode.OK)
 				{
-					HttpResponseMessage res = null;
-					try
-					{
-						res = t.Result;
-						if (res.StatusCode == System.Net.HttpStatusCode.OK)
-						{
-							return res.Content.ReadAsByteArrayAsync().ContinueWith(t1 =>
-							{
-								try
-								{
-									return t1.Result;
-								}
-								finally
-								{
-									res.Dispose();
-									client.Dispose();
-								}
-							});
-						}
-						else
-						{
-							return res.Content.ReadAsByteArrayAsync().ContinueWith<byte[]>(t1 =>
-							{
-								try
-								{
-									throw new HttpException(Encoding.UTF8.GetString(t1.Result), null, res.StatusCode);
-								}
-								catch (Exception err)
-								{
-									throw new HttpException(err.Message, err, res.StatusCode);
-								}
-								finally
-								{
-									res.Dispose();
-									client.Dispose();
-								}
-							});
-						}
-					}
-					catch
-					{
-						if (res != null) res.Dispose();
-						client.Dispose();
-						throw;
-					}
-				}).Unwrap();
-			}
-			catch
-			{
-				client.Dispose();
-				throw;
-			}
+					return body;
+				}
 
+				throw new HttpException(Encoding.UTF8.GetString(body), null, res.StatusCode);
+			}
 		}
 	}
 

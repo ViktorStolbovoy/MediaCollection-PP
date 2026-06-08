@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NPoco;
 
 
@@ -14,16 +15,16 @@ namespace MediaCollection
 		[Column("LOCATION_MAPPING")]
 		public virtual string Mapping { get; set; }
 
-		public override void Delete()
+		public override Task Delete()
 		{
-			Delete(DeviceId, LocationBaseId);
+			return Delete(DeviceId, LocationBaseId);
 		}
 
-		public static void Delete(long deviceId, long locationBaseId)
+		public static async Task Delete(long deviceId, long locationBaseId)
 		{
 			using (var db = DB.GetDatabase())
 			{
-				db.Execute("DELETE FROM DEVICE_LOCATION_MAP WHERE DEVICE_ID = @0 and LOCATION_BASE_ID =@1 ", deviceId, locationBaseId);
+				await db.ExecuteAsync("DELETE FROM DEVICE_LOCATION_MAP WHERE DEVICE_ID = @0 and LOCATION_BASE_ID =@1 ", deviceId, locationBaseId);
 			}
 		} 
 	}
@@ -39,22 +40,21 @@ namespace MediaCollection
 		[Column("LOCATION")]
 		public virtual string Name { get; set; }
 
-		public override void Set()
+		public override async Task Set()
 		{
 			//Removing LocationBase mix-in fields
 			if (!string.IsNullOrWhiteSpace(this.Mapping))
 			{
 				var model = new DeviceLocationMap { DeviceId = this.DeviceId, LocationBaseId = this.LocationBaseId, Mapping = this.Mapping };
-				model.Set();
+				await model.Set();
 			}
 			else
 			{
-				DeviceLocationMap.Delete(DeviceId, LocationBaseId);
+				await DeviceLocationMap.Delete(DeviceId, LocationBaseId);
 			}
 		}
 
 		
-
 
 	}
 }

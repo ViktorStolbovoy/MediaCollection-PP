@@ -20,37 +20,34 @@ namespace MediaCollection
 		[JsonProperty("total_pages")]
 		public int PageCount { get; set; }
 
-		internal static string TmdbUrl = Settings.Get<string>("TMDB_URL");
-		internal static string TmdbAppKey = Uri.EscapeDataString(Settings.Get<string>("TMDB_APP_KEY"));
-		public static Task<TmdbData> Get(string name, bool isTv, CancellationToken cancellationToken)
+		internal static string TmdbUrl = Settings.Get<string>("TMDB_URL").GetAwaiter().GetResult();
+		internal static string TmdbAppKey = Uri.EscapeDataString(Settings.Get<string>("TMDB_APP_KEY").GetAwaiter().GetResult());
+		public static async Task<TmdbData> Get(string name, bool isTv, CancellationToken cancellationToken)
 		{
 			string movieSearchUrl = GetUrl(name, isTv);
 
-			return HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken).ContinueWith<Task<TmdbData>>((t) => {
-				var res = Encoding.UTF8.GetString(t.Result).FromJson<TmdbData>();
-				if (res != null && res.Results != null && res.Results.Length > 0)
-				{
-					foreach (var item in res.Results) item.IsTv = isTv;
-					return Task.FromResult(res);
-				}
-
+			var bytes = await HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken);
+			var res = Encoding.UTF8.GetString(bytes).FromJson<TmdbData>();
+			if (res != null && res.Results != null && res.Results.Length > 0)
+			{
+				foreach (var item in res.Results) item.IsTv = isTv;
+			}
+			else
+			{
 				movieSearchUrl = GetUrl(name, !isTv);
-				return HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken).ContinueWith<TmdbData>((t1) => {
-					var res1 = Encoding.UTF8.GetString(t1.Result).FromJson<TmdbData>();
-					if (res1 != null && res1.Results != null)
-					{
-						foreach (var item in res1.Results) item.IsTv = !isTv;
-					}
-					return res1;
-				}, cancellationToken);
-			},cancellationToken).Unwrap().ContinueWith<TmdbData>((t2, o) => {
-				var res = t2.Result;
+				var bytes2 = await HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken);
+				res = Encoding.UTF8.GetString(bytes2).FromJson<TmdbData>();
 				if (res != null && res.Results != null)
 				{
-					Task.WaitAll(res.Results.Select((item) => item.GetPoster(false, cancellationToken)).ToArray());
+					foreach (var item in res.Results) item.IsTv = !isTv;
 				}
-				return res;
-			}, null, cancellationToken);
+			}
+
+			if (res != null && res.Results != null)
+			{
+				await Task.WhenAll(res.Results.Select((item) => item.GetPoster(false, cancellationToken)));
+			}
+			return res;
 		}
 
 
@@ -115,38 +112,33 @@ namespace MediaCollection
 		public byte[] Backdrop;
 		public readonly List<byte[]> Images = new List<byte[]>();
 
-		public Task GetMore(CancellationToken cancellationToken)
+		public async Task GetMore(CancellationToken cancellationToken)
 		{
 			string url = string.Format("{0}/{1}/{2}?api_key={3}", TmdbData.TmdbUrl, IsTv ? "tv" : "movie", Id,TmdbData.TmdbAppKey);
 
-			return HttpHelper.MakeHttpRequest(url, cancellationToken).ContinueWith((t) => {
-				var res = Encoding.UTF8.GetString(t.Result).FromJson<TmdbResult>();
-				ImdbId = res.ImdbId;
-				if (!ReleaseDate.HasValue) ReleaseDate = FirstAirDate;
-			}, cancellationToken);
+			var bytes = await HttpHelper.MakeHttpRequest(url, cancellationToken);
+			var res = Encoding.UTF8.GetString(bytes).FromJson<TmdbResult>();
+			ImdbId = res.ImdbId;
+			if (!ReleaseDate.HasValue) ReleaseDate = FirstAirDate;
 		}
 
-		static string s_tmdbImageUrl = Settings.Get<string>("TMDB_IMAGE_URL");
+		static string s_tmdbImageUrl = Settings.Get<string>("TMDB_IMAGE_URL").GetAwaiter().GetResult();
 
 
-		public Task GetPoster(bool shouldGetSmall, CancellationToken cancellationToken)
+		public async Task GetPoster(bool shouldGetSmall, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(PosterPath)) return Task.FromResult(false);
+			if (string.IsNullOrEmpty(PosterPath)) return;
 			string url = string.Format("{0}/{2}/{1}", s_tmdbImageUrl, PosterPath, shouldGetSmall ? "w342" : "original");
 
-			return HttpHelper.MakeHttpRequest(url, cancellationToken).ContinueWith((t) => {
-				Poster = t.Result;
-			}, cancellationToken);
+			Poster = await HttpHelper.MakeHttpRequest(url, cancellationToken);
 		}
 
-		public Task GetBackdrop(bool shouldGetSmall, CancellationToken cancellationToken)
+		public async Task GetBackdrop(bool shouldGetSmall, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(PosterPath)) return Task.FromResult(false);
+			if (string.IsNullOrEmpty(PosterPath)) return;
 			string url = string.Format("{0}/{2}/{1}", s_tmdbImageUrl, BackdropPath, shouldGetSmall ? "w300" : "original");
 
-			return HttpHelper.MakeHttpRequest(url, cancellationToken).ContinueWith((t) => {
-				Backdrop = t.Result;
-			}, cancellationToken);
+			Backdrop = await HttpHelper.MakeHttpRequest(url, cancellationToken);
 		}
 	}
 	

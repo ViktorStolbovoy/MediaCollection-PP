@@ -13,7 +13,7 @@ namespace MediaCollection
 		public Ratings()
 		{
 			InitializeComponent();
-			var ratings = GeneralPersistense.FetchAll<RatingProvider>();
+			var ratings = GeneralPersistense.FetchAll<RatingProvider>().GetAwaiter().GetResult();
 			LVRatings.VirtualMode = false;
 			LVRatings.SetObjects(ratings);
 
@@ -65,7 +65,7 @@ namespace MediaCollection
 		private void LVLocations_CellEditFinished(object sender, BrightIdeasSoftware.CellEditEventArgs e)
 		{
 			var um = e.RowObject as UpdatableModel;
-			if (um != null) um.Set();
+			if (um != null) um.Set().GetAwaiter().GetResult();
 		}
 
 		private void BtnAdd_Click(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace MediaCollection
 			LVRatings.AddObject(d);
 		}
 
-		private void BtnDelete_Click(object sender, EventArgs e)
+		private async void BtnDelete_Click(object sender, EventArgs e)
 		{
 			var item = LVRatings.SelectedItem;
 			if (item != null)
@@ -84,7 +84,7 @@ namespace MediaCollection
 				{
 					if (MessageBox.Show("Do you want to delete " + d.RatingName + "?", "Confirm Rating Removal", MessageBoxButtons.OKCancel) == DialogResult.OK)
 					{
-						d.Delete();
+						await d.Delete();
 						item.Remove();
 					}
 				}
