@@ -208,6 +208,98 @@ textarea {
 	cursor: not-allowed;
 }
 
+.mc-modal-wide {
+	width: min(640px, 95vw);
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.mc-seasons-tool {
+	overflow-y: auto;
+}
+
+.mc-seasons-tool-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.5rem;
+}
+
+.mc-seasons-tool-close {
+	background: transparent;
+	border: none;
+	font-size: 1.1rem;
+	cursor: pointer;
+	padding: 0.1rem 0.4rem;
+	line-height: 1;
+}
+
+.mc-seasons-tool-section {
+	margin-bottom: 0.75rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 0.5rem 0.75rem;
+}
+
+.mc-seasons-tool-section legend {
+	font-weight: 600;
+	padding: 0 0.25rem;
+}
+
+.mc-seasons-tool-section .mc-stack {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.4rem;
+	margin: 0.25rem 0;
+}
+
+.mc-seasons-tool-section input[type="text"] {
+	flex: 1 1 220px;
+	min-width: 0;
+	padding: 0.25rem 0.4rem;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+}
+
+.mc-seasons-tool-label {
+	font-size: 0.85rem;
+	color: #555;
+}
+
+.mc-seasons-tool-list-wrap {
+	margin-top: 0.4rem;
+}
+
+.mc-seasons-tool-list {
+	list-style: none;
+	margin: 0.25rem 0 0 0;
+	padding: 0.25rem 0.5rem;
+	max-height: 140px;
+	overflow-y: auto;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #fafafa;
+	font-size: 0.85rem;
+}
+
+.mc-seasons-tool-list li {
+	margin: 0.15rem 0;
+}
+
+.mc-seasons-tool-status {
+	margin-top: 0.5rem;
+	font-size: 0.85rem;
+}
+
+.mc-title-detail-footer {
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 0.5rem;
+}
+
 .mc-main {
 	padding: 1rem;
 	max-width: 1400px;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { setReadOnly, useIsReadOnly } from './config';
 import { LoginModal } from './components/LoginModal';
+import { setReadOnly, useIsReadOnly } from './config';
 import { DevicesPage } from './pages/DevicesPage';
 import { LibraryPage } from './pages/LibraryPage';
 import { LocationBasesPage } from './pages/LocationBasesPage';
@@ -66,9 +66,6 @@ function Nav() {
             <NavLink to="/provider" className={({ isActive }) => (isActive ? 'mc-active' : '')}>
               Provider (TMDB)
             </NavLink>
-            <NavLink to="/seasons" className={({ isActive }) => (isActive ? 'mc-active' : '')}>
-              Seasons tool
-            </NavLink>
           </>
         )}
         {ro ? (
@@ -108,15 +105,6 @@ export function App() {
               <PlaceholderPage
                 title="Provider / TMDB lookup"
                 body="The desktop “Search provider” and bulk TMDB update dialogs are not ported yet. Use the desktop app for automated metadata fetch."
-              />
-            }
-          />
-          <Route
-            path="/seasons"
-            element={
-              <PlaceholderPage
-                title="Seasons tool"
-                body="Bulk season restructuring from the desktop Seasons Tool is not available in the web UI yet."
               />
             }
           />

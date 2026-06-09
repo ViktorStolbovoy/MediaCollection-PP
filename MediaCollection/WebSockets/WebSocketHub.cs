@@ -158,6 +158,36 @@ namespace MediaCollection.WebSockets
 				{
 					client.LibrarySubscription = null;
 				}
+				else if (SeasonsToolHandler.IsSeasonsToolMessage(type))
+				{
+					await HandleSeasonsToolAsync(clientId, client, type, payload);
+				}
+			}
+		}
+
+		private async Task HandleSeasonsToolAsync(Guid clientId, ClientConnection client, string type, JsonElement payload)
+		{
+			try
+			{
+				var (responseType, response, mutated) = await SeasonsToolHandler.HandleAsync(type, payload);
+				if (responseType == null)
+				{
+					return;
+				}
+
+				await SendAsync(client.Socket, responseType, response);
+
+				if (mutated)
+				{
+					await BroadcastLibraryAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Seasons tool handler {Type} failed for client {ClientId}", type, clientId);
+				await SendAsync(client.Socket, type + "-response", new SeasonsToolErrorResponse(
+					payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("RequestId", out var rid) && rid.ValueKind == JsonValueKind.String ? rid.GetString() : "",
+					ex.Message));
 			}
 		}
 
