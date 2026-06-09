@@ -52,7 +52,7 @@ pnpm-debug.log*
 MediaCollection/wwwroot/app/
 
 # IDE / editors
-.vs/
+.vs*/
 .idea/
 *.swp
 *.swo
