@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -7,17 +9,32 @@ namespace MediaCollection
 	public static class TitlePersistence
 	{
 		
-		public static async Task<List<Title>> ListTitles(string pattern, TitleKind kind, bool hidden)
+		public static async Task<List<Title>> ListTitles(string pattern, bool hidden, params TitleKind[] kinds)
 		{
+			if (kinds == null || kinds.Length == 0)
+			{
+				throw new ArgumentException("At least one kind must be specified.", nameof(kinds));
+			}
+
 			using (var db = DB.GetDatabase())
 			{
+				var args = new List<object>(kinds.Length + 2);
+				foreach (var k in kinds) args.Add(k);
+
+				string kindPlaceholders = string.Join(", ", Enumerable.Range(0, kinds.Length).Select(i => "@" + i));
+
 				if (string.IsNullOrWhiteSpace(pattern))
 				{
-					return await db.FetchAsync<Title>("where KIND = @0 and HIDDEN = @1", kind, hidden ? 1 : 0);
+					args.Add(hidden ? 1 : 0);
+					string sql = $"where KIND IN ({kindPlaceholders}) and HIDDEN = @{kinds.Length}";
+					return await db.FetchAsync<Title>(sql, args.ToArray());
 				}
 				else
 				{
-					return await db.FetchAsync<Title>("where KIND = @0 and TITLE_NAME like @1 and HIDDEN = @2", kind, pattern, hidden ? 1 : 0);
+					args.Add(pattern);
+					args.Add(hidden ? 1 : 0);
+					string sql = $"where KIND IN ({kindPlaceholders}) and TITLE_NAME like @{kinds.Length} and HIDDEN = @{kinds.Length + 1}";
+					return await db.FetchAsync<Title>(sql, args.ToArray());
 				}
 			}
 		}

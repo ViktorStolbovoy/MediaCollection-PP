@@ -1,6 +1,9 @@
-import { Dispatch, FormEvent, SetStateAction } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 import { apiJson, uploadTitleImage } from '../api';
 import type { Device, KindOpt, Title, TitleDetailDto } from '../pages/LibraryPage';
+import { SeasonsToolModal } from './SeasonsToolModal';
+
+const SEASONS_TOOL_KINDS = new Set<number>([1, 2, 4, 7]);
 
 const VIDEO_KINDS: KindOpt[] = [
   { value: 0, name: 'Title' },
@@ -59,6 +62,11 @@ export function TitleDetailForm({
   const currentImage = detail?.Images?.[imageIndex];
   const imageUrl =
     selectedId && currentImage ? `/api/titles/${selectedId}/images/${currentImage.Id}/file` : '';
+  const [showSeasonsTool, setShowSeasonsTool] = useState(false);
+  const seasonsToolEligible =
+    resourceKind === 'video' &&
+    selectedId != null &&
+    SEASONS_TOOL_KINDS.has(detail.Title.Kind);
 
   return (
     <form onSubmit={saveTitle}>
@@ -339,6 +347,16 @@ export function TitleDetailForm({
           )}
         </div>
       </fieldset>
+      {seasonsToolEligible && (
+        <div className="mc-title-detail-footer">
+          <button type="button" onClick={() => setShowSeasonsTool(true)}>
+            Seasons Tool…
+          </button>
+        </div>
+      )}
+      {showSeasonsTool && selectedId != null && (
+        <SeasonsToolModal titleId={selectedId} onClose={() => setShowSeasonsTool(false)} />
+      )}
     </form>
   );
 }

@@ -121,3 +121,63 @@ export function sendPing(): void {
   if (socket?.readyState !== WebSocket.OPEN) return;
   socket.send(JSON.stringify({ type: 'ping' }));
 }
+
+type PendingRequest = {
+  resolve: (data: unknown) => void;
+  reject: (err: unknown) => void;
+  timer: ReturnType<typeof setTimeout> | undefined;
+};
+
+const pendingRequests = new Map<string, PendingRequest>();
+const wiredResponseTypes = new Set<string>();
+let nextRequestSeq = 0;
+
+function ensureResponseListener(responseType: string): void {
+  if (wiredResponseTypes.has(responseType)) return;
+  wiredResponseTypes.add(responseType);
+  subscribe(responseType, (raw) => {
+    const payload = raw as { RequestId?: string; Error?: string } | undefined;
+    const id = payload?.RequestId;
+    if (!id) return;
+    const pending = pendingRequests.get(id);
+    if (!pending) return;
+    pendingRequests.delete(id);
+    if (pending.timer) clearTimeout(pending.timer);
+    if (payload?.Error) {
+      pending.reject(new Error(payload.Error));
+    } else {
+      pending.resolve(payload);
+    }
+  });
+}
+
+/**
+ * Sends a request-style message and resolves once the server replies with a
+ * matching `{type}-response` payload (correlated by `RequestId`). The server
+ * indicates failure by including an `Error` string on the response.
+ */
+export function request<T>(
+  type: string,
+  data?: Record<string, unknown>,
+  opts?: { timeoutMs?: number }
+): Promise<T> {
+  const responseType = `${type}-response`;
+  ensureResponseListener(responseType);
+  const requestId = `r-${Date.now().toString(36)}-${++nextRequestSeq}`;
+  const timeoutMs = opts?.timeoutMs ?? 30000;
+  return new Promise<T>((resolve, reject) => {
+    const timer =
+      timeoutMs > 0
+        ? setTimeout(() => {
+            pendingRequests.delete(requestId);
+            reject(new Error(`Request "${type}" timed out after ${timeoutMs}ms`));
+          }, timeoutMs)
+        : undefined;
+    pendingRequests.set(requestId, {
+      resolve: (d) => resolve(d as T),
+      reject,
+      timer,
+    });
+    sendMessage(type, { ...(data ?? {}), RequestId: requestId });
+  });
+}
