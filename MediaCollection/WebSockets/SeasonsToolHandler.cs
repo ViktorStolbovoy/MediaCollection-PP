@@ -111,8 +111,8 @@ namespace MediaCollection.WebSockets
 		{
 			string pattern = ReadString(payload, "Pattern") ?? "";
 
-			var seasons = await TitlePersistence.ListTitles(pattern, false, TitleKind.Season);
-			var disksAndEpisodes = await TitlePersistence.ListTitles(pattern, false, TitleKind.Disk, TitleKind.Episode);
+			var seasons = await TitlePersistence.ListTitles(pattern, HiddenVisibility.None, TitleKind.Season);
+			var disksAndEpisodes = await TitlePersistence.ListTitles(pattern, HiddenVisibility.None, TitleKind.Disk, TitleKind.Episode);
 
 			var seasonItems = seasons.Select(ToItem).ToList();
 			var disksAndEpisodesItems = disksAndEpisodes.Select(ToItem).ToList();
@@ -166,7 +166,7 @@ namespace MediaCollection.WebSockets
 			if (string.IsNullOrWhiteSpace(pattern)) return new SeasonsToolErrorResponse(requestId, "Pattern is required.");
 
 			string template = pattern.Replace("%", "Season {0}");
-			var existingSeasons = await TitlePersistence.ListTitles(pattern, false, TitleKind.Season);
+			var existingSeasons = await TitlePersistence.ListTitles(pattern, HiddenVisibility.None, TitleKind.Season);
 			var existingSet = new HashSet<int>(existingSeasons.Select(s => s.Season));
 
 			var created = new List<SeasonsToolItem>();
@@ -253,7 +253,7 @@ namespace MediaCollection.WebSockets
 				return new SeasonsToolErrorResponse(requestId, "Invalid regex: " + ex.Message);
 			}
 
-			var candidates = await TitlePersistence.ListTitles(pattern, false, TitleKind.Title, TitleKind.Disk, TitleKind.Episode);
+			var candidates = await TitlePersistence.ListTitles(pattern, HiddenVisibility.None, TitleKind.Title, TitleKind.Disk, TitleKind.Episode);
 			var hits = new List<SeasonsToolConvertItem>();
 			foreach (var t in candidates)
 			{
@@ -311,7 +311,7 @@ namespace MediaCollection.WebSockets
 		private static async Task<Title> FindUniqueSeries(string seriesName)
 		{
 			if (string.IsNullOrWhiteSpace(seriesName)) return null;
-			var list = await TitlePersistence.ListTitles(seriesName, false, TitleKind.Series);
+			var list = await TitlePersistence.ListTitles(seriesName, HiddenVisibility.None, TitleKind.Series);
 			return list != null && list.Count == 1 ? list[0] : null;
 		}
 

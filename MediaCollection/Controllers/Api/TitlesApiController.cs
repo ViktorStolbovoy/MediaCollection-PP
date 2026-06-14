@@ -23,10 +23,11 @@ namespace MediaCollection.Controllers.Api
 		public async Task<ActionResult<IEnumerable<Title>>> GetRoots([FromQuery] string resourceKind = "video", [FromQuery] bool includeHidden = false)
 		{
 			List<Title> list;
+			var hiddenVisibility = includeHidden ? HiddenVisibility.Only : HiddenVisibility.None;
 			if (string.Equals(resourceKind, "audio", StringComparison.OrdinalIgnoreCase))
-				list = await TitlePersistence.ListRootAudio(includeHidden);
+				list = await TitlePersistence.ListRootAudio(hiddenVisibility);
 			else
-				list = await TitlePersistence.ListRootVideo(includeHidden);
+				list = await TitlePersistence.ListRootVideo(hiddenVisibility);
 			list.Sort();
 			return Ok(list);
 		}

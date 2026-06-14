@@ -5,6 +5,12 @@ namespace MediaCollection
 {
 	public enum TitleKind { Title = 0, Season = 1, Series = 2, Album = 3, /*Video*/ Disk = 4, Track = 5, AlbumArtist = 6, Episode = 7 }
 
+	// Controls how hidden titles are treated when querying.
+	// None    - exclude hidden titles (HIDDEN = 0)
+	// Only    - return only hidden titles (HIDDEN = 1)
+	// Include - return both hidden and non-hidden titles (no HIDDEN filter)
+	public enum HiddenVisibility { None = 0, Only = 1, Include = 2 }
+
 	[TableName("title")]
 	[PrimaryKey("TITLE_ID", AutoIncrement = true)]
 	public class Title : IModelWithId, IComparable<Title>, IComparable
