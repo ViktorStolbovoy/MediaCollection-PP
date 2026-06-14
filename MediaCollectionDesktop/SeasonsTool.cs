@@ -67,7 +67,7 @@ namespace MediaCollection
         private void CheckSeries(string seriesName)
         {
             m_title = null;
-            var ss = TitlePersistence.ListTitles(seriesName, false, TitleKind.Series).GetAwaiter().GetResult();
+            var ss = TitlePersistence.ListTitles(seriesName, HiddenVisibility.None, TitleKind.Series).GetAwaiter().GetResult();
             if (ss != null && ss.Count == 1)
             {
                 m_title = ss[0];
@@ -84,7 +84,7 @@ namespace MediaCollection
             CheckSeries(TbxSeries.Text);
 
 			//Search for pattern
-			foundSeasons = await TitlePersistence.ListTitles(sqlPattern, false, TitleKind.Season);
+			foundSeasons = await TitlePersistence.ListTitles(sqlPattern, HiddenVisibility.None, TitleKind.Season);
 			ClbSeasons.Items.Clear();
 			foreach (var title in foundSeasons)
 			{
@@ -94,9 +94,9 @@ namespace MediaCollection
 
 
             //Search for pattern
-            var titlesDisks = await TitlePersistence.ListTitles(sqlPattern, false, TitleKind.Disk);
+            var titlesDisks = await TitlePersistence.ListTitles(sqlPattern, HiddenVisibility.None, TitleKind.Disk);
 
-            var titlesEpisodes = await TitlePersistence.ListTitles(sqlPattern, false, TitleKind.Episode);
+            var titlesEpisodes = await TitlePersistence.ListTitles(sqlPattern, HiddenVisibility.None, TitleKind.Episode);
 
             ClbEpisodes.Items.Clear();
             foreach (var d in titlesDisks)
@@ -277,7 +277,7 @@ namespace MediaCollection
         private bool FindTitlesToConvert()
         {
             ClbEpisodes.Items.Clear();
-            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, false, TitleKind.Title).GetAwaiter().GetResult();
+            var titles = TitlePersistence.ListTitles(TbxSeasonPattern.Text, HiddenVisibility.None, TitleKind.Title).GetAwaiter().GetResult();
             try
             {
                 var regex = new Regex(TbxEpisodesRegexp.Text);

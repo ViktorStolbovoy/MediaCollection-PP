@@ -8,8 +8,35 @@ namespace MediaCollection
 {
 	public static class TitlePersistence
 	{
-		
-		public static async Task<List<Title>> ListTitles(string pattern, bool hidden, params TitleKind[] kinds)
+		// Returns the SQL fragment to append to a WHERE clause that already has at
+		// least one preceding condition. Always starts with " and " (or is empty when
+		// the caller wants no filter on HIDDEN at all).
+		private static string BuildHiddenClause(HiddenVisibility hiddenVisibility)
+		{
+			switch (hiddenVisibility)
+			{
+				case HiddenVisibility.Include:
+					return string.Empty;
+				case HiddenVisibility.Only:
+					return " and HIDDEN = 1";
+				case HiddenVisibility.None:
+				default:
+					return " and HIDDEN = 0";
+			}
+		}
+
+		// Backward-compatible overload: no parent filter is applied. Provided so that
+		// existing call sites passing TitleKind values immediately after hiddenVisibility
+		// keep compiling (TitleKind does not convert to long?, so the compiler can't pick
+		// the overload below for them).
+		public static Task<List<Title>> ListTitles(string pattern, HiddenVisibility hiddenVisibility, params TitleKind[] kinds)
+			=> ListTitles(pattern, hiddenVisibility, parentTitleId: null, kinds: kinds);
+
+		// parentTitleId: when null, no parent filter is applied; when set, results are
+		// restricted to rows whose PARENT_TITLE_ID equals the value. There is no way
+		// through this parameter alone to ask for "roots only" (PARENT_TITLE_ID IS NULL)
+		// - callers needing that filter post-fetch.
+		public static async Task<List<Title>> ListTitles(string pattern, HiddenVisibility hiddenVisibility, long? parentTitleId, params TitleKind[] kinds)
 		{
 			if (kinds == null || kinds.Length == 0)
 			{
@@ -23,36 +50,39 @@ namespace MediaCollection
 
 				string kindPlaceholders = string.Join(", ", Enumerable.Range(0, kinds.Length).Select(i => "@" + i));
 
-				if (string.IsNullOrWhiteSpace(pattern))
-				{
-					args.Add(hidden ? 1 : 0);
-					string sql = $"where KIND IN ({kindPlaceholders}) and HIDDEN = @{kinds.Length}";
-					return await db.FetchAsync<Title>(sql, args.ToArray());
-				}
-				else
+				string patternClause = string.Empty;
+				if (!string.IsNullOrWhiteSpace(pattern))
 				{
 					args.Add(pattern);
-					args.Add(hidden ? 1 : 0);
-					string sql = $"where KIND IN ({kindPlaceholders}) and TITLE_NAME like @{kinds.Length} and HIDDEN = @{kinds.Length + 1}";
-					return await db.FetchAsync<Title>(sql, args.ToArray());
+					patternClause = $" and TITLE_NAME like @{args.Count - 1}";
 				}
+
+				string parentClause = string.Empty;
+				if (parentTitleId.HasValue)
+				{
+					args.Add(parentTitleId.Value);
+					parentClause = $" and PARENT_TITLE_ID = @{args.Count - 1}";
+				}
+
+				string hiddenClause = BuildHiddenClause(hiddenVisibility);
+
+				string sql = $"where KIND IN ({kindPlaceholders}){patternClause}{parentClause}{hiddenClause} ORDER BY TITLE_NAME, ORD";
+				return await db.FetchAsync<Title>(sql, args.ToArray());
 			}
 		}
 
-		public static async Task<List<Title>> ListRootVideo(bool hidden)
+		public static async Task<List<Title>> ListRootVideo(HiddenVisibility hiddenVisibility)
 		{
-			using (var db = DB.GetDatabase())
-			{
-                return await db.FetchAsync<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND =@0 or KIND = @1 or KIND = @2 or KIND = @3 or KIND = @4) and HIDDEN = @5 ORDER BY TITLE_NAME, ORD", TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk, hidden ? 1 : 0);
-			}
+			var list = await ListTitles(null, hiddenVisibility,
+				TitleKind.Episode, TitleKind.Season, TitleKind.Title, TitleKind.Series, TitleKind.Disk);
+			return list.Where(t => !t.ParentTitleId.HasValue).ToList();
 		}
 
-		public static async Task<List<Title>> ListRootAudio(bool hidden)
+		public static async Task<List<Title>> ListRootAudio(HiddenVisibility hiddenVisibility)
 		{
-			using (var db = DB.GetDatabase())
-			{
-				return await db.FetchAsync<Title>("WHERE PARENT_TITLE_ID IS NULL and (KIND = @0 or KIND = @1 or KIND = @2) and HIDDEN = @3 ORDER BY TITLE_NAME, ORD", TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist, hidden ? 1 : 0);
-			}
+			var list = await ListTitles(null, hiddenVisibility,
+				TitleKind.Album, TitleKind.Track, TitleKind.AlbumArtist);
+			return list.Where(t => !t.ParentTitleId.HasValue).ToList();
 		}
 
 		public static async Task<List<Title>> ListTitlesByParent(long parentTitleId)

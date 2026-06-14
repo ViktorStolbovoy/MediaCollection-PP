@@ -1,9 +1,9 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { apiJson } from '../api';
-import { clearStickyMessage, sendMessage, subscribe } from '../websocket';
 import { TitleDetailForm } from '../components/TitleDetailForm';
 import { TitleDetailFormReadOnly } from '../components/TitleDetailFormReadOnly';
 import { useIsReadOnly } from '../config';
+import { clearStickyMessage, sendMessage, subscribe } from '../websocket';
 
 export interface Title {
   Id: number;
@@ -325,7 +325,7 @@ export function LibraryPage() {
             checked={includeHidden}
             onChange={(e) => changeFilter({ includeHidden: e.target.checked })}
           />{' '}
-          Include hidden
+          Show hidden
         </label>
         <button type="button" onClick={requestRefresh}>
           Refresh

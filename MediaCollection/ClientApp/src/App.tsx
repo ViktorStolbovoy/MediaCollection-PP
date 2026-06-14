@@ -64,7 +64,7 @@ function Nav() {
               Bulk scan
             </NavLink>
             <NavLink to="/provider" className={({ isActive }) => (isActive ? 'mc-active' : '')}>
-              Provider (TMDB)
+              Update from TMDB
             </NavLink>
           </>
         )}

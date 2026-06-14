@@ -208,11 +208,11 @@ namespace MediaCollection
 			switch (kind)
 			{
 				case ResourceKind.Audio:
-					TVTitles.Roots = new SortableTitles(await TitlePersistence.ListRootAudio(CbxHidden.Checked));
+					TVTitles.Roots = new SortableTitles(await TitlePersistence.ListRootAudio(CbxHidden.Checked ? HiddenVisibility.Include : HiddenVisibility.None));
 					CbxKind.SetupComboBox<TitleKind>("Audio_");
 					break;
 				case ResourceKind.Video:
-					TVTitles.Roots = new SortableTitles(await TitlePersistence.ListRootVideo(CbxHidden.Checked));
+					TVTitles.Roots = new SortableTitles(await TitlePersistence.ListRootVideo(CbxHidden.Checked ? HiddenVisibility.Include : HiddenVisibility.None));
 					CbxKind.SetupComboBox<TitleKind>("Video_");
 					break;
 			}

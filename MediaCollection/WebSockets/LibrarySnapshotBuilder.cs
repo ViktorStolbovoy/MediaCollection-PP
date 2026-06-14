@@ -8,9 +8,10 @@ namespace MediaCollection.WebSockets
 	{
 		public static async Task<LibrarySnapshot> BuildAsync(LibrarySubscription sub)
 		{
+			var hiddenVisibility = sub.IncludeHidden ? HiddenVisibility.Include : HiddenVisibility.None;
 			List<Title> roots = sub.ResourceKind == "audio"
-				? await TitlePersistence.ListRootAudio(sub.IncludeHidden)
-				: await TitlePersistence.ListRootVideo(sub.IncludeHidden);
+				? await TitlePersistence.ListRootAudio(hiddenVisibility)
+				: await TitlePersistence.ListRootVideo(hiddenVisibility);
 			roots.Sort();
 
 			LibrarySnapshotDetail detail = null;
