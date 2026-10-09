@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { LoginModal } from './components/LoginModal';
+import { UpdateFromProviderModal } from './components/UpdateFromProviderModal';
 import { setReadOnly, useIsReadOnly } from './config';
 import { DevicesPage } from './pages/DevicesPage';
 import { LibraryPage } from './pages/LibraryPage';
 import { LocationBasesPage } from './pages/LocationBasesPage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
 import { RatingsPage } from './pages/RatingsPage';
 import { ScanPage } from './pages/ScanPage';
 
@@ -13,6 +13,7 @@ function Nav() {
   const ro = useIsReadOnly();
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
+  const [showProviderTool, setShowProviderTool] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   const enterConfiguration = () => {
@@ -37,6 +38,7 @@ function Nav() {
     } finally {
       setReadOnly(true);
       setLoggingOut(false);
+      setShowProviderTool(false);
       navigate('/');
     }
   };
@@ -63,9 +65,13 @@ function Nav() {
             <NavLink to="/scan" className={({ isActive }) => (isActive ? 'mc-active' : '')}>
               Bulk scan
             </NavLink>
-            <NavLink to="/provider" className={({ isActive }) => (isActive ? 'mc-active' : '')}>
+            <button
+              type="button"
+              className="mc-nav-btn"
+              onClick={() => setShowProviderTool(true)}
+            >
               Update from TMDB
-            </NavLink>
+            </button>
           </>
         )}
         {ro ? (
@@ -84,6 +90,9 @@ function Nav() {
           onSuccess={onLoginSuccess}
         />
       )}
+      {showProviderTool && !ro && (
+        <UpdateFromProviderModal onClose={() => setShowProviderTool(false)} />
+      )}
     </header>
   );
 }
@@ -99,15 +108,6 @@ export function App() {
           <Route path="/locations" element={<LocationBasesPage />} />
           <Route path="/ratings" element={<RatingsPage />} />
           <Route path="/scan" element={<ScanPage />} />
-          <Route
-            path="/provider"
-            element={
-              <PlaceholderPage
-                title="Provider / TMDB lookup"
-                body="The desktop “Search provider” and bulk TMDB update dialogs are not ported yet. Use the desktop app for automated metadata fetch."
-              />
-            }
-          />
         </Routes>
       </main>
     </div>

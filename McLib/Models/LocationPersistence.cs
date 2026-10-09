@@ -106,14 +106,6 @@ namespace MediaCollection
 
 		public bool ShouldDelete { get; set; }
 
-		public override async Task Delete()
-		{
-			using (var db = DB.GetDatabase())
-			{
-				await db.DeleteAsync(Id);
-			}
-		}
-
 		public async Task SetNewLocation()
 		{
 			LocationBaseId = NewLocationBaseId;

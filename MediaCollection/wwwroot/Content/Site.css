@@ -116,6 +116,28 @@ textarea {
 	font-size: 0.85rem;
 }
 
+/* Nav buttons that look like the NavLink siblings (used for actions that
+   open a modal rather than navigate). */
+.mc-app header .mc-nav-btn {
+	background: transparent;
+	border: none;
+	padding: 0;
+	margin-right: 0.75rem;
+	color: #c7d5f0;
+	font: inherit;
+	cursor: pointer;
+}
+
+.mc-app header .mc-nav-btn:hover {
+	color: #fff;
+	text-decoration: underline;
+}
+
+.mc-app header .mc-nav-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 .mc-config-btn:hover {
 	background: #4d83bf;
 }
@@ -476,4 +498,153 @@ table.mc-table td {
 	max-height: 280px;
 	border: 1px solid #ccc;
 	margin-top: 0.5rem;
+}
+
+/* Update From TMDB modal */
+.mc-tmdb-tool {
+	overflow-y: auto;
+	width: min(960px, 95vw);
+}
+
+.mc-tmdb-tool-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0.25rem 0 0.5rem;
+}
+
+.mc-tmdb-tool-toolbar > .mc-muted {
+	flex: 1;
+	text-align: center;
+}
+
+.mc-tmdb-tool-spacer {
+	flex: 1 1 1rem;
+}
+
+.mc-tmdb-tool-results-wrap {
+	margin-top: 0.4rem;
+	max-height: 360px;
+	overflow-y: auto;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #fafafa;
+	padding: 0.4rem;
+}
+
+.mc-tmdb-tool-grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	gap: 0.5rem;
+}
+
+.mc-tmdb-tool-result {
+	display: flex;
+}
+
+.mc-tmdb-tool-result-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.25rem;
+	width: 100%;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 0.4rem;
+	cursor: pointer;
+	font-size: 0.8rem;
+	color: #232323;
+	text-align: center;
+}
+
+.mc-tmdb-tool-result-btn:hover:not(:disabled) {
+	border-color: #3a6ea5;
+	box-shadow: 0 2px 8px rgba(58, 110, 165, 0.25);
+}
+
+.mc-tmdb-tool-result-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.mc-tmdb-tool-result-btn img {
+	width: 100%;
+	height: 200px;
+	object-fit: contain;
+	background: #efefef;
+	border-radius: 2px;
+}
+
+.mc-tmdb-tool-poster-fallback {
+	width: 100%;
+	height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #efefef;
+	border-radius: 2px;
+	color: #888;
+	font-size: 0.8rem;
+}
+
+.mc-tmdb-tool-result-label {
+	font-weight: 600;
+	font-size: 0.8rem;
+	line-height: 1.2;
+	max-height: 2.4em;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+.mc-tmdb-tool-year {
+	flex: 0 0 6rem;
+	min-width: 0;
+	padding: 0.25rem 0.4rem;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+}
+
+.mc-tmdb-tool-description {
+	flex: 1 1 320px;
+	min-width: 0;
+	padding: 0.25rem 0.4rem;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+	resize: vertical;
+}
+
+.mc-tmdb-tool-inspection {
+	list-style: disc inside;
+	margin: 0;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.85rem;
+}
+
+.mc-tmdb-tool-inspection li {
+	margin: 0.1rem 0;
+}
+
+.mc-tmdb-tool-link {
+	background: transparent;
+	border: none;
+	padding: 0;
+	color: #3a6ea5;
+	cursor: pointer;
+	font: inherit;
+}
+
+.mc-tmdb-tool-link:hover:not(:disabled) {
+	text-decoration: underline;
+}
+
+.mc-tmdb-tool-link:disabled {
+	color: #888;
+	cursor: not-allowed;
 }

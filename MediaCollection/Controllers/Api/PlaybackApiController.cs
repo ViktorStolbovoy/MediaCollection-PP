@@ -22,7 +22,7 @@ namespace MediaCollection.Controllers.Api
 			if (result.DeviceKind == DeviceType.Local)
 				return BadRequest(new { error = "Local playback is available only from MediaCollectionDesktop." });
 			await result.Run();
-			return Ok();
+			return NoContent();
 		}
 	}
 }

@@ -160,16 +160,29 @@ namespace MediaCollection.WebSockets
 				}
 				else if (SeasonsToolHandler.IsSeasonsToolMessage(type))
 				{
-					await HandleSeasonsToolAsync(clientId, client, type, payload);
+					await HandleToolAsync(clientId, client, type, payload, "Seasons", SeasonsToolHandler.HandleAsync,
+						(rid, msg) => new SeasonsToolErrorResponse(rid, msg));
+				}
+				else if (TmdbToolHandler.IsTmdbToolMessage(type))
+				{
+					await HandleToolAsync(clientId, client, type, payload, "TMDB", TmdbToolHandler.HandleAsync,
+						(rid, msg) => new TmdbToolErrorResponse(rid, msg));
 				}
 			}
 		}
 
-		private async Task HandleSeasonsToolAsync(Guid clientId, ClientConnection client, string type, JsonElement payload)
+		private async Task HandleToolAsync(
+			Guid clientId,
+			ClientConnection client,
+			string type,
+			JsonElement payload,
+			string toolName,
+			Func<string, JsonElement, Task<(string ResponseType, object Response, bool Mutated)>> handler,
+			Func<string, string, object> errorFactory)
 		{
 			try
 			{
-				var (responseType, response, mutated) = await SeasonsToolHandler.HandleAsync(type, payload);
+				var (responseType, response, mutated) = await handler(type, payload);
 				if (responseType == null)
 				{
 					return;
@@ -184,10 +197,13 @@ namespace MediaCollection.WebSockets
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Seasons tool handler {Type} failed for client {ClientId}", type, clientId);
-				await SendAsync(client.Socket, type + "-response", new SeasonsToolErrorResponse(
-					payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("RequestId", out var rid) && rid.ValueKind == JsonValueKind.String ? rid.GetString() : "",
-					ex.Message));
+				_logger.LogError(ex, "{ToolName} tool handler {Type} failed for client {ClientId}", toolName, type, clientId);
+				var requestId = payload.ValueKind == JsonValueKind.Object
+					&& payload.TryGetProperty("RequestId", out var rid)
+					&& rid.ValueKind == JsonValueKind.String
+						? rid.GetString()
+						: "";
+				await SendAsync(client.Socket, type + "-response", errorFactory(requestId, ex.Message));
 			}
 		}
 

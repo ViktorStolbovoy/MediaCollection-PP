@@ -344,7 +344,7 @@ namespace MediaCollection
 			return res;
 		}
 
-		static readonly string[] s_fileExtensionsVideo = { "avi", "vob", "mpg", "ts", "mkv", "mpv", "wmv", "3gp", "264", "dat", "evo", "dv", "flv", "h264", "m2ts", "m2v", "mjp", "ogv", "ogm", "qtm", "rm", "swf", "wm" };
+		static readonly string[] s_fileExtensionsVideo = { "avi", "vob", "mpg", "ts", "mkv", "mpv", "wmv", "3gp", "264", "evo", "dv", "flv", "h264", "m2ts", "m2v", "mjp", "ogv", "ogm", "qtm", "rm", "swf", "wm" };
 		static readonly string[] s_fileExtensionsAudio = { "wav", "flac", "ape", "mp3", "ogg", "ac3", "pcm" };
 		static readonly string[] s_fileExtensionsImg =  { "iso", "img", "mdf", "bin", "nrg" };
 		static readonly string[] s_fileExtensionsPicture = { "jpg", "jpeg", "tiff", "bmp", "png", "gif" };

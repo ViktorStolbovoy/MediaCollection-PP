@@ -22,12 +22,19 @@ namespace MediaCollection
 
 		internal static string TmdbUrl = Settings.Get<string>("TMDB_URL").GetAwaiter().GetResult();
 		internal static string TmdbAppKey = Uri.EscapeDataString(Settings.Get<string>("TMDB_APP_KEY").GetAwaiter().GetResult());
-		public static async Task<TmdbData> Get(string name, bool isTv, CancellationToken cancellationToken)
+		public static Task<TmdbData> Get(string name, bool isTv, CancellationToken cancellationToken)
+		{
+			return Get(name, isTv, cancellationToken, shouldGetSmallPosters: false);
+		}
+
+		public static async Task<TmdbData> Get(string name, bool isTv, CancellationToken cancellationToken, bool shouldGetSmallPosters)
 		{
 			string movieSearchUrl = GetUrl(name, isTv);
 
 			var bytes = await HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken);
-			var res = Encoding.UTF8.GetString(bytes).FromJson<TmdbData>();
+			var json = Encoding.UTF8.GetString(bytes);
+			var res = json.FromJson<TmdbData>();
+
 			if (res != null && res.Results != null && res.Results.Length > 0)
 			{
 				foreach (var item in res.Results) item.IsTv = isTv;
@@ -36,7 +43,8 @@ namespace MediaCollection
 			{
 				movieSearchUrl = GetUrl(name, !isTv);
 				var bytes2 = await HttpHelper.MakeHttpRequest(movieSearchUrl, cancellationToken);
-				res = Encoding.UTF8.GetString(bytes2).FromJson<TmdbData>();
+				json = Encoding.UTF8.GetString(bytes2);
+				res = json.FromJson<TmdbData>();
 				if (res != null && res.Results != null)
 				{
 					foreach (var item in res.Results) item.IsTv = !isTv;
@@ -45,7 +53,7 @@ namespace MediaCollection
 
 			if (res != null && res.Results != null)
 			{
-				await Task.WhenAll(res.Results.Select((item) => item.GetPoster(false, cancellationToken)));
+				await Task.WhenAll(res.Results.Select((item) => item.GetPoster(shouldGetSmallPosters, cancellationToken)));
 			}
 			return res;
 		}
@@ -103,7 +111,7 @@ namespace MediaCollection
 		[JsonProperty("tagline")]
 		public string Tagline { get; set; }
 
-		[JsonProperty("title")]
+		[JsonProperty("name")]
 		public string Title { get; set; }
 
 		public bool IsTv { get; internal set; }
@@ -114,12 +122,29 @@ namespace MediaCollection
 
 		public async Task GetMore(CancellationToken cancellationToken)
 		{
-			string url = string.Format("{0}/{1}/{2}?api_key={3}", TmdbData.TmdbUrl, IsTv ? "tv" : "movie", Id,TmdbData.TmdbAppKey);
-
-			var bytes = await HttpHelper.MakeHttpRequest(url, cancellationToken);
-			var res = Encoding.UTF8.GetString(bytes).FromJson<TmdbResult>();
+			var res = await GetDetail(Id, IsTv, cancellationToken);
+			if (res == null) return;
 			ImdbId = res.ImdbId;
-			if (!ReleaseDate.HasValue) ReleaseDate = FirstAirDate;
+			Runtime = res.Runtime;
+			Status = res.Status;
+			Tagline = res.Tagline;
+			if (!ReleaseDate.HasValue) ReleaseDate = res.ReleaseDate ?? FirstAirDate;
+		}
+
+		// Fetches the full detail record for a TMDB id (movie or tv). Unlike <see cref="GetMore"/>
+		// which only patches an existing instance with the imdb id, this returns a freshly
+		// populated <see cref="TmdbResult"/> that includes title/overview/poster path/release
+		// date — enough to drive an "apply" flow without needing the original search result.
+		public static async Task<TmdbResult> GetDetail(int tmdbId, bool isTv, CancellationToken cancellationToken)
+		{
+			string url = string.Format("{0}/{1}/{2}?api_key={3}", TmdbData.TmdbUrl, isTv ? "tv" : "movie", tmdbId, TmdbData.TmdbAppKey);
+			var bytes = await HttpHelper.MakeHttpRequest(url, cancellationToken);
+			var json = Encoding.UTF8.GetString(bytes);
+			var res = json.FromJson<TmdbResult>();
+			if (res == null) return null;
+			res.IsTv = isTv;
+			if (!res.ReleaseDate.HasValue) res.ReleaseDate = res.FirstAirDate;
+			return res;
 		}
 
 		static string s_tmdbImageUrl = Settings.Get<string>("TMDB_IMAGE_URL").GetAwaiter().GetResult();

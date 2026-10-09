@@ -5,8 +5,8 @@ namespace MediaCollection
 {
 	/// <summary>
 	/// Allows GET/HEAD/OPTIONS on /api for everyone, but only authenticated users may
-	/// issue mutating requests (POST/PUT/PATCH/DELETE). The login/logout endpoints are
-	/// explicitly excluded so that anonymous users can authenticate.
+	/// issue mutating requests (POST/PUT/PATCH/DELETE). Auth and playback endpoints are
+	/// explicitly excluded so anonymous users can log in and start playback.
 	/// </summary>
 	public sealed class ReadOnlyApiMiddleware
 	{
@@ -26,7 +26,7 @@ namespace MediaCollection
 				return;
 			}
 
-			if (path.StartsWith("/api/auth"))
+			if (path.StartsWith("/api/auth") || path.StartsWith("/api/playback"))
 			{
 				await _next(context);
 				return;
