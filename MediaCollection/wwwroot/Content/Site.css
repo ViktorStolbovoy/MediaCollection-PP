@@ -335,6 +335,33 @@ textarea {
 	align-items: start;
 }
 
+.mc-scan-results {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+	min-width: 0;
+}
+
+.mc-scan-results fieldset {
+	min-width: 0;
+	max-width: 100%;
+	overflow: visible;
+}
+
+.mc-scan-results table.mc-table th,
+.mc-scan-results table.mc-table td {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.mc-scan-results table.mc-table th:first-child,
+.mc-scan-results table.mc-table td:first-child {
+	width: 1%;
+	white-space: nowrap;
+	overflow-wrap: normal;
+	word-break: normal;
+}
+
 .mc-tree {
 	border: 1px solid #ddd;
 	border-radius: 6px;

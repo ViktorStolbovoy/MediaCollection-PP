@@ -131,70 +131,66 @@ export function ScanPage() {
         )}
       </div>
       {preview && (
-        <div className="mc-split" style={{ marginTop: '1rem' }}>
+        <div className="mc-scan-results">
           <fieldset>
             <legend>New on disk ({preview.NewFiles.length})</legend>
-            <div className="mc-table-wrap" style={{ maxHeight: 360, overflow: 'auto' }}>
-              <table className="mc-table">
-                <thead>
-                  <tr>
-                    <th>Import</th>
-                    <th>Path</th>
-                    <th>Parsed title</th>
+            <table className="mc-table">
+              <thead>
+                <tr>
+                  <th>Import</th>
+                  <th>Path</th>
+                  <th>Parsed title</th>
+                </tr>
+              </thead>
+              <tbody>
+                {preview.NewFiles.map((n) => (
+                  <tr key={n.RelativePath}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={!!addNew[n.RelativePath]}
+                        disabled={ro}
+                        onChange={(e) =>
+                          setAddNew({ ...addNew, [n.RelativePath]: e.target.checked })
+                        }
+                      />
+                    </td>
+                    <td>{n.RelativePath}</td>
+                    <td>{n.ParsedTitle}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {preview.NewFiles.map((n) => (
-                    <tr key={n.RelativePath}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={!!addNew[n.RelativePath]}
-                          disabled={ro}
-                          onChange={(e) =>
-                            setAddNew({ ...addNew, [n.RelativePath]: e.target.checked })
-                          }
-                        />
-                      </td>
-                      <td>{n.RelativePath}</td>
-                      <td>{n.ParsedTitle}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </fieldset>
           <fieldset>
             <legend>Missing on disk ({preview.Missing.length})</legend>
-            <div className="mc-table-wrap" style={{ maxHeight: 360, overflow: 'auto' }}>
-              <table className="mc-table">
-                <thead>
-                  <tr>
-                    <th>Delete row</th>
-                    <th>Title</th>
-                    <th>Path</th>
+            <table className="mc-table">
+              <thead>
+                <tr>
+                  <th>Delete row</th>
+                  <th>Title</th>
+                  <th>Path</th>
+                </tr>
+              </thead>
+              <tbody>
+                {preview.Missing.map((m) => (
+                  <tr key={m.LocationId}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={!!delMissing[m.LocationId]}
+                        disabled={ro}
+                        onChange={(e) =>
+                          setDelMissing({ ...delMissing, [m.LocationId]: e.target.checked })
+                        }
+                      />
+                    </td>
+                    <td>{m.TitleName}</td>
+                    <td>{m.LocationData}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {preview.Missing.map((m) => (
-                    <tr key={m.LocationId}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={!!delMissing[m.LocationId]}
-                          disabled={ro}
-                          onChange={(e) =>
-                            setDelMissing({ ...delMissing, [m.LocationId]: e.target.checked })
-                          }
-                        />
-                      </td>
-                      <td>{m.TitleName}</td>
-                      <td>{m.LocationData}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </fieldset>
         </div>
       )}
